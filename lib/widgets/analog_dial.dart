@@ -185,7 +185,7 @@ class _RadioTunerPainter extends CustomPainter {
       // Draw numbers for major ticks
       if (isMajor) {
         textPainter.text = TextSpan(
-          text: i.toInt().toString(),
+          text: i.round().toString(),
           style: GoogleFonts.robotoMono(
             fontSize: 14,
             color: color.withOpacity(opacity * 0.7),
