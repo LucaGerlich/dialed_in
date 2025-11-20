@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'package:fl_chart/fl_chart.dart';
 import '../models/models.dart';
 import '../providers/coffee_provider.dart';
 import 'add_shot_screen.dart';
@@ -16,7 +17,7 @@ class BeanDetailScreen extends StatelessWidget {
       builder: (context, provider, child) {
         final bean = provider.beans.firstWhere(
           (b) => b.id == beanId,
-          orElse: () => Bean(name: 'Deleted'), // Handle deletion gracefully
+          orElse: () => Bean(name: 'Deleted'),
         );
 
         if (bean.name == 'Deleted') {
@@ -29,88 +30,220 @@ class BeanDetailScreen extends StatelessWidget {
             actions: [
               IconButton(
                 icon: const Icon(Icons.delete),
-                onPressed: () {
-                  // Confirm delete
-                  showDialog(
-                    context: context,
-                    builder: (ctx) => AlertDialog(
-                      title: const Text('Delete Bean?'),
-                      content: const Text('This will delete the bean and all its shots.'),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(ctx),
-                          child: const Text('Cancel'),
+                onPressed: () => _confirmDelete(context, provider, bean),
+              ),
+            ],
+          ),
+          body: SingleChildScrollView(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Top Section: Image + Info (Bento Item 1)
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(24),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    children: [
+                      Container(
+                        height: 100,
+                        width: 80,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFEAE8DC),
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                        TextButton(
-                          onPressed: () {
-                            provider.deleteBean(bean.id);
-                            Navigator.pop(ctx); // Close dialog
-                            Navigator.pop(context); // Go back to list
-                          },
-                          child: const Text('Delete', style: TextStyle(color: Colors.red)),
+                        child: Icon(
+                          Icons.coffee,
+                          size: 40,
+                          color: Theme.of(context).colorScheme.primary.withOpacity(0.4),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        bean.name,
+                        style: Theme.of(context).textTheme.displayMedium?.copyWith(fontSize: 24),
+                        textAlign: TextAlign.center,
+                      ),
+                      if (bean.notes.isNotEmpty) ...[
+                        const SizedBox(height: 8),
+                        Text(
+                          bean.notes,
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                color: Colors.grey[600],
+                              ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+
+                // Graph Section (Bento Item 2)
+                if (bean.shots.isNotEmpty)
+                  Container(
+                    height: 250,
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(24),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.05),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
                         ),
                       ],
                     ),
-                  );
-                },
-              ),
-            ],
-          ),
-          body: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (bean.notes.isNotEmpty) ...[
-                      Text('Notes:', style: Theme.of(context).textTheme.titleMedium),
-                      Text(bean.notes),
-                      const SizedBox(height: 8),
-                    ],
-                    Text(
-                      'Preferred Grind Size: ${bean.preferredGrindSize?.toString() ?? "Not set"}',
-                      style: Theme.of(context).textTheme.titleMedium,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Grind Size Over Time',
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                        const SizedBox(height: 20),
+                        Expanded(
+                          child: LineChart(
+                            LineChartData(
+                              gridData: const FlGridData(show: false),
+                              titlesData: const FlTitlesData(show: false),
+                              borderData: FlBorderData(show: false),
+                              lineBarsData: [
+                                LineChartBarData(
+                                  spots: _getSpots(bean.shots),
+                                  isCurved: true,
+                                  color: Theme.of(context).colorScheme.secondary,
+                                  barWidth: 3,
+                                  isStrokeCapRound: true,
+                                  dotData: const FlDotData(show: true),
+                                  belowBarData: BarAreaData(
+                                    show: true,
+                                    color: Theme.of(context).colorScheme.secondary.withOpacity(0.1),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
+                const SizedBox(height: 16),
+
+                // Shots List (Bento Item 3)
+                Text(
+                  'Shots',
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
-              ),
-              const Divider(),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                child: Text('Shot History', style: Theme.of(context).textTheme.titleLarge),
-              ),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: bean.shots.length,
-                  itemBuilder: (context, index) {
-                    final shot = bean.shots[index];
-                    return ListTile(
-                      leading: CircleAvatar(
-                        child: Text(shot.grindSize.toString()),
+                const SizedBox(height: 12),
+                ...bean.shots.reversed.map((shot) => Container(
+                      margin: const EdgeInsets.only(bottom: 12),
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: Colors.grey.withOpacity(0.1)),
                       ),
-                      title: Text('${shot.doseIn}g in -> ${shot.doseOut}g out'),
-                      subtitle: Text('${shot.duration}s - ${DateFormat.yMMMd().add_jm().format(shot.timestamp)}'),
-                    );
-                  },
-                ),
-              ),
-            ],
+                      child: Row(
+                        children: [
+                          CircleAvatar(
+                            backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                            child: Text(
+                              shot.grindSize.toString(),
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.primary,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '${shot.doseIn}g in → ${shot.doseOut}g out',
+                                  style: Theme.of(context).textTheme.titleMedium?.copyWith(fontSize: 16),
+                                ),
+                                Text(
+                                  '${shot.duration}s • ${DateFormat.MMMd().format(shot.timestamp)}',
+                                  style: Theme.of(context).textTheme.bodySmall,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    )),
+                const SizedBox(height: 80), // Space for FAB
+              ],
+            ),
           ),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AddShotScreen(beanId: bean.id),
-                ),
-              );
-            },
-            child: const Icon(Icons.add),
+          floatingActionButton: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 32),
+            child: FloatingActionButton.extended(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AddShotScreen(beanId: bean.id),
+                  ),
+                );
+              },
+              label: const Text('Log New Shot'),
+              icon: const Icon(Icons.add),
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              foregroundColor: Theme.of(context).colorScheme.onPrimary,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+            ),
           ),
+          floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         );
       },
+    );
+  }
+
+  List<FlSpot> _getSpots(List<Shot> shots) {
+    return shots
+        .asMap()
+        .entries
+        .map((e) => FlSpot(e.key.toDouble(), e.value.grindSize))
+        .toList();
+  }
+
+  void _confirmDelete(BuildContext context, CoffeeProvider provider, Bean bean) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Delete Bean?'),
+        content: const Text('This will delete the bean and all its shots.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              provider.deleteBean(bean.id);
+              Navigator.pop(ctx);
+              Navigator.pop(context);
+            },
+            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
     );
   }
 }
