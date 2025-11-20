@@ -83,28 +83,15 @@ class _AddShotScreenState extends State<AddShotScreen> {
       appBar: AppBar(
         title: const Text('Dial-In'),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          children: [
-            // Grind Size Dial
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(24),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
+      body: Column(
+        children: [
+          // Expanded Dial Area (Centered)
+          Expanded(
+            child: Center(
               child: AnalogDial(
                 value: _grindSize,
                 min: 0,
-                max: 30, // Configurable range as requested? (Hardcoded for now, could be dynamic)
+                max: 30,
                 label: 'Grind Size',
                 onChanged: (val) {
                   setState(() {
@@ -113,126 +100,116 @@ class _AddShotScreenState extends State<AddShotScreen> {
                 },
               ),
             ),
-            const SizedBox(height: 24),
+          ),
 
-            // Dose Inputs
-            Row(
+          // Bottom Section (Inputs + Timer + Save)
+          Container(
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surface,
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
+              border: Border(top: BorderSide(color: Colors.white.withOpacity(0.1))),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Expanded(
-                  child: _buildNumberInput(
-                    context,
-                    label: 'Dose In (g)',
-                    controller: _doseInController,
-                  ),
+                // Timer Row
+                Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: Colors.white.withOpacity(0.05)),
+                        ),
+                        child: Column(
+                          children: [
+                            Text(
+                              _formatDuration(_duration),
+                              style: GoogleFonts.robotoMono(
+                                fontSize: 32,
+                                fontWeight: FontWeight.bold,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            GestureDetector(
+                              onTap: _toggleTimer,
+                              child: Text(
+                                _isTimerRunning ? 'STOP' : 'START',
+                                style: TextStyle(
+                                  color: _isTimerRunning ? Colors.red : Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 1.5,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    // Dose Inputs (Stacked or Row?)
+                    Expanded(
+                      child: Column(
+                        children: [
+                          _buildCompactInput(context, 'IN', _doseInController),
+                          const SizedBox(height: 12),
+                          _buildCompactInput(context, 'OUT', _doseOutController),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: _buildNumberInput(
-                    context,
-                    label: 'Yield (g)',
-                    controller: _doseOutController,
+                const SizedBox(height: 24),
+
+                // Save Button
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: _saveShot,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      foregroundColor: Colors.black,
+                      padding: const EdgeInsets.symmetric(vertical: 20),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                    ),
+                    child: const Text('SAVE SHOT', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, letterSpacing: 1.2)),
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 24),
-
-            // Timer
-            Container(
-              padding: const EdgeInsets.all(32),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(24),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: Column(
-                children: [
-                  Text(
-                    _formatDuration(_duration),
-                    style: GoogleFonts.robotoMono(
-                      fontSize: 48,
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: _toggleTimer,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: _isTimerRunning ? Colors.red : Theme.of(context).colorScheme.primary,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-                    ),
-                    child: Text(_isTimerRunning ? 'STOP TIMER' : 'START TIMER'),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 24),
-
-            // Update Preferred Toggle
-            SwitchListTile(
-              title: const Text('Update Preferred Grind'),
-              value: _updatePreferred,
-              onChanged: (val) => setState(() => _updatePreferred = val),
-              contentPadding: EdgeInsets.zero,
-            ),
-            const SizedBox(height: 24),
-
-            // Save Button
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: _saveShot,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 20),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                ),
-                child: const Text('Save Shot', style: TextStyle(fontSize: 18)),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildNumberInput(BuildContext context,
-      {required String label, required TextEditingController controller}) {
+  Widget _buildCompactInput(BuildContext context, String label, TextEditingController controller) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        color: Colors.black.withOpacity(0.2),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.white.withOpacity(0.05)),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
         children: [
-          Text(label, style: Theme.of(context).textTheme.bodySmall),
-          TextField(
-            controller: controller,
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            style: Theme.of(context).textTheme.titleLarge,
-            decoration: const InputDecoration(
-              border: InputBorder.none,
-              isDense: true,
-              contentPadding: EdgeInsets.symmetric(vertical: 8),
+          Text(label, style: TextStyle(color: Colors.grey[600], fontSize: 12, fontWeight: FontWeight.bold)),
+          const SizedBox(width: 12),
+          Expanded(
+            child: TextField(
+              controller: controller,
+              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.white),
+              textAlign: TextAlign.end,
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                isDense: true,
+                contentPadding: EdgeInsets.zero,
+              ),
             ),
           ),
         ],

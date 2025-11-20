@@ -22,59 +22,60 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           useMaterial3: true,
-          scaffoldBackgroundColor: const Color(0xFFF5F5F5), // Light Grey
+          scaffoldBackgroundColor: const Color(0xFF000000), // Black
           colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color(0xFF212121), // Dark Grey/Black
-            primary: const Color(0xFF212121),
-            secondary: const Color(0xFF757575), // Grey
-            surface: const Color(0xFFFFFFFF), // White
-            onPrimary: const Color(0xFFFFFFFF),
-            onSurface: const Color(0xFF212121),
+            seedColor: const Color(0xFFFF9F0A), // Technical Orange
+            brightness: Brightness.dark,
+            primary: const Color(0xFFFF9F0A),
+            secondary: const Color(0xFF3A3A3C), // Dark Grey for elements
+            surface: const Color(0xFF1C1C1E), // Slightly lighter grey for cards
+            onPrimary: const Color(0xFF000000),
+            onSurface: const Color(0xFFFFFFFF),
           ),
           textTheme: TextTheme(
-            displayLarge: GoogleFonts.playfairDisplay(
+            displayLarge: GoogleFonts.robotoMono(
               fontSize: 32,
               fontWeight: FontWeight.bold,
-              color: const Color(0xFF212121),
+              color: Colors.white,
             ),
-            displayMedium: GoogleFonts.playfairDisplay(
+            displayMedium: GoogleFonts.robotoMono(
               fontSize: 28,
               fontWeight: FontWeight.bold,
-              color: const Color(0xFF212121),
+              color: Colors.white,
             ),
-            titleLarge: GoogleFonts.playfairDisplay(
+            titleLarge: GoogleFonts.robotoMono(
               fontSize: 22,
               fontWeight: FontWeight.w600,
-              color: const Color(0xFF212121),
+              color: Colors.white,
             ),
-            titleMedium: GoogleFonts.lato(
+            titleMedium: GoogleFonts.robotoMono(
               fontSize: 18,
-              fontWeight: FontWeight.w600,
-              color: const Color(0xFF212121),
+              fontWeight: FontWeight.w500,
+              color: Colors.white,
             ),
-            bodyLarge: GoogleFonts.lato(
+            bodyLarge: GoogleFonts.robotoMono(
               fontSize: 16,
-              color: const Color(0xFF212121),
+              color: Colors.white70,
             ),
-            bodyMedium: GoogleFonts.lato(
+            bodyMedium: GoogleFonts.robotoMono(
               fontSize: 14,
-              color: const Color(0xFF212121),
+              color: Colors.white70,
             ),
           ),
           appBarTheme: AppBarTheme(
-            backgroundColor: const Color(0xFFF5F5F5),
-            foregroundColor: const Color(0xFF212121),
+            backgroundColor: const Color(0xFF000000),
+            foregroundColor: Colors.white,
             elevation: 0,
             centerTitle: true,
-            titleTextStyle: GoogleFonts.playfairDisplay(
-              fontSize: 24,
+            titleTextStyle: GoogleFonts.robotoMono(
+              fontSize: 20,
               fontWeight: FontWeight.bold,
-              color: const Color(0xFF212121),
+              color: Colors.white,
             ),
           ),
           floatingActionButtonTheme: const FloatingActionButtonThemeData(
-            backgroundColor: Color(0xFF212121),
-            foregroundColor: Colors.white,
+            backgroundColor: Color(0xFFFF9F0A),
+            foregroundColor: Colors.black,
           ),
         ),
         home: const BeanListScreen(),

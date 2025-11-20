@@ -13,7 +13,7 @@ class AnalogDial extends StatefulWidget {
   const AnalogDial({
     super.key,
     this.min = 0,
-    this.max = 20,
+    this.max = 30,
     required this.value,
     required this.onChanged,
     this.label = '',
@@ -24,119 +24,79 @@ class AnalogDial extends StatefulWidget {
 }
 
 class _AnalogDialState extends State<AnalogDial> {
-  double _currentAngle = 0;
+  late double _currentValue;
 
   @override
   void initState() {
     super.initState();
-    _currentAngle = _valueToAngle(widget.value);
+    _currentValue = widget.value;
   }
 
   @override
   void didUpdateWidget(AnalogDial oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.value != widget.value) {
-      _currentAngle = _valueToAngle(widget.value);
+      _currentValue = widget.value;
     }
   }
 
-  double _valueToAngle(double value) {
-    // Map value (min-max) to angle (-pi*0.8 to pi*0.8)
-    return ((value - widget.min) / (widget.max - widget.min)) * (1.6 * pi) - (0.8 * pi);
-  }
-
-  double _angleToValue(double angle) {
-    // Map angle to value
-    // Clamp angle first
-    final clampedAngle = angle.clamp(-0.8 * pi, 0.8 * pi);
-    return ((clampedAngle + 0.8 * pi) / (1.6 * pi)) * (widget.max - widget.min) + widget.min;
-  }
-
   void _onPanUpdate(DragUpdateDetails details) {
-    final renderBox = context.findRenderObject() as RenderBox;
-    final center = renderBox.size.center(Offset.zero);
-    final position = renderBox.globalToLocal(details.globalPosition);
-    final vector = position - center;
+    // Vertical drag to change value
+    // Sensitivity: 1 pixel = 0.05 units (adjust as needed)
+    final delta = details.delta.dy * -0.05;
     
-    // Calculate angle from vertical up (which is -pi/2 in atan2, but we want 0 to be up)
-    // Actually standard atan2: 0 is right, pi/2 is down, -pi/2 is up, pi/-pi is left.
-    // We want our dial to go from bottom-left to bottom-right.
-    // Let's just use standard angle and map it.
-    
-    double angle = atan2(vector.dy, vector.dx);
-    // Rotate so that -pi/2 (up) is 0? No, let's stick to standard and just clamp.
-    // Our range is -0.8pi (approx -144 deg) to 0.8pi (approx 144 deg).
-    // -pi is left, 0 is right, pi/2 is down.
-    // -0.8pi is bottom-left. 0.8pi is bottom-right.
-    // The gap is at the bottom.
-    
-    // Adjust angle to be continuous across the gap if needed, but simple clamping works for now
-    // if we assume the user doesn't cross the bottom gap.
-    
-    // Basic interaction: just track delta?
-    // Let's try absolute angle tracking.
-    
-    // Convert standard angle to our range.
-    // If angle is in the bottom gap (e.g. > 0.8pi or < -0.8pi), we clamp to nearest.
-    
-    // Problem: atan2 returns -pi to pi.
-    // 0.8pi is roughly 2.5. -0.8pi is -2.5.
-    // The gap is between 2.5 and 3.14 and -3.14 and -2.5.
-    
-    if (angle > 0.8 * pi) angle = 0.8 * pi;
-    if (angle < -0.8 * pi) angle = -0.8 * pi;
+    double newValue = _currentValue + delta;
+    newValue = newValue.clamp(widget.min, widget.max);
 
-    final newValue = _angleToValue(angle);
-    
-    // Only trigger haptics if value changed significantly (e.g. crossed a tick)
-    // Or just trigger on every update but throttle?
-    // Let's trigger if the integer part changes or every 0.5 step?
-    // For smooth feel, maybe just selectionClick on every move is too much.
-    // Let's try triggering every time the value crosses a 0.5 threshold.
-    
-    if ((newValue * 2).floor() != (widget.value * 2).floor()) {
+    // Haptics on integer change
+    if (newValue.floor() != _currentValue.floor()) {
       HapticFeedback.selectionClick();
     }
 
     setState(() {
-      _currentAngle = angle;
+      _currentValue = newValue;
       widget.onChanged(newValue);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        if (widget.label.isNotEmpty)
-          Text(
-            widget.label,
-            style: GoogleFonts.lato(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.primary,
-            ),
-          ),
-        const SizedBox(height: 10),
+        // The Dial (Left side)
         GestureDetector(
           onPanUpdate: _onPanUpdate,
-          child: CustomPaint(
-            size: const Size(200, 200),
-            painter: _DialPainter(
-              angle: _currentAngle,
-              color: Theme.of(context).colorScheme.primary,
-              accentColor: Theme.of(context).colorScheme.secondary,
+          child: SizedBox(
+            width: 150,
+            height: 300,
+            child: CustomPaint(
+              painter: _RadioTunerPainter(
+                value: _currentValue,
+                min: widget.min,
+                max: widget.max,
+                color: Theme.of(context).colorScheme.onSurface,
+                accentColor: Theme.of(context).colorScheme.primary,
+              ),
             ),
           ),
         ),
-        const SizedBox(height: 10),
-        Text(
-          widget.value.toStringAsFixed(1),
-          style: GoogleFonts.playfairDisplay(
-            fontSize: 32,
-            fontWeight: FontWeight.bold,
-            color: Theme.of(context).colorScheme.primary,
+        const SizedBox(width: 20),
+        // The Readout (Right side)
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+          decoration: BoxDecoration(
+            color: const Color(0xFF1C1C1E), // Dark surface
+            borderRadius: BorderRadius.circular(40),
+            border: Border.all(color: Colors.white.withOpacity(0.1)),
+          ),
+          child: Text(
+            _currentValue.toStringAsFixed(1),
+            style: GoogleFonts.robotoMono(
+              fontSize: 56,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
           ),
         ),
       ],
@@ -144,85 +104,149 @@ class _AnalogDialState extends State<AnalogDial> {
   }
 }
 
-class _DialPainter extends CustomPainter {
-  final double angle;
+class _RadioTunerPainter extends CustomPainter {
+  final double value;
+  final double min;
+  final double max;
   final Color color;
   final Color accentColor;
 
-  _DialPainter({required this.angle, required this.color, required this.accentColor});
+  _RadioTunerPainter({
+    required this.value,
+    required this.min,
+    required this.max,
+    required this.color,
+    required this.accentColor,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
-    final center = size.center(Offset.zero);
-    final radius = size.width / 2;
-    final strokeWidth = 4.0;
+    final centerY = size.height / 2;
+    final centerX = size.width; // Right edge of the dial area is the "center" of the arc
+    
+    // Arc parameters
+    final radius = size.height * 1.2; // Large radius for subtle curve
+    final arcCenter = Offset(centerX + radius - 40, centerY); // Center of the circle forming the arc
 
-    // Draw ticks
     final tickPaint = Paint()
       ..color = color.withOpacity(0.3)
       ..strokeWidth = 2
       ..strokeCap = StrokeCap.round;
 
     final activeTickPaint = Paint()
-      ..color = accentColor
-      ..strokeWidth = 3
-      ..strokeCap = StrokeCap.round;
-
-    const totalTicks = 40;
-    const startAngle = -0.8 * pi;
-    const endAngle = 0.8 * pi;
-    const angleRange = endAngle - startAngle;
-
-    for (int i = 0; i <= totalTicks; i++) {
-      final tickAngle = startAngle + (angleRange / totalTicks) * i;
-      final isPast = tickAngle <= angle;
-      
-      final innerRadius = radius - 15;
-      final outerRadius = radius;
-      
-      final p1 = Offset(
-        center.dx + innerRadius * cos(tickAngle),
-        center.dy + innerRadius * sin(tickAngle),
-      );
-      final p2 = Offset(
-        center.dx + outerRadius * cos(tickAngle),
-        center.dy + outerRadius * sin(tickAngle),
-      );
-
-      canvas.drawLine(p1, p2, isPast ? activeTickPaint : tickPaint);
-    }
-
-    // Draw Knob Shadow
-    final knobRadius = radius - 30;
-    final shadowPaint = Paint()
-      ..color = Colors.black.withOpacity(0.2)
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4);
-    
-    canvas.drawCircle(center + const Offset(0, 2), knobRadius, shadowPaint);
-
-    // Draw Knob
-    final knobPaint = Paint()
-      ..color = color
-      ..style = PaintingStyle.fill;
-
-    canvas.drawCircle(center, knobRadius, knobPaint);
-
-    // Draw Indicator
-    final indicatorPaint = Paint()
       ..color = Colors.white
-      ..strokeWidth = 4
+      ..strokeWidth = 2
       ..strokeCap = StrokeCap.round;
 
-    final indicatorPos = Offset(
-      center.dx + (knobRadius - 10) * cos(angle),
-      center.dy + (knobRadius - 10) * sin(angle),
+    final textPainter = TextPainter(
+      textDirection: TextDirection.ltr,
+      textAlign: TextAlign.right,
     );
 
-    canvas.drawLine(center, indicatorPos, indicatorPaint);
+    // How many units visible?
+    const visibleRange = 6.0; // +/- 3 units
+    final startVal = (value - visibleRange).floorToDouble();
+    final endVal = (value + visibleRange).ceilToDouble();
+
+    for (double i = startVal; i <= endVal; i += 0.2) { // Ticks every 0.2
+      if (i < min || i > max) continue;
+
+      final diff = i - value; // Distance from center
+      // Map diff to Y position
+      // 1 unit = 40 pixels
+      final yOffset = diff * 40;
+      final yPos = centerY + yOffset;
+
+      // Calculate X based on arc
+      // Circle equation: (x - cx)^2 + (y - cy)^2 = r^2
+      // x = cx - sqrt(r^2 - (y - cy)^2)
+      final dy = yPos - arcCenter.dy;
+      // If dy is too large, we are out of circle, skip
+      if (dy.abs() > radius) continue;
+      
+      final dx = arcCenter.dx - sqrt(radius * radius - dy * dy);
+
+      // Opacity fade at edges
+      final opacity = (1.0 - (diff.abs() / visibleRange)).clamp(0.0, 1.0);
+      if (opacity <= 0) continue;
+
+      final isMajor = (i * 10).round() % 10 == 0; // Integer values
+      final tickLength = isMajor ? 30.0 : 15.0;
+      
+      final paint = isMajor ? activeTickPaint : tickPaint;
+      paint.color = paint.color.withOpacity(opacity * (isMajor ? 1.0 : 0.5));
+
+      canvas.drawLine(
+        Offset(dx, yPos),
+        Offset(dx - tickLength, yPos),
+        paint,
+      );
+
+      // Draw numbers for major ticks
+      if (isMajor) {
+        textPainter.text = TextSpan(
+          text: i.toInt().toString(),
+          style: GoogleFonts.robotoMono(
+            fontSize: 14,
+            color: color.withOpacity(opacity * 0.7),
+          ),
+        );
+        textPainter.layout();
+        textPainter.paint(
+          canvas,
+          Offset(dx - tickLength - textPainter.width - 8, yPos - textPainter.height / 2),
+        );
+      }
+    }
+
+    // Draw Center Indicator (The "Needle")
+    // In the image, it's a line and a highlight
+    final indicatorPaint = Paint()
+      ..color = accentColor
+      ..strokeWidth = 2
+      ..style = PaintingStyle.stroke;
+
+    // Draw a "lens" or box around the center?
+    // Image has a box around the ticks on the left
+    final boxHeight = 60.0;
+    final boxWidth = 80.0;
+    final boxRect = Rect.fromCenter(
+      center: Offset(size.width - boxWidth/2, centerY),
+      width: boxWidth,
+      height: boxHeight,
+    );
+
+    // Draw selection box styling
+    final boxPaint = Paint()
+      ..color = Colors.white.withOpacity(0.05)
+      ..style = PaintingStyle.fill;
+    
+    final boxBorderPaint = Paint()
+      ..color = Colors.white.withOpacity(0.2)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1;
+
+    // Draw curved box matching the arc? Hard. Let's do simple rounded rect for now.
+    // Actually, let's just draw the "Center Line"
+    
+    canvas.drawLine(
+      Offset(size.width - 60, centerY),
+      Offset(size.width, centerY),
+      Paint()..color = accentColor ..strokeWidth = 2,
+    );
+    
+    // Small arrow on the left of the line
+    final path = Path()
+      ..moveTo(size.width - 65, centerY)
+      ..lineTo(size.width - 60, centerY - 4)
+      ..lineTo(size.width - 60, centerY + 4)
+      ..close();
+    
+    canvas.drawPath(path, Paint()..color = accentColor ..style = PaintingStyle.fill);
   }
 
   @override
-  bool shouldRepaint(covariant _DialPainter oldDelegate) {
-    return oldDelegate.angle != angle || oldDelegate.color != color;
+  bool shouldRepaint(covariant _RadioTunerPainter oldDelegate) {
+    return oldDelegate.value != value || oldDelegate.color != color;
   }
 }

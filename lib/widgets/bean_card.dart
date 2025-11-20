@@ -14,15 +14,9 @@ class BeanCard extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.only(bottom: 16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
+          border: Border.all(color: Colors.white.withOpacity(0.1)),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -30,9 +24,9 @@ class BeanCard extends StatelessWidget {
             // Image / Placeholder Area
             Container(
               height: 120,
-              decoration: const BoxDecoration(
-                color: Color(0xFFEAE8DC), // Light grey/beige for image bg
-                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.05),
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
               ),
               child: Stack(
                 children: [
@@ -40,7 +34,7 @@ class BeanCard extends StatelessWidget {
                     child: Icon(
                       Icons.coffee,
                       size: 48,
-                      color: Theme.of(context).colorScheme.primary.withOpacity(0.4),
+                      color: Colors.white.withOpacity(0.2),
                     ),
                   ),
                   Positioned(
@@ -48,14 +42,15 @@ class BeanCard extends StatelessWidget {
                     right: 12,
                     child: Container(
                       padding: const EdgeInsets.all(8),
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.5),
                         shape: BoxShape.circle,
+                        border: Border.all(color: Theme.of(context).colorScheme.primary),
                       ),
                       child: Icon(
                         Icons.star,
                         size: 16,
-                        color: Theme.of(context).colorScheme.secondary,
+                        color: Theme.of(context).colorScheme.primary,
                       ),
                     ),
                   ),

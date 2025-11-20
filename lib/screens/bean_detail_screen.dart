@@ -43,15 +43,9 @@ class BeanDetailScreen extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Theme.of(context).colorScheme.surface,
                     borderRadius: BorderRadius.circular(24),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
+                    border: Border.all(color: Colors.white.withOpacity(0.1)),
                   ),
                   child: Column(
                     children: [
@@ -59,13 +53,13 @@ class BeanDetailScreen extends StatelessWidget {
                         height: 100,
                         width: 80,
                         decoration: BoxDecoration(
-                          color: const Color(0xFFEAE8DC),
+                          color: Colors.white.withOpacity(0.05),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Icon(
                           Icons.coffee,
                           size: 40,
-                          color: Theme.of(context).colorScheme.primary.withOpacity(0.4),
+                          color: Colors.white.withOpacity(0.5),
                         ),
                       ),
                       const SizedBox(height: 16),
@@ -79,7 +73,7 @@ class BeanDetailScreen extends StatelessWidget {
                         Text(
                           bean.notes,
                           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                color: Colors.grey[600],
+                                color: Colors.grey[400],
                               ),
                           textAlign: TextAlign.center,
                         ),
@@ -95,15 +89,9 @@ class BeanDetailScreen extends StatelessWidget {
                     height: 250,
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.surface,
                       borderRadius: BorderRadius.circular(24),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.05),
-                          blurRadius: 10,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
+                      border: Border.all(color: Colors.white.withOpacity(0.1)),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -116,20 +104,39 @@ class BeanDetailScreen extends StatelessWidget {
                         Expanded(
                           child: LineChart(
                             LineChartData(
-                              gridData: const FlGridData(show: false),
+                              gridData: FlGridData(
+                                show: true,
+                                drawVerticalLine: false,
+                                getDrawingHorizontalLine: (value) {
+                                  return FlLine(
+                                    color: Colors.white.withOpacity(0.05),
+                                    strokeWidth: 1,
+                                  );
+                                },
+                              ),
                               titlesData: const FlTitlesData(show: false),
                               borderData: FlBorderData(show: false),
                               lineBarsData: [
                                 LineChartBarData(
                                   spots: _getSpots(bean.shots),
                                   isCurved: true,
-                                  color: Theme.of(context).colorScheme.secondary,
+                                  color: Theme.of(context).colorScheme.primary,
                                   barWidth: 3,
                                   isStrokeCapRound: true,
-                                  dotData: const FlDotData(show: true),
+                                  dotData: FlDotData(
+                                    show: true,
+                                    getDotPainter: (spot, percent, barData, index) {
+                                      return FlDotCirclePainter(
+                                        radius: 4,
+                                        color: Theme.of(context).colorScheme.primary,
+                                        strokeWidth: 2,
+                                        strokeColor: Colors.black,
+                                      );
+                                    },
+                                  ),
                                   belowBarData: BarAreaData(
                                     show: true,
-                                    color: Theme.of(context).colorScheme.secondary.withOpacity(0.1),
+                                    color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
                                   ),
                                 ),
                               ],
@@ -151,14 +158,14 @@ class BeanDetailScreen extends StatelessWidget {
                       margin: const EdgeInsets.only(bottom: 12),
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: Theme.of(context).colorScheme.surface,
                         borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: Colors.grey.withOpacity(0.1)),
+                        border: Border.all(color: Colors.white.withOpacity(0.05)),
                       ),
                       child: Row(
                         children: [
                           CircleAvatar(
-                            backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                            backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.2),
                             child: Text(
                               shot.grindSize.toString(),
                               style: TextStyle(
@@ -178,7 +185,7 @@ class BeanDetailScreen extends StatelessWidget {
                                 ),
                                 Text(
                                   '${shot.duration}s • ${DateFormat.MMMd().format(shot.timestamp)}',
-                                  style: Theme.of(context).textTheme.bodySmall,
+                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey),
                                 ),
                               ],
                             ),
