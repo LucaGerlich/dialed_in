@@ -27,8 +27,6 @@ flutter run
 flutter build apk --release
 ```
 
-The project targets Material 3 with a dark theme and ships with web and desktop support, so you can iterate on mobile and desktop targets with the same codebase.
-
 ### Tests
 
 ```bash
