@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "dialed_in" "\0"
+            VALUE "CompanyName", "Luca Gerlich" "\0"
+            VALUE "FileDescription", "Dialed In" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "dialed_in" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2025 com.example. All rights reserved." "\0"
+            VALUE "InternalName", "Dialed In" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2024 Luca Gerlich. All rights reserved." "\0"
             VALUE "OriginalFilename", "dialed_in.exe" "\0"
-            VALUE "ProductName", "dialed_in" "\0"
+            VALUE "ProductName", "Dialed In" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END
