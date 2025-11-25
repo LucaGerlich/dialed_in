@@ -10,16 +10,21 @@ import 'add_bean_screen.dart';
 import 'share_shot_dialog.dart';
 import 'shot_detail_screen.dart';
 
-class BeanDetailScreen extends StatelessWidget {
+class BeanDetailScreen extends StatefulWidget {
   final String beanId;
 
   const BeanDetailScreen({super.key, required this.beanId});
 
   @override
+  State<BeanDetailScreen> createState() => _BeanDetailScreenState();
+}
+
+class _BeanDetailScreenState extends State<BeanDetailScreen> {
+  @override
   Widget build(BuildContext context) {
     return Consumer<CoffeeProvider>(
       builder: (context, provider, child) {
-        final bean = provider.beans.firstWhere((b) => b.id == beanId);
+        final bean = provider.beans.firstWhere((b) => b.id == widget.beanId);
         final shots = bean.shots;
 
         // Calculate Stats
@@ -51,7 +56,7 @@ class BeanDetailScreen extends StatelessWidget {
             ],
           ),
           body: SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.fromLTRB(16, 16, 16, 16 + 56 + 16 + MediaQuery.of(context).padding.bottom), // 16 for standard, 56 for FAB height, 16 for margin
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -207,34 +212,13 @@ class BeanDetailScreen extends StatelessWidget {
                                 DateFormat('MMM d, HH:mm').format(shot.timestamp),
                                 style: GoogleFonts.robotoMono(color: Colors.grey, fontSize: 12),
                               ),
-                              Row(
-                                children: [
-                                  IconButton(
-                                    icon: const Icon(Icons.ios_share, size: 18, color: Colors.grey),
-                                    padding: EdgeInsets.zero,
-                                    constraints: const BoxConstraints(),
-                                    onPressed: () {
-                                      showDialog(
-                                        context: context,
-                                        builder: (context) => ShareShotDialog(
-                                          shot: shot,
-                                          bean: bean,
-                                          machineName: machine.name != 'Unknown' ? machine.name : null,
-                                          grinderName: grinder.name != 'Unknown' ? grinder.name : null,
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                  const SizedBox(width: 12),
-                                  Text(
-                                    '${shot.grindSize.toStringAsFixed(1)}',
-                                    style: GoogleFonts.robotoMono(
-                                      color: Theme.of(context).colorScheme.primary,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                ],
+                              Text(
+                                '${shot.grindSize.toStringAsFixed(1)}',
+                                style: GoogleFonts.robotoMono(
+                                  color: Theme.of(context).colorScheme.primary,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
                               ),
                             ],
                           ),
@@ -261,26 +245,20 @@ class BeanDetailScreen extends StatelessWidget {
               ],
             ),
           ),
-          floatingActionButton: Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(horizontal: 32),
-            child: FloatingActionButton.extended(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => AddShotScreen(beanId: bean.id),
-                  ),
-                );
-              },
-              label: const Text('Log New Shot'),
-              icon: const Icon(Icons.add),
-              backgroundColor: Theme.of(context).colorScheme.primary,
-              foregroundColor: Theme.of(context).colorScheme.onPrimary,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-            ),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AddShotScreen(beanId: widget.beanId),
+                ),
+              );
+            },
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            foregroundColor: Theme.of(context).colorScheme.onPrimary,
+            child: const Icon(Icons.add),
           ),
-          floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+          floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
         );
       },
     );

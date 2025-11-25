@@ -220,7 +220,7 @@ class _RadioTunerPainter extends CustomPainter {
       // Draw numbers for Major ticks
       if (isMajor) {
         textPainter.text = TextSpan(
-          text: roundedI.toStringAsFixed(step % 1 == 0 ? 0 : 1),
+          text: roundedI.toStringAsFixed((step - step.roundToDouble()).abs() < 0.0001 ? 0 : 1),
           style: GoogleFonts.robotoMono(
             fontSize: 14,
             color: color.withOpacity(opacity * 0.7),

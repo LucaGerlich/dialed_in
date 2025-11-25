@@ -18,6 +18,7 @@ class AddShotScreen extends StatefulWidget {
 class _AddShotScreenState extends State<AddShotScreen> {
   final _doseInController = TextEditingController(text: '18.0');
   final _doseOutController = TextEditingController(text: '36.0');
+  final _durationController = TextEditingController(text: '00:00.0'); // Initialize with milliseconds
   
   // Advanced Params Controllers
   final _rpmController = TextEditingController();
@@ -26,7 +27,7 @@ class _AddShotScreenState extends State<AddShotScreen> {
   final _preInfusionController = TextEditingController();
 
   double _grindSize = 10.0;
-  int _duration = 0;
+  int _durationMs = 0; // Duration in milliseconds
   Timer? _timer;
   bool _isTimerRunning = false;
   bool _updatePreferred = false;
@@ -42,6 +43,7 @@ class _AddShotScreenState extends State<AddShotScreen> {
   void dispose() {
     _doseInController.dispose();
     _doseOutController.dispose();
+    _durationController.dispose();
     _rpmController.dispose();
     _pressureController.dispose();
     _tempController.dispose();
@@ -59,26 +61,88 @@ class _AddShotScreenState extends State<AddShotScreen> {
     } else {
       setState(() {
         _isTimerRunning = true;
-        _duration = 0;
+        _durationMs = 0; // Reset duration
+        _durationController.text = _formatDuration(_durationMs);
       });
-      _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      _timer = Timer.periodic(const Duration(milliseconds: 100), (timer) { // Update faster
         setState(() {
-          _duration++;
+          _durationMs += 100; // Increment by 100ms
+          _durationController.text = _formatDuration(_durationMs);
         });
       });
     }
+  }
+
+  void _onDurationChanged(String value) {
+    if (_isTimerRunning) return; // Don't parse while timer is running
+    
+    int newDurationMs = 0;
+    try {
+      if (value.contains(':')) {
+        final parts = value.split(':');
+        int minutes = 0;
+        int seconds = 0;
+        int milliseconds = 0;
+
+        if (parts.length >= 2) {
+          minutes = int.tryParse(parts[0]) ?? 0;
+          
+          if (parts[1].contains('.')) {
+            final secParts = parts[1].split('.');
+            seconds = int.tryParse(secParts[0]) ?? 0;
+            milliseconds = int.tryParse(secParts[1].padRight(3, '0')) ?? 0;
+            // Only take first 3 digits for ms
+            if (milliseconds > 999) milliseconds = int.parse(milliseconds.toString().substring(0,3));
+
+          } else {
+            seconds = int.tryParse(parts[1]) ?? 0;
+          }
+        } else if (parts.length == 1 && value.contains('.')) { // e.g., "30.5"
+             final secParts = parts[0].split('.');
+            seconds = int.tryParse(secParts[0]) ?? 0;
+            milliseconds = int.tryParse(secParts[1].padRight(3, '0')) ?? 0;
+            if (milliseconds > 999) milliseconds = int.parse(milliseconds.toString().substring(0,3));
+        }
+
+
+        newDurationMs = minutes * 60 * 1000 + seconds * 1000 + milliseconds;
+
+      } else if (value.contains('.')) { // e.g., "30.5" or ".5"
+        final secParts = value.split('.');
+        int seconds = int.tryParse(secParts[0]) ?? 0;
+        int milliseconds = int.tryParse(secParts[1].padRight(3, '0')) ?? 0;
+        if (milliseconds > 999) milliseconds = int.parse(milliseconds.toString().substring(0,3));
+        newDurationMs = seconds * 1000 + milliseconds;
+
+      } else {
+        newDurationMs = (int.tryParse(value) ?? 0) * 1000;
+      }
+    } catch (e) {
+      // Ignore parsing errors for now, keep old duration
+      newDurationMs = _durationMs;
+    }
+    
+    setState(() {
+      _durationMs = newDurationMs;
+      // Ensure the displayed text matches the parsed duration (e.g. if user types 30, it becomes 00:30.0)
+      _durationController.text = _formatDuration(_durationMs);
+      // Move cursor to end
+      _durationController.selection = TextSelection.fromPosition(
+        TextPosition(offset: _durationController.text.length)
+      );
+    });
   }
 
   void _saveShot() {
     final doseIn = double.tryParse(_doseInController.text) ?? 0;
     final doseOut = double.tryParse(_doseOutController.text) ?? 0;
 
-    if (doseIn > 0 && doseOut > 0 && _duration > 0) {
+    if (doseIn > 0 && doseOut > 0 && _durationMs > 0) {
       final shot = Shot(
         grindSize: _grindSize,
         doseIn: doseIn,
         doseOut: doseOut,
-        duration: _duration,
+        duration: _durationMs ~/ 1000, // Convert back to seconds for Shot model
         timestamp: DateTime.now(),
         grinderRpm: double.tryParse(_rpmController.text),
         pressure: double.tryParse(_pressureController.text),
@@ -157,12 +221,24 @@ class _AddShotScreenState extends State<AddShotScreen> {
                           ),
                           child: Column(
                             children: [
-                              Text(
-                                _formatDuration(_duration),
-                                style: GoogleFonts.robotoMono(
-                                  fontSize: 32,
-                                  fontWeight: FontWeight.bold,
-                                  color: Theme.of(context).colorScheme.primary,
+                              SizedBox(
+                                width: 180,
+                                child: TextField(
+                                  controller: _durationController,
+                                  enabled: !_isTimerRunning,
+                                  onChanged: _onDurationChanged,
+                                  textAlign: TextAlign.center,
+                                  style: GoogleFonts.robotoMono(
+                                    fontSize: 32,
+                                    fontWeight: FontWeight.bold,
+                                    color: Theme.of(context).colorScheme.primary,
+                                  ),
+                                  decoration: const InputDecoration(
+                                    border: InputBorder.none,
+                                    isDense: true,
+                                    contentPadding: EdgeInsets.zero,
+                                  ),
+                                  keyboardType: TextInputType.number,
                                 ),
                               ),
                               const SizedBox(height: 4),
@@ -398,10 +474,12 @@ class _AddShotScreenState extends State<AddShotScreen> {
     );
   }
 
-  String _formatDuration(int seconds) {
+  String _formatDuration(int milliseconds) {
+    final seconds = milliseconds ~/ 1000;
+    final ms = (milliseconds % 1000) ~/ 100; // Get first digit of milliseconds
     final minutes = seconds ~/ 60;
     final remainingSeconds = seconds % 60;
-    return '${minutes.toString().padLeft(2, '0')}:${remainingSeconds.toString().padLeft(2, '0')}';
+    return '${minutes.toString().padLeft(2, '0')}:${remainingSeconds.toString().padLeft(2, '0')}.${ms.toString()}';
   }
 }
 
