@@ -24,9 +24,14 @@ class GearSettingsScreen extends StatelessWidget {
                     machine.name,
                     () => provider.deleteMachine(machine.id),
                   )),
-              _buildAddButton(context, 'Add Machine', (name) {
-                provider.addMachine(CoffeeMachine(name: name));
-              }),
+              _buildAddButton(context, 'Add Machine', (data) {
+                provider.addMachine(CoffeeMachine(
+                  name: data['name'],
+                  defaultPressure: data['pressure'],
+                  defaultTemperature: data['temp'],
+                  defaultPreInfusionTime: data['preInfusion'],
+                ));
+              }, isMachine: true),
               const SizedBox(height: 32),
               _buildSectionHeader(context, 'Grinders'),
               ...provider.grinders.map((grinder) => _buildGearItem(
@@ -34,9 +39,12 @@ class GearSettingsScreen extends StatelessWidget {
                     grinder.name,
                     () => provider.deleteGrinder(grinder.id),
                   )),
-              _buildAddButton(context, 'Add Grinder', (name) {
-                provider.addGrinder(Grinder(name: name));
-              }),
+              _buildAddButton(context, 'Add Grinder', (data) {
+                provider.addGrinder(Grinder(
+                  name: data['name'],
+                  defaultRpm: data['rpm'],
+                ));
+              }, isMachine: false),
               const SizedBox(height: 32),
               _buildSectionHeader(context, 'Grind Settings'),
               _buildGrindSettings(context, provider),
@@ -86,9 +94,9 @@ class GearSettingsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildAddButton(BuildContext context, String label, Function(String) onAdd) {
+  Widget _buildAddButton(BuildContext context, String label, Function(Map<String, dynamic>) onAdd, {bool isMachine = false}) {
     return OutlinedButton.icon(
-      onPressed: () => _showAddDialog(context, label, onAdd),
+      onPressed: () => _showAddDialog(context, label, onAdd, isMachine: isMachine),
       icon: const Icon(Icons.add),
       label: Text(label),
       style: OutlinedButton.styleFrom(
@@ -99,20 +107,78 @@ class GearSettingsScreen extends StatelessWidget {
     );
   }
 
-  void _showAddDialog(BuildContext context, String title, Function(String) onAdd) {
-    final controller = TextEditingController();
+  void _showAddDialog(BuildContext context, String title, Function(Map<String, dynamic>) onAdd, {required bool isMachine}) {
+    final nameController = TextEditingController();
+    final pressureController = TextEditingController();
+    final tempController = TextEditingController();
+    final preInfusionController = TextEditingController();
+    final rpmController = TextEditingController();
+
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: const Color(0xFF1C1C1E),
         title: Text(title, style: const TextStyle(color: Colors.white)),
-        content: TextField(
-          controller: controller,
-          style: const TextStyle(color: Colors.white),
-          decoration: const InputDecoration(
-            hintText: 'Name',
-            hintStyle: TextStyle(color: Colors.grey),
-            enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey)),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: nameController,
+                style: const TextStyle(color: Colors.white),
+                decoration: const InputDecoration(
+                  labelText: 'Name',
+                  labelStyle: TextStyle(color: Colors.grey),
+                  enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey)),
+                ),
+              ),
+              const SizedBox(height: 16),
+              if (isMachine) ...[
+                TextField(
+                  controller: pressureController,
+                  keyboardType: TextInputType.number,
+                  style: const TextStyle(color: Colors.white),
+                  decoration: const InputDecoration(
+                    labelText: 'Default Pressure (bar)',
+                    labelStyle: TextStyle(color: Colors.grey),
+                    enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey)),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                TextField(
+                  controller: tempController,
+                  keyboardType: TextInputType.number,
+                  style: const TextStyle(color: Colors.white),
+                  decoration: const InputDecoration(
+                    labelText: 'Default Temp (°C)',
+                    labelStyle: TextStyle(color: Colors.grey),
+                    enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey)),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                TextField(
+                  controller: preInfusionController,
+                  keyboardType: TextInputType.number,
+                  style: const TextStyle(color: Colors.white),
+                  decoration: const InputDecoration(
+                    labelText: 'Default Pre-Infusion (s)',
+                    labelStyle: TextStyle(color: Colors.grey),
+                    enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey)),
+                  ),
+                ),
+              ] else ...[
+                 TextField(
+                  controller: rpmController,
+                  keyboardType: TextInputType.number,
+                  style: const TextStyle(color: Colors.white),
+                  decoration: const InputDecoration(
+                    labelText: 'Default RPM',
+                    labelStyle: TextStyle(color: Colors.grey),
+                    enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey)),
+                  ),
+                ),
+              ],
+            ],
           ),
         ),
         actions: [
@@ -122,8 +188,20 @@ class GearSettingsScreen extends StatelessWidget {
           ),
           TextButton(
             onPressed: () {
-              if (controller.text.isNotEmpty) {
-                onAdd(controller.text);
+              if (nameController.text.isNotEmpty) {
+                final data = <String, dynamic>{
+                  'name': nameController.text,
+                };
+                
+                if (isMachine) {
+                  if (pressureController.text.isNotEmpty) data['pressure'] = double.tryParse(pressureController.text);
+                  if (tempController.text.isNotEmpty) data['temp'] = double.tryParse(tempController.text);
+                  if (preInfusionController.text.isNotEmpty) data['preInfusion'] = int.tryParse(preInfusionController.text);
+                } else {
+                  if (rpmController.text.isNotEmpty) data['rpm'] = double.tryParse(rpmController.text);
+                }
+
+                onAdd(data);
                 Navigator.pop(ctx);
               }
             },

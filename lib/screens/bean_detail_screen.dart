@@ -7,6 +7,8 @@ import '../models/models.dart';
 import '../providers/coffee_provider.dart';
 import 'add_shot_screen.dart';
 import 'add_bean_screen.dart';
+import 'share_shot_dialog.dart';
+import 'shot_detail_screen.dart';
 
 class BeanDetailScreen extends StatelessWidget {
   final String beanId;
@@ -43,8 +45,7 @@ class BeanDetailScreen extends StatelessWidget {
               IconButton(
                 icon: const Icon(Icons.delete),
                 onPressed: () {
-                  provider.deleteBean(bean.id);
-                  Navigator.pop(context);
+                  _confirmDelete(context, provider, bean);
                 },
               ),
             ],
@@ -176,50 +177,84 @@ class BeanDetailScreen extends StatelessWidget {
                   final machine = provider.machines.firstWhere((m) => m.id == shot.machineId, orElse: () => CoffeeMachine(name: 'Unknown', id: ''));
                   final grinder = provider.grinders.firstWhere((g) => g.id == shot.grinderId, orElse: () => Grinder(name: 'Unknown', id: ''));
                   
-                  return Container(
-                    margin: const EdgeInsets.only(bottom: 8),
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surface,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.white.withOpacity(0.05)),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              DateFormat('MMM d, HH:mm').format(shot.timestamp),
-                              style: GoogleFonts.robotoMono(color: Colors.grey, fontSize: 12),
-                            ),
-                            Text(
-                              '${shot.grindSize.toStringAsFixed(1)}',
-                              style: GoogleFonts.robotoMono(
-                                color: Theme.of(context).colorScheme.primary,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 8),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('${shot.doseIn}g -> ${shot.doseOut}g', style: const TextStyle(color: Colors.white)),
-                            Text('${shot.duration}s', style: const TextStyle(color: Colors.white)),
-                          ],
-                        ),
-                        if (machine.name != 'Unknown' || grinder.name != 'Unknown') ...[
-                          const SizedBox(height: 8),
-                          Text(
-                            '${machine.name} • ${grinder.name}',
-                            style: GoogleFonts.robotoMono(color: Colors.grey[600], fontSize: 10),
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ShotDetailScreen(
+                            shot: shot,
+                            bean: bean,
                           ),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.only(bottom: 8),
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.surface,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.white.withOpacity(0.05)),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                DateFormat('MMM d, HH:mm').format(shot.timestamp),
+                                style: GoogleFonts.robotoMono(color: Colors.grey, fontSize: 12),
+                              ),
+                              Row(
+                                children: [
+                                  IconButton(
+                                    icon: const Icon(Icons.ios_share, size: 18, color: Colors.grey),
+                                    padding: EdgeInsets.zero,
+                                    constraints: const BoxConstraints(),
+                                    onPressed: () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) => ShareShotDialog(
+                                          shot: shot,
+                                          bean: bean,
+                                          machineName: machine.name != 'Unknown' ? machine.name : null,
+                                          grinderName: grinder.name != 'Unknown' ? grinder.name : null,
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Text(
+                                    '${shot.grindSize.toStringAsFixed(1)}',
+                                    style: GoogleFonts.robotoMono(
+                                      color: Theme.of(context).colorScheme.primary,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('${shot.doseIn}g -> ${shot.doseOut}g', style: const TextStyle(color: Colors.white)),
+                              Text('${shot.duration}s', style: const TextStyle(color: Colors.white)),
+                            ],
+                          ),
+                          if (machine.name != 'Unknown' || grinder.name != 'Unknown') ...[
+                            const SizedBox(height: 8),
+                            Text(
+                              '${machine.name} • ${grinder.name}',
+                              style: GoogleFonts.robotoMono(color: Colors.grey[600], fontSize: 10),
+                            ),
+                          ],
                         ],
-                      ],
+                      ),
                     ),
                   );
                 }),
@@ -249,14 +284,6 @@ class BeanDetailScreen extends StatelessWidget {
         );
       },
     );
-  }
-
-  List<FlSpot> _getSpots(List<Shot> shots) {
-    return shots
-        .asMap()
-        .entries
-        .map((e) => FlSpot(e.key.toDouble(), e.value.grindSize))
-        .toList();
   }
 
   void _confirmDelete(BuildContext context, CoffeeProvider provider, Bean bean) {

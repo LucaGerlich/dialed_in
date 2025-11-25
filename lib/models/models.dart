@@ -3,16 +3,25 @@ import 'package:uuid/uuid.dart';
 class CoffeeMachine {
   final String id;
   final String name;
+  final double? defaultPressure;
+  final double? defaultTemperature;
+  final int? defaultPreInfusionTime;
 
   CoffeeMachine({
     String? id,
     required this.name,
+    this.defaultPressure,
+    this.defaultTemperature,
+    this.defaultPreInfusionTime,
   }) : id = id ?? const Uuid().v4();
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
       'name': name,
+      'defaultPressure': defaultPressure,
+      'defaultTemperature': defaultTemperature,
+      'defaultPreInfusionTime': defaultPreInfusionTime,
     };
   }
 
@@ -20,6 +29,9 @@ class CoffeeMachine {
     return CoffeeMachine(
       id: json['id'],
       name: json['name'],
+      defaultPressure: json['defaultPressure']?.toDouble(),
+      defaultTemperature: json['defaultTemperature']?.toDouble(),
+      defaultPreInfusionTime: json['defaultPreInfusionTime'],
     );
   }
 }
@@ -27,16 +39,19 @@ class CoffeeMachine {
 class Grinder {
   final String id;
   final String name;
+  final double? defaultRpm;
 
   Grinder({
     String? id,
     required this.name,
+    this.defaultRpm,
   }) : id = id ?? const Uuid().v4();
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
       'name': name,
+      'defaultRpm': defaultRpm,
     };
   }
 
@@ -44,6 +59,7 @@ class Grinder {
     return Grinder(
       id: json['id'],
       name: json['name'],
+      defaultRpm: json['defaultRpm']?.toDouble(),
     );
   }
 }

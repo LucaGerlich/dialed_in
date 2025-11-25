@@ -217,7 +217,15 @@ class _AddShotScreenState extends State<AddShotScreen> {
                                   overflow: TextOverflow.ellipsis,
                                 ),
                               )).toList(),
-                              onChanged: (val) => setState(() => _selectedMachineId = val),
+                              onChanged: (val) {
+                                setState(() {
+                                  _selectedMachineId = val;
+                                  final machine = provider.machines.firstWhere((m) => m.id == val);
+                                  if (machine.defaultPressure != null) _pressureController.text = machine.defaultPressure.toString();
+                                  if (machine.defaultTemperature != null) _tempController.text = machine.defaultTemperature.toString();
+                                  if (machine.defaultPreInfusionTime != null) _preInfusionController.text = machine.defaultPreInfusionTime.toString();
+                                });
+                              },
                             ),
                           ),
                         if (provider.machines.isNotEmpty && provider.grinders.isNotEmpty)
@@ -238,7 +246,13 @@ class _AddShotScreenState extends State<AddShotScreen> {
                                   overflow: TextOverflow.ellipsis,
                                 ),
                               )).toList(),
-                              onChanged: (val) => setState(() => _selectedGrinderId = val),
+                              onChanged: (val) {
+                                setState(() {
+                                  _selectedGrinderId = val;
+                                  final grinder = provider.grinders.firstWhere((g) => g.id == val);
+                                  if (grinder.defaultRpm != null) _rpmController.text = grinder.defaultRpm.toString();
+                                });
+                              },
                             ),
                           ),
                       ],

@@ -45,5 +45,9 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>We need permission to save your shot stickers to the gallery.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>We need permission to access the gallery to save stickers.</string>
 </dict>
 </plist>
