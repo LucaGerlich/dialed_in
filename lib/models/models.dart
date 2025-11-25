@@ -156,6 +156,13 @@ class Bean {
   final List<String> flavourTags;
   final DateTime? roastDate;
 
+  // Flavor Profile (0.0 - 10.0)
+  final double acidity;
+  final double body;
+  final double sweetness;
+  final double bitterness;
+  final double aftertaste;
+
   Bean({
     String? id,
     required this.name,
@@ -167,6 +174,11 @@ class Bean {
     this.process = '',
     this.flavourTags = const [],
     this.roastDate,
+    this.acidity = 5.0,
+    this.body = 5.0,
+    this.sweetness = 5.0,
+    this.bitterness = 5.0,
+    this.aftertaste = 5.0,
   })  : id = id ?? const Uuid().v4(),
         shots = shots ?? [];
 
@@ -182,6 +194,11 @@ class Bean {
       'process': process,
       'flavourTags': flavourTags,
       'roastDate': roastDate?.toIso8601String(),
+      'acidity': acidity,
+      'body': body,
+      'sweetness': sweetness,
+      'bitterness': bitterness,
+      'aftertaste': aftertaste,
     };
   }
 
@@ -200,6 +217,11 @@ class Bean {
       process: json['process'] ?? '',
       flavourTags: (json['flavourTags'] as List?)?.map((e) => e.toString()).toList() ?? [],
       roastDate: json['roastDate'] != null ? DateTime.parse(json['roastDate']) : null,
+      acidity: json['acidity']?.toDouble() ?? 5.0,
+      body: json['body']?.toDouble() ?? 5.0,
+      sweetness: json['sweetness']?.toDouble() ?? 5.0,
+      bitterness: json['bitterness']?.toDouble() ?? 5.0,
+      aftertaste: json['aftertaste']?.toDouble() ?? 5.0,
     );
   }
 }

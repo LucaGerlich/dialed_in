@@ -18,10 +18,19 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
   late TextEditingController _originController;
   late TextEditingController _processController;
   late TextEditingController _notesController;
+  final TextEditingController _tagController = TextEditingController();
   
   String _roastLevel = 'Medium';
   final List<String> _roastLevels = ['Light', 'Medium', 'Dark'];
   DateTime? _roastDate;
+  List<String> _flavourTags = [];
+
+  // Flavor Profile Values
+  double _acidity = 5.0;
+  double _body = 5.0;
+  double _sweetness = 5.0;
+  double _bitterness = 5.0;
+  double _aftertaste = 5.0;
 
   @override
   void initState() {
@@ -33,6 +42,12 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
     if (widget.bean != null) {
       _roastLevel = widget.bean!.roastLevel;
       _roastDate = widget.bean!.roastDate;
+      _flavourTags = List.from(widget.bean!.flavourTags);
+      _acidity = widget.bean!.acidity;
+      _body = widget.bean!.body;
+      _sweetness = widget.bean!.sweetness;
+      _bitterness = widget.bean!.bitterness;
+      _aftertaste = widget.bean!.aftertaste;
     }
   }
 
@@ -42,7 +57,23 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
     _originController.dispose();
     _processController.dispose();
     _notesController.dispose();
+    _tagController.dispose();
     super.dispose();
+  }
+
+  void _addTag() {
+    if (_tagController.text.isNotEmpty) {
+      setState(() {
+        _flavourTags.add(_tagController.text.trim());
+        _tagController.clear();
+      });
+    }
+  }
+
+  void _removeTag(String tag) {
+    setState(() {
+      _flavourTags.remove(tag);
+    });
   }
 
   void _saveBean() {
@@ -57,6 +88,12 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
         roastDate: _roastDate,
         shots: widget.bean?.shots, // Keep shots if editing
         preferredGrindSize: widget.bean?.preferredGrindSize ?? 10.0,
+        flavourTags: _flavourTags,
+        acidity: _acidity,
+        body: _body,
+        sweetness: _sweetness,
+        bitterness: _bitterness,
+        aftertaste: _aftertaste,
       );
 
       if (widget.bean != null) {
@@ -186,6 +223,44 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
 
             _buildLabel('NOTES'),
             _buildTextField(_notesController, 'Tasting notes, etc.', maxLines: 3),
+            const SizedBox(height: 24),
+
+            _buildLabel('FLAVOR PROFILE'),
+            _buildSlider('Acidity', _acidity, (val) => setState(() => _acidity = val)),
+            _buildSlider('Body', _body, (val) => setState(() => _body = val)),
+            _buildSlider('Sweetness', _sweetness, (val) => setState(() => _sweetness = val)),
+            _buildSlider('Bitterness', _bitterness, (val) => setState(() => _bitterness = val)),
+            _buildSlider('Aftertaste', _aftertaste, (val) => setState(() => _aftertaste = val)),
+            const SizedBox(height: 24),
+
+            _buildLabel('FLAVOR TAGS'),
+            Row(
+              children: [
+                Expanded(
+                  child: _buildTextField(_tagController, 'Add a tag (e.g. Blueberry)'),
+                ),
+                const SizedBox(width: 8),
+                IconButton.filled(
+                  onPressed: _addTag,
+                  icon: const Icon(Icons.add),
+                  style: IconButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.primary, foregroundColor: Colors.black),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: _flavourTags.map((tag) {
+                return Chip(
+                  label: Text(tag, style: GoogleFonts.robotoMono(fontSize: 12, color: Colors.black)),
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  deleteIcon: const Icon(Icons.close, size: 14, color: Colors.black),
+                  onDeleted: () => _removeTag(tag),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20), side: BorderSide.none),
+                );
+              }).toList(),
+            ),
             const SizedBox(height: 32),
 
             SizedBox(
@@ -204,6 +279,37 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildSlider(String label, double value, ValueChanged<double> onChanged) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(label, style: const TextStyle(color: Colors.white70, fontSize: 12)),
+            Text(value.toStringAsFixed(1), style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold)),
+          ],
+        ),
+        SliderTheme(
+          data: SliderTheme.of(context).copyWith(
+            activeTrackColor: Theme.of(context).colorScheme.primary,
+            inactiveTrackColor: Colors.white.withValues(alpha: 0.1),
+            thumbColor: Colors.white,
+            overlayColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
+          ),
+          child: Slider(
+            value: value,
+            min: 0.0,
+            max: 10.0,
+            divisions: 100,
+            label: value.toStringAsFixed(1),
+            onChanged: onChanged,
+          ),
+        ),
+      ],
     );
   }
 

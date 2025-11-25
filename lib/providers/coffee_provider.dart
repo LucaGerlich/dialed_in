@@ -123,6 +123,11 @@ class CoffeeProvider with ChangeNotifier {
         process: bean.process,
         flavourTags: bean.flavourTags,
         roastDate: bean.roastDate,
+        acidity: bean.acidity,
+        body: bean.body,
+        sweetness: bean.sweetness,
+        bitterness: bean.bitterness,
+        aftertaste: bean.aftertaste,
       );
       
       _saveData();

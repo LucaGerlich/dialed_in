@@ -179,11 +179,11 @@ class _ShareShotDialogState extends State<ShareShotDialog> {
                         decoration: BoxDecoration(
                           color: Colors.grey[800],
                           borderRadius: BorderRadius.circular(12),
-                          image: const DecorationImage(
-                            image: NetworkImage('https://images.unsplash.com/photo-1497935586351-b67a49e012bf?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60'),
-                            fit: BoxFit.cover,
-                            opacity: 0.5,
-                          ),
+                          // image: const DecorationImage(
+                            // image: NetworkImage('https://images.unsplash.com/photo-1497935586351-b67a49e012bf?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60'),
+                            // fit: BoxFit.cover,
+                            // opacity: 0.5,
+                          // ),
                         ),
                       ),
                       Screenshot(
