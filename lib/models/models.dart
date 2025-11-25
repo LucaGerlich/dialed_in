@@ -79,6 +79,7 @@ class Shot {
   final int? preInfusionTime;
   final String? machineId;
   final String? grinderId;
+  final String? water;
   final double? flavourX; // -1 (Sour) to 1 (Bitter)
   final double? flavourY; // -1 (Weak) to 1 (Strong)
 
@@ -95,6 +96,7 @@ class Shot {
     this.preInfusionTime,
     this.machineId,
     this.grinderId,
+    this.water,
     this.flavourX,
     this.flavourY,
   }) : id = id ?? const Uuid().v4();
@@ -113,6 +115,7 @@ class Shot {
       'preInfusionTime': preInfusionTime,
       'machineId': machineId,
       'grinderId': grinderId,
+      'water': water,
       'flavourX': flavourX,
       'flavourY': flavourY,
     };
@@ -126,6 +129,15 @@ class Shot {
       doseOut: json['doseOut'].toDouble(),
       duration: json['duration'],
       timestamp: DateTime.parse(json['timestamp']),
+      grinderRpm: json['grinderRpm']?.toDouble(),
+      pressure: json['pressure']?.toDouble(),
+      temperature: json['temperature']?.toDouble(),
+      preInfusionTime: json['preInfusionTime'],
+      machineId: json['machineId'],
+      grinderId: json['grinderId'],
+      water: json['water'],
+      flavourX: json['flavourX']?.toDouble(),
+      flavourY: json['flavourY']?.toDouble(),
     );
   }
 }

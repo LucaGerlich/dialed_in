@@ -27,7 +27,7 @@ class ShotSticker extends StatelessWidget {
       Shadow(
         offset: const Offset(0, 1),
         blurRadius: 3.0,
-        color: Colors.black.withOpacity(0.8),
+        color: Colors.black.withValues(alpha: 0.8),
       ),
     ];
 
@@ -115,14 +115,14 @@ class ShotSticker extends StatelessWidget {
           const SizedBox(height: 24),
 
           // Gear (Optional)
-          if (machineName != null || grinderName != null) ...[
+          if (machineName != null || grinderName != null || shot.water != null) ...[
              Row(
                children: [
                  const Icon(Icons.coffee_maker, color: Colors.white70, size: 16, shadows: [Shadow(blurRadius: 2, color: Colors.black)]),
                  const SizedBox(width: 8),
                  Expanded(
                    child: Text(
-                     [machineName, grinderName].whereType<String>().join(' • '),
+                     [machineName, grinderName, shot.water].whereType<String>().join(' • '),
                      style: GoogleFonts.robotoMono(
                        fontSize: 12,
                        color: Colors.white70,

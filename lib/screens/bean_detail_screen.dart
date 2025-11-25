@@ -7,7 +7,6 @@ import '../models/models.dart';
 import '../providers/coffee_provider.dart';
 import 'add_shot_screen.dart';
 import 'add_bean_screen.dart';
-import 'share_shot_dialog.dart';
 import 'shot_detail_screen.dart';
 
 class BeanDetailScreen extends StatefulWidget {
@@ -140,7 +139,7 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                               gridData: FlGridData(
                                 show: true,
                                 drawVerticalLine: false,
-                                getDrawingHorizontalLine: (value) => FlLine(color: Colors.white.withOpacity(0.05), strokeWidth: 1),
+                                getDrawingHorizontalLine: (value) => FlLine(color: Colors.white.withValues(alpha:0.05), strokeWidth: 1),
                               ),
                               titlesData: const FlTitlesData(show: false),
                               borderData: FlBorderData(show: false),
@@ -163,7 +162,7 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                                   ),
                                   belowBarData: BarAreaData(
                                     show: true,
-                                    color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                                    color: Theme.of(context).colorScheme.primary.withValues(alpha:0.1),
                                   ),
                                 ),
                               ],
@@ -200,7 +199,7 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                       decoration: BoxDecoration(
                         color: Theme.of(context).colorScheme.surface,
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.white.withOpacity(0.05)),
+                        border: Border.all(color: Colors.white.withValues(alpha:0.05)),
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -213,7 +212,7 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                                 style: GoogleFonts.robotoMono(color: Colors.grey, fontSize: 12),
                               ),
                               Text(
-                                '${shot.grindSize.toStringAsFixed(1)}',
+                                shot.grindSize.toStringAsFixed(1),
                                 style: GoogleFonts.robotoMono(
                                   color: Theme.of(context).colorScheme.primary,
                                   fontWeight: FontWeight.bold,
@@ -296,7 +295,7 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
+        border: Border.all(color: Colors.white.withValues(alpha:0.05)),
       ),
       child: child,
     );
@@ -308,7 +307,7 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
+        border: Border.all(color: Colors.white.withValues(alpha:0.05)),
       ),
       child: Column(
         children: [
@@ -324,9 +323,9 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primary.withOpacity(0.2),
+        color: Theme.of(context).colorScheme.primary.withValues(alpha:0.2),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Theme.of(context).colorScheme.primary.withOpacity(0.5)),
+        border: Border.all(color: Theme.of(context).colorScheme.primary.withValues(alpha:0.5)),
       ),
       child: Text(
         text.toUpperCase(),

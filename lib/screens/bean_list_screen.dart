@@ -73,7 +73,7 @@ class _BeanListScreenState extends State<BeanListScreen> {
                           side: BorderSide(
                             color: isSelected
                                 ? Theme.of(context).colorScheme.primary
-                                : Colors.white.withOpacity(0.1),
+                                : Colors.white.withValues(alpha: 0.1),
                           ),
                         ),
                         showCheckmark: false,

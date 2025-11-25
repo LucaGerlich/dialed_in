@@ -51,6 +51,7 @@ class _ShareShotDialogState extends State<ShareShotDialog> {
         await file.writeAsBytes(imageBytes);
 
         if (mounted) {
+            // ignore: deprecated_member_use
             await Share.shareXFiles(
               [XFile(file.path)], 
               text: 'Check out my shot with ${widget.bean.name}!',

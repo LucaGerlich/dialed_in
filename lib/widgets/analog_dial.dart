@@ -106,7 +106,7 @@ class _AnalogDialState extends State<AnalogDial> {
           decoration: BoxDecoration(
             color: const Color(0xFF1C1C1E), // Dark surface
             borderRadius: BorderRadius.circular(40),
-            border: Border.all(color: Colors.white.withOpacity(0.1)),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
           ),
           child: Text(
             _currentValue.toStringAsFixed(1),
@@ -149,7 +149,7 @@ class _RadioTunerPainter extends CustomPainter {
     final arcCenter = Offset(centerX + radius - 40, centerY);
 
     final tickPaint = Paint()
-      ..color = color.withOpacity(0.3)
+      ..color = color.withValues(alpha: 0.3)
       ..strokeWidth = 2
       ..strokeCap = StrokeCap.round;
 
@@ -209,7 +209,7 @@ class _RadioTunerPainter extends CustomPainter {
       final tickLength = isMajor ? 30.0 : 15.0;
       
       final paint = isMajor ? activeTickPaint : tickPaint;
-      paint.color = paint.color.withOpacity(opacity * (isMajor ? 1.0 : 0.5));
+      paint.color = paint.color.withValues(alpha: opacity * (isMajor ? 1.0 : 0.5));
 
       canvas.drawLine(
         Offset(dx, yPos),
@@ -223,7 +223,7 @@ class _RadioTunerPainter extends CustomPainter {
           text: roundedI.toStringAsFixed((step - step.roundToDouble()).abs() < 0.0001 ? 0 : 1),
           style: GoogleFonts.robotoMono(
             fontSize: 14,
-            color: color.withOpacity(opacity * 0.7),
+            color: color.withValues(alpha: opacity * 0.7),
           ),
         );
         textPainter.layout();

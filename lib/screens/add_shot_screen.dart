@@ -18,26 +18,27 @@ class AddShotScreen extends StatefulWidget {
 class _AddShotScreenState extends State<AddShotScreen> {
   final _doseInController = TextEditingController(text: '18.0');
   final _doseOutController = TextEditingController(text: '36.0');
-  final _durationController = TextEditingController(text: '00:00.0'); // Initialize with milliseconds
+  final _durationController = TextEditingController(text: '00:00.0');
   
   // Advanced Params Controllers
   final _rpmController = TextEditingController();
   final _pressureController = TextEditingController();
   final _tempController = TextEditingController();
   final _preInfusionController = TextEditingController();
+  final _waterController = TextEditingController();
 
   double _grindSize = 10.0;
   int _durationMs = 0; // Duration in milliseconds
   Timer? _timer;
   bool _isTimerRunning = false;
-  bool _updatePreferred = false;
+  final bool _updatePreferred = false; // Fixed: made final as it's never changed
   
   String? _selectedMachineId;
   String? _selectedGrinderId;
   
   // Flavour Coordinates (-1 to 1)
-  double _flavourX = 0; // Sour -> Bitter
-  double _flavourY = 0; // Weak -> Strong
+  double _flavourX = 0;
+  double _flavourY = 0;
 
   @override
   void dispose() {
@@ -48,6 +49,7 @@ class _AddShotScreenState extends State<AddShotScreen> {
     _pressureController.dispose();
     _tempController.dispose();
     _preInfusionController.dispose();
+    _waterController.dispose();
     _timer?.cancel();
     super.dispose();
   }
@@ -150,6 +152,7 @@ class _AddShotScreenState extends State<AddShotScreen> {
         preInfusionTime: int.tryParse(_preInfusionController.text),
         machineId: _selectedMachineId,
         grinderId: _selectedGrinderId,
+        water: _waterController.text.isNotEmpty ? _waterController.text : null,
         flavourX: _flavourX,
         flavourY: _flavourY,
       );
@@ -201,7 +204,7 @@ class _AddShotScreenState extends State<AddShotScreen> {
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.surface,
               borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
-              border: Border(top: BorderSide(color: Colors.white.withOpacity(0.1))),
+              border: Border(top: BorderSide(color: Colors.white.withValues(alpha: 0.1))),
             ),
             child: SingleChildScrollView( // Allow scrolling for extra fields
               child: Column(
@@ -215,9 +218,9 @@ class _AddShotScreenState extends State<AddShotScreen> {
                         child: Container(
                           padding: const EdgeInsets.symmetric(vertical: 12),
                           decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.2),
+                            color: Colors.black.withValues(alpha: 0.2),
                             borderRadius: BorderRadius.circular(16),
-                            border: Border.all(color: Colors.white.withOpacity(0.05)),
+                            border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
                           ),
                           child: Column(
                             children: [
@@ -280,56 +283,64 @@ class _AddShotScreenState extends State<AddShotScreen> {
                       children: [
                         if (provider.machines.isNotEmpty)
                           Expanded(
-                            child: DropdownButtonFormField<String>(
-                              isExpanded: true,
-                              isDense: true,
-                              value: _selectedMachineId,
-                              dropdownColor: const Color(0xFF1C1C1E),
-                              style: const TextStyle(color: Colors.white),
+                            child: InputDecorator(
                               decoration: _inputDecoration('Machine'),
-                              items: provider.machines.map((m) => DropdownMenuItem(
-                                value: m.id,
-                                child: Text(
-                                  m.name,
-                                  overflow: TextOverflow.ellipsis,
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButton<String>(
+                                  isExpanded: true,
+                                  isDense: true,
+                                  value: _selectedMachineId,
+                                  dropdownColor: const Color(0xFF1C1C1E),
+                                  style: const TextStyle(color: Colors.white),
+                                  items: provider.machines.map((m) => DropdownMenuItem(
+                                    value: m.id,
+                                    child: Text(
+                                      m.name,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  )).toList(),
+                                  onChanged: (val) {
+                                    setState(() {
+                                      _selectedMachineId = val;
+                                      final machine = provider.machines.firstWhere((m) => m.id == val);
+                                      if (machine.defaultPressure != null) _pressureController.text = machine.defaultPressure.toString();
+                                      if (machine.defaultTemperature != null) _tempController.text = machine.defaultTemperature.toString();
+                                      if (machine.defaultPreInfusionTime != null) _preInfusionController.text = machine.defaultPreInfusionTime.toString();
+                                    });
+                                  },
                                 ),
-                              )).toList(),
-                              onChanged: (val) {
-                                setState(() {
-                                  _selectedMachineId = val;
-                                  final machine = provider.machines.firstWhere((m) => m.id == val);
-                                  if (machine.defaultPressure != null) _pressureController.text = machine.defaultPressure.toString();
-                                  if (machine.defaultTemperature != null) _tempController.text = machine.defaultTemperature.toString();
-                                  if (machine.defaultPreInfusionTime != null) _preInfusionController.text = machine.defaultPreInfusionTime.toString();
-                                });
-                              },
+                              ),
                             ),
                           ),
                         if (provider.machines.isNotEmpty && provider.grinders.isNotEmpty)
                           const SizedBox(width: 12),
                         if (provider.grinders.isNotEmpty)
                           Expanded(
-                            child: DropdownButtonFormField<String>(
-                              isExpanded: true,
-                              isDense: true,
-                              value: _selectedGrinderId,
-                              dropdownColor: const Color(0xFF1C1C1E),
-                              style: const TextStyle(color: Colors.white),
+                            child: InputDecorator(
                               decoration: _inputDecoration('Grinder'),
-                              items: provider.grinders.map((g) => DropdownMenuItem(
-                                value: g.id,
-                                child: Text(
-                                  g.name,
-                                  overflow: TextOverflow.ellipsis,
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButton<String>(
+                                  isExpanded: true,
+                                  isDense: true,
+                                  value: _selectedGrinderId,
+                                  dropdownColor: const Color(0xFF1C1C1E),
+                                  style: const TextStyle(color: Colors.white),
+                                  items: provider.grinders.map((g) => DropdownMenuItem(
+                                    value: g.id,
+                                    child: Text(
+                                      g.name,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  )).toList(),
+                                  onChanged: (val) {
+                                    setState(() {
+                                      _selectedGrinderId = val;
+                                      final grinder = provider.grinders.firstWhere((g) => g.id == val);
+                                      if (grinder.defaultRpm != null) _rpmController.text = grinder.defaultRpm.toString();
+                                    });
+                                  },
                                 ),
-                              )).toList(),
-                              onChanged: (val) {
-                                setState(() {
-                                  _selectedGrinderId = val;
-                                  final grinder = provider.grinders.firstWhere((g) => g.id == val);
-                                  if (grinder.defaultRpm != null) _rpmController.text = grinder.defaultRpm.toString();
-                                });
-                              },
+                              ),
                             ),
                           ),
                       ],
@@ -357,6 +368,8 @@ class _AddShotScreenState extends State<AddShotScreen> {
                           Expanded(child: _buildCompactInput(context, 'PRE-INF (s)', _preInfusionController)),
                         ],
                       ),
+                      const SizedBox(height: 8),
+                      _buildCompactInput(context, 'WATER', _waterController, keyboardType: TextInputType.text),
                       const SizedBox(height: 12),
                     ],
                   ),
@@ -372,15 +385,14 @@ class _AddShotScreenState extends State<AddShotScreen> {
                           width: 200,
                           height: 200,
                           decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.2),
+                            color: Colors.black.withValues(alpha: 0.2),
                             borderRadius: BorderRadius.circular(16),
-                            border: Border.all(color: Colors.white.withOpacity(0.1)),
+                            border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
                           ),
                           child: GestureDetector(
                             onPanUpdate: (details) {
                               setState(() {
                                 // Map local position to -1 to 1
-                                final renderBox = context.findRenderObject() as RenderBox;
                                 // This is tricky inside a scroll view, let's use relative position
                                 // Assuming 200x200 box
                                 double dx = details.localPosition.dx;
@@ -437,20 +449,20 @@ class _AddShotScreenState extends State<AddShotScreen> {
       labelText: label,
       labelStyle: const TextStyle(color: Colors.grey),
       filled: true,
-      fillColor: Colors.black.withOpacity(0.2),
+      fillColor: Colors.black.withValues(alpha: 0.2),
       isDense: true,
       border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
       contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
     );
   }
 
-  Widget _buildCompactInput(BuildContext context, String label, TextEditingController controller) {
+  Widget _buildCompactInput(BuildContext context, String label, TextEditingController controller, {TextInputType? keyboardType}) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.2),
+        color: Colors.black.withValues(alpha: 0.2),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
       ),
       child: Row(
         children: [
@@ -459,7 +471,7 @@ class _AddShotScreenState extends State<AddShotScreen> {
           Expanded(
             child: TextField(
               controller: controller,
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              keyboardType: keyboardType ?? const TextInputType.numberWithOptions(decimal: true),
               style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.white),
               textAlign: TextAlign.end,
               decoration: const InputDecoration(
@@ -492,9 +504,8 @@ class _FlavourGraphPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final center = size.center(Offset.zero);
     final paint = Paint()
-      ..color = Colors.grey.withOpacity(0.3)
+      ..color = Colors.grey.withValues(alpha: 0.3)
       ..strokeWidth = 1;
 
     // Axes
@@ -514,7 +525,7 @@ class _FlavourGraphPainter extends CustomPainter {
     final py = (-y + 1) / 2 * size.height; // Invert Y
 
     canvas.drawCircle(Offset(px, py), 8, Paint()..color = accentColor);
-    canvas.drawCircle(Offset(px, py), 12, Paint()..color = accentColor.withOpacity(0.3));
+    canvas.drawCircle(Offset(px, py), 12, Paint()..color = accentColor.withValues(alpha: 0.3));
   }
 
   void _drawText(Canvas canvas, String text, Offset offset, TextStyle style) {

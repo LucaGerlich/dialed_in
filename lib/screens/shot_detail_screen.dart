@@ -139,7 +139,7 @@ class ShotDetailScreen extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.surface,
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: Colors.white.withOpacity(0.05)),
+                    border: Border.all(color: Colors.white.withValues(alpha:0.05)),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -182,7 +182,7 @@ class ShotDetailScreen extends StatelessWidget {
                         if (shot.preInfusionTime != null && shot.preInfusionTime! > 0)
                           _buildRowItem('PRE-INFUSION', '${shot.preInfusionTime}s'),
                         if (shot.grinderRpm != null && shot.grinderRpm! > 0)
-                          _buildRowItem('RPM', '${shot.grinderRpm!.toStringAsFixed(0)}'),
+                          _buildRowItem('RPM', shot.grinderRpm!.toStringAsFixed(0)),
                       ],
                     ),
                   ),
@@ -190,7 +190,7 @@ class ShotDetailScreen extends StatelessWidget {
                 ],
 
                 // Gear
-                if (machine.name != 'Unknown' || grinder.name != 'Unknown') ...[
+                if (machine.name != 'Unknown' || grinder.name != 'Unknown' || shot.water != null) ...[
                   Text(
                     'GEAR',
                     style: GoogleFonts.robotoMono(color: Colors.grey, fontSize: 12, fontWeight: FontWeight.bold),
@@ -204,6 +204,8 @@ class ShotDetailScreen extends StatelessWidget {
                           _buildRowItem('MACHINE', machine.name),
                         if (grinder.name != 'Unknown')
                           _buildRowItem('GRINDER', grinder.name),
+                        if (shot.water != null)
+                          _buildRowItem('WATER', shot.water!),
                       ],
                     ),
                   ),
@@ -223,7 +225,7 @@ class ShotDetailScreen extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: Theme.of(context).colorScheme.surface,
                         borderRadius: BorderRadius.circular(24),
-                        border: Border.all(color: Colors.white.withOpacity(0.05)),
+                        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
                       ),
                       child: Stack(
                         children: [
@@ -248,7 +250,7 @@ class ShotDetailScreen extends StatelessWidget {
                                 shape: BoxShape.circle,
                                 border: Border.all(color: Colors.white, width: 2),
                                 boxShadow: [
-                                  BoxShadow(color: Theme.of(context).colorScheme.primary.withOpacity(0.5), blurRadius: 8, spreadRadius: 2)
+                                  BoxShadow(color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.5), blurRadius: 8, spreadRadius: 2)
                                 ]
                               ),
                             ),
@@ -279,7 +281,7 @@ class ShotDetailScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -301,7 +303,7 @@ class ShotDetailScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
       ),
       child: child,
     );
@@ -324,9 +326,9 @@ class ShotDetailScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primary.withOpacity(0.2),
+        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Theme.of(context).colorScheme.primary.withOpacity(0.5)),
+        border: Border.all(color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.5)),
       ),
       child: Text(
         text.toUpperCase(),

@@ -83,7 +83,9 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
               surface: const Color(0xFF1C1C1E),
               onSurface: Colors.white,
             ),
-            dialogBackgroundColor: const Color(0xFF1C1C1E),
+            dialogTheme: DialogThemeData(
+              backgroundColor: const Color(0xFF1C1C1E),
+            ),
           ),
           child: child!,
         );
@@ -123,7 +125,7 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.surface,
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.white.withOpacity(0.05)),
+                  border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -168,7 +170,7 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
                       side: BorderSide(
                         color: isSelected
                             ? Theme.of(context).colorScheme.primary
-                            : Colors.white.withOpacity(0.1),
+                            : Colors.white.withValues(alpha: 0.1),
                       ),
                     ),
                     showCheckmark: false,
@@ -235,11 +237,11 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.white.withOpacity(0.05)),
+          borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.05)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Theme.of(context).colorScheme.primary.withOpacity(0.5)),
+          borderSide: BorderSide(color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.5)),
         ),
         contentPadding: const EdgeInsets.all(16),
       ),
