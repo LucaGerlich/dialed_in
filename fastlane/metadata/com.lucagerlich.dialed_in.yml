@@ -21,7 +21,7 @@ Builds:
     subdir: .
     output: build/app/outputs/flutter-apk/app-release.apk
     srclibs:
-      - flutter@3.27.1  # WICHTIG: Prüfe deine lokale Version mit 'flutter --version'
+      - flutter@3.27.1
     prebuild:
       - flutter config --no-analytics
       - flutter packages pub get
