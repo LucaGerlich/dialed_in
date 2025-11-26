@@ -1,0 +1,34 @@
+Categories:
+  - Lifestyle
+  - Food & Drink
+License: MIT
+SourceCode: https://github.com/lucaGerlich/dialed_in
+IssueTracker: https://github.com/lucaGerlich/dialed_in/issues
+Changelog: https://github.com/lucaGerlich/dialed_in/releases
+
+Name: Dialed In
+Summary: Bean vault and brew log for specialty coffee routines
+Description: |
+  Dialed In allows users to track their coffee beans, record roast details, and log brew history.
+
+RepoType: git
+Repo: https://github.com/lucaGerlich/dialed_in.git
+
+Builds:
+  - versionName: 1.0.2
+    versionCode: 1
+    commit: v1.0.2
+    subdir: .
+    output: build/app/outputs/flutter-apk/app-release.apk
+    srclibs:
+      - flutter@3.27.1  # WICHTIG: Prüfe deine lokale Version mit 'flutter --version'
+    prebuild:
+      - flutter config --no-analytics
+      - flutter packages pub get
+    build:
+      - flutter build apk --release
+
+AutoUpdateMode: Version v%v
+UpdateCheckMode: Tags
+CurrentVersion: 1.1
+CurrentVersionCode: 1
