@@ -1,14 +1,24 @@
 # Dialed In
 
-Dialed In is a Flutter application for specialty coffee enthusiasts who want to capture roast details, track brews, and explore how grind size behaves over time. The experience centers on a bean vault where every roast can be tagged, rated, and paired with shot history coming from favorite machines and grinders. Im still working on it, but it's fun to use! IOS version will follow soon.
+Dialed In is a Flutter application for specialty coffee enthusiasts who want to capture roast details, track brews, and explore how grind size behaves over time. The experience centers on a bean vault where every roast can be tagged, rated, and paired with shot history coming from favorite machines and grinders. I'm still working on it, but it's fun to use! iOS version will follow soon.
 
 ## Features
 
-- Browse and filter beans (Light / Medium / Dark) with notes, origin, roast date, and process tags.
-- Inspect individual beans to see roast metadata, resting days, aggregate shot stats, and grind-size trends.
-- Log shots per bean to capture dose/yield, grind size, and equipment details; every brew shows a timestamp, grind size, and linked machine/grinder entry.
-- Add or edit beans via a modern form that keeps track of roast level, process, roast date, and tasting notes.
-- Configure related gear from the settings screen (grinders, machines) used by the shot history views.
+- **Bean Vault:** Browse and filter beans (Light / Medium / Dark) with notes, origin, roast date, and process tags.
+- **Smart Insights:** Inspect individual beans to see roast metadata, resting days, aggregate shot stats, and grind-size trends.
+- **Visual Shot Sharing:** Generate and share beautiful sticker-style images of your shot stats (Grind, Time, Ratio, Taste) directly to Instagram Stories, Photos, or other apps.
+- **Enhanced Shot Analytics:** View shots with a new Bento-grid layout, featuring brew ratios, resting days, and a visual taste profile plotter (Sour/Bitter vs Strong/Weak).
+- **Detailed Extraction Metrics:** Track advanced parameters like pressure, temperature, pre-infusion time, and RPM alongside standard metrics (Dose/Yield, Grind, Time).
+- **Gear Tracking:** Configure your setup (grinders, machines) to link every shot to the equipment used.
+
+## Roadmap 🚀
+
+-   **Cloud Sync & Backup:** Securely back up your roast history and sync across devices.
+-   **Smart Scale Integration:** Bluetooth support for real-time flow profiling and auto-logging from smart scales (e.g., Acaia, Felicita).
+-   **Data Export:** Download your brew logs as CSV/JSON for external analysis.
+-   **Water Profiles:** Track detailed water recipes (GH/KH, mineral composition) to isolate variables.
+-   **Recipe Sharing:** Share full bean and recipe deep-links with other Dialed In users.
+-   **Localization:** Multi-language support to reach a global community of coffee lovers.
 
 ## Getting Started
 
