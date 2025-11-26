@@ -1,0 +1,1 @@
+Capture coffee bean metadata, roast notes, and brew history.

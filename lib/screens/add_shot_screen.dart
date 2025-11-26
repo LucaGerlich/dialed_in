@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../models/models.dart';
 import '../providers/coffee_provider.dart';
 import '../widgets/analog_dial.dart';
@@ -258,7 +257,8 @@ class _AddShotScreenState extends State<AddShotScreen> {
                                       enabled: !_isTimerRunning,
                                       onChanged: _onDurationChanged,
                                       textAlign: TextAlign.center,
-                                      style: GoogleFonts.robotoMono(
+                                      style: TextStyle(
+                                        fontFamily: 'RobotoMono',
                                         fontSize: 32,
                                         fontWeight: FontWeight.bold,
                                         color: Theme.of(context).colorScheme.primary,
@@ -304,7 +304,7 @@ class _AddShotScreenState extends State<AddShotScreen> {
                       
                       // Gear Selection
                       if (provider.machines.isNotEmpty || provider.grinders.isNotEmpty) ...[
-                        Text('GEAR', style: GoogleFonts.robotoMono(fontWeight: FontWeight.bold, color: Colors.grey)),
+                        Text('GEAR', style: TextStyle(fontFamily: 'RobotoMono', fontWeight: FontWeight.bold, color: Colors.grey)),
                         const SizedBox(height: 8),
                         Row(
                           children: [
@@ -377,7 +377,7 @@ class _AddShotScreenState extends State<AddShotScreen> {
 
                       // Advanced Params
                       ExpansionTile(
-                        title: Text('ADVANCED PARAMETERS', style: GoogleFonts.robotoMono(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.white)),
+                        title: Text('ADVANCED PARAMETERS', style: TextStyle(fontFamily: 'RobotoMono', fontWeight: FontWeight.bold, fontSize: 14, color: Colors.white)),
                         children: [
                           const SizedBox(height: 12),
                           Row(
@@ -404,7 +404,7 @@ class _AddShotScreenState extends State<AddShotScreen> {
 
                       // Flavour Graph
                       ExpansionTile(
-                        title: Text('FLAVOUR PROFILE', style: GoogleFonts.robotoMono(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.white)),
+                        title: Text('FLAVOUR PROFILE', style: TextStyle(fontFamily: 'RobotoMono', fontWeight: FontWeight.bold, fontSize: 14, color: Colors.white)),
                         children: [
                           const SizedBox(height: 12),
                                                 Center(
@@ -467,7 +467,8 @@ class _AddShotScreenState extends State<AddShotScreen> {
                                                                           size: 16, color: Theme.of(context).colorScheme.primary),
                                                                       const SizedBox(width: 8),
                                                                       Text('TROUBLESHOOTER',
-                                                                          style: GoogleFonts.robotoMono(
+                                                                          style: TextStyle(
+                                                                              fontFamily: 'RobotoMono',
                                                                               fontSize: 12,
                                                                               fontWeight: FontWeight.bold,
                                                                               color: Theme.of(context).colorScheme.primary)),
@@ -480,7 +481,8 @@ class _AddShotScreenState extends State<AddShotScreen> {
                                                                       padding: const EdgeInsets.only(bottom: 4),
                                                                       child: Text(
                                                                         tip,
-                                                                        style: GoogleFonts.robotoMono(
+                                                                        style: TextStyle(
+                                                                          fontFamily: 'RobotoMono',
                                                                           fontSize: isHeader ? 12 : 11,
                                                                           fontWeight: isHeader ? FontWeight.bold : FontWeight.normal,
                                                                           color: isHeader ? Colors.white : Colors.white70,
@@ -624,7 +626,7 @@ class _FlavourGraphPainter extends CustomPainter {
     canvas.drawLine(Offset(0, size.height / 2), Offset(size.width, size.height / 2), paint);
 
     // Labels
-    final textStyle = GoogleFonts.robotoMono(fontSize: 10, color: Colors.grey);
+    final textStyle = TextStyle(fontFamily: 'RobotoMono', fontSize: 10, color: Colors.grey);
     _drawText(canvas, 'Sour', Offset(10, size.height / 2), textStyle);
     _drawText(canvas, 'Bitter', Offset(size.width - 30, size.height / 2), textStyle);
     _drawText(canvas, 'Strong', Offset(size.width / 2, 10), textStyle);

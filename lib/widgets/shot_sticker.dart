@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import '../models/models.dart';
 
@@ -44,7 +43,7 @@ class ShotSticker extends StatelessWidget {
           // Bean Info
           Text(
             bean.name.toUpperCase(),
-            style: GoogleFonts.robotoMono(
+            style: TextStyle(fontFamily: 'RobotoMono',
               fontSize: 24,
               fontWeight: FontWeight.bold,
               color: const Color(0xFFFF9F0A), // Technical Orange
@@ -54,7 +53,7 @@ class ShotSticker extends StatelessWidget {
           if (bean.origin.isNotEmpty)
             Text(
               bean.origin.toUpperCase(),
-              style: GoogleFonts.robotoMono(
+              style: TextStyle(fontFamily: 'RobotoMono',
                 fontSize: 16,
                 color: Colors.white,
                 shadows: textShadow,
@@ -123,7 +122,7 @@ class ShotSticker extends StatelessWidget {
                  Expanded(
                    child: Text(
                      [machineName, grinderName, shot.water].whereType<String>().join(' • '),
-                     style: GoogleFonts.robotoMono(
+                     style: TextStyle(fontFamily: 'RobotoMono',
                        fontSize: 12,
                        color: Colors.white70,
                        shadows: textShadow,
@@ -143,7 +142,7 @@ class ShotSticker extends StatelessWidget {
             children: [
               Text(
                 'DIALED IN',
-                style: GoogleFonts.robotoMono(
+                style: TextStyle(fontFamily: 'RobotoMono',
                   fontSize: 14,
                   fontWeight: FontWeight.w900,
                   fontStyle: FontStyle.italic,
@@ -153,7 +152,7 @@ class ShotSticker extends StatelessWidget {
               ),
               Text(
                 DateFormat('MMM d, yyyy').format(shot.timestamp),
-                style: GoogleFonts.robotoMono(
+                style: TextStyle(fontFamily: 'RobotoMono',
                   fontSize: 12,
                   color: Colors.white70,
                   shadows: textShadow,
@@ -181,7 +180,7 @@ class ShotSticker extends StatelessWidget {
             const SizedBox(width: 4),
             Text(
               label,
-              style: GoogleFonts.robotoMono(
+              style: TextStyle(fontFamily: 'RobotoMono',
                 fontSize: 12,
                 color: Colors.white70,
                 fontWeight: FontWeight.bold,
@@ -192,7 +191,7 @@ class ShotSticker extends StatelessWidget {
         ),
         Text(
           value,
-          style: GoogleFonts.robotoMono(
+          style: TextStyle(fontFamily: 'RobotoMono',
             fontSize: 28,
             fontWeight: FontWeight.bold,
             color: Colors.white,

@@ -1,8 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
-
 class AnalogDial extends StatefulWidget {
   final double min;
   final double max;
@@ -110,7 +108,7 @@ class _AnalogDialState extends State<AnalogDial> {
           ),
           child: Text(
             _currentValue.toStringAsFixed(1),
-            style: GoogleFonts.robotoMono(
+            style: TextStyle(fontFamily: 'RobotoMono',
               fontSize: 56,
               fontWeight: FontWeight.bold,
               color: Colors.white,
@@ -221,7 +219,7 @@ class _RadioTunerPainter extends CustomPainter {
       if (isMajor) {
         textPainter.text = TextSpan(
           text: roundedI.toStringAsFixed((step - step.roundToDouble()).abs() < 0.0001 ? 0 : 1),
-          style: GoogleFonts.robotoMono(
+          style: TextStyle(fontFamily: 'RobotoMono',
             fontSize: 14,
             color: color.withValues(alpha: opacity * 0.7),
           ),

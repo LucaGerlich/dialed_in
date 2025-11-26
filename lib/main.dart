@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'providers/coffee_provider.dart';
 import 'screens/bean_list_screen.dart';
 
@@ -33,31 +32,37 @@ class MyApp extends StatelessWidget {
             onSurface: const Color(0xFFFFFFFF),
           ),
           textTheme: TextTheme(
-            displayLarge: GoogleFonts.robotoMono(
+            displayLarge: TextStyle(
+              fontFamily: 'RobotoMono',
               fontSize: 32,
               fontWeight: FontWeight.bold,
               color: Colors.white,
             ),
-            displayMedium: GoogleFonts.robotoMono(
+            displayMedium: TextStyle(
+              fontFamily: 'RobotoMono',
               fontSize: 28,
               fontWeight: FontWeight.bold,
               color: Colors.white,
             ),
-            titleLarge: GoogleFonts.robotoMono(
+            titleLarge: TextStyle(
+              fontFamily: 'RobotoMono',
               fontSize: 22,
               fontWeight: FontWeight.w600,
               color: Colors.white,
             ),
-            titleMedium: GoogleFonts.robotoMono(
+            titleMedium: TextStyle(
+              fontFamily: 'RobotoMono',
               fontSize: 18,
               fontWeight: FontWeight.w500,
               color: Colors.white,
             ),
-            bodyLarge: GoogleFonts.robotoMono(
+            bodyLarge: TextStyle(
+              fontFamily: 'RobotoMono',
               fontSize: 16,
               color: Colors.white70,
             ),
-            bodyMedium: GoogleFonts.robotoMono(
+            bodyMedium: TextStyle(
+              fontFamily: 'RobotoMono',
               fontSize: 14,
               color: Colors.white70,
             ),
@@ -67,7 +72,8 @@ class MyApp extends StatelessWidget {
             foregroundColor: Colors.white,
             elevation: 0,
             centerTitle: true,
-            titleTextStyle: GoogleFonts.robotoMono(
+            titleTextStyle: TextStyle(
+              fontFamily: 'RobotoMono',
               fontSize: 20,
               fontWeight: FontWeight.bold,
               color: Colors.white,
