@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../models/models.dart';
 import '../providers/coffee_provider.dart';
 
@@ -253,7 +252,7 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
               runSpacing: 8,
               children: _flavourTags.map((tag) {
                 return Chip(
-                  label: Text(tag, style: GoogleFonts.robotoMono(fontSize: 12, color: Colors.black)),
+                  label: Text(tag, style: TextStyle(fontFamily: 'RobotoMono',fontSize: 12, color: Colors.black)),
                   backgroundColor: Theme.of(context).colorScheme.primary,
                   deleteIcon: const Icon(Icons.close, size: 14, color: Colors.black),
                   onDeleted: () => _removeTag(tag),
@@ -318,7 +317,7 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
       padding: const EdgeInsets.only(bottom: 8),
       child: Text(
         text,
-        style: GoogleFonts.robotoMono(
+        style: TextStyle(fontFamily: 'RobotoMono',
           fontSize: 12,
           fontWeight: FontWeight.bold,
           color: Colors.grey,

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
 import '../models/models.dart';
@@ -33,7 +32,7 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
 
         return Scaffold(
           appBar: AppBar(
-            title: Text(bean.name, style: GoogleFonts.robotoMono(fontWeight: FontWeight.bold)),
+            title: Text(bean.name, style: TextStyle(fontFamily: 'RobotoMono',fontWeight: FontWeight.bold)),
             actions: [
               IconButton(
                 icon: const Icon(Icons.edit),
@@ -65,8 +64,8 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('ORIGIN', style: GoogleFonts.robotoMono(color: Colors.grey, fontSize: 12)),
-                      Text(bean.origin.isEmpty ? 'Unknown' : bean.origin, style: GoogleFonts.robotoMono(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
+                      Text('ORIGIN', style: TextStyle(fontFamily: 'RobotoMono',color: Colors.grey, fontSize: 12)),
+                      Text(bean.origin.isEmpty ? 'Unknown' : bean.origin, style: TextStyle(fontFamily: 'RobotoMono',fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
                       const SizedBox(height: 8),
                       Row(
                         children: [
@@ -83,20 +82,20 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('ROAST DATE', style: GoogleFonts.robotoMono(color: Colors.grey, fontSize: 12)),
+                                Text('ROAST DATE', style: TextStyle(fontFamily: 'RobotoMono',color: Colors.grey, fontSize: 12)),
                                 Text(
                                   DateFormat('MMM d, yyyy').format(bean.roastDate!),
-                                  style: GoogleFonts.robotoMono(color: Colors.white, fontWeight: FontWeight.bold),
+                                  style: TextStyle(fontFamily: 'RobotoMono',color: Colors.white, fontWeight: FontWeight.bold),
                                 ),
                               ],
                             ),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
-                                Text('RESTING', style: GoogleFonts.robotoMono(color: Colors.grey, fontSize: 12)),
+                                Text('RESTING', style: TextStyle(fontFamily: 'RobotoMono',color: Colors.grey, fontSize: 12)),
                                 Text(
                                   '${DateTime.now().difference(bean.roastDate!).inDays} days',
-                                  style: GoogleFonts.robotoMono(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold),
+                                  style: TextStyle(fontFamily: 'RobotoMono',color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold),
                                 ),
                               ],
                             ),
@@ -104,11 +103,11 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                         ),
                         const SizedBox(height: 12),
                       ],
-                      Text('NOTES', style: GoogleFonts.robotoMono(color: Colors.grey, fontSize: 12)),
-                      Text(bean.notes, style: GoogleFonts.robotoMono(color: Colors.white70)),
+                      Text('NOTES', style: TextStyle(fontFamily: 'RobotoMono',color: Colors.grey, fontSize: 12)),
+                      Text(bean.notes, style: TextStyle(fontFamily: 'RobotoMono',color: Colors.white70)),
                       if (bean.flavourTags.isNotEmpty) ...[
                         const SizedBox(height: 12),
-                        Text('FLAVORS', style: GoogleFonts.robotoMono(color: Colors.grey, fontSize: 12)),
+                        Text('FLAVORS', style: TextStyle(fontFamily: 'RobotoMono',color: Colors.grey, fontSize: 12)),
                         const SizedBox(height: 4),
                         Wrap(
                           spacing: 8,
@@ -122,7 +121,7 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                               ),
                               child: Text(
                                 tag,
-                                style: GoogleFonts.robotoMono(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 11),
+                                style: TextStyle(fontFamily: 'RobotoMono',color: Colors.black, fontWeight: FontWeight.bold, fontSize: 11),
                               ),
                             );
                           }).toList(),
@@ -151,7 +150,7 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                   height: 300,
                   child: Column(
                     children: [
-                      Text('FLAVOR PROFILE', style: GoogleFonts.robotoMono(color: Colors.grey, fontSize: 12)),
+                      Text('FLAVOR PROFILE', style: TextStyle(fontFamily: 'RobotoMono',color: Colors.grey, fontSize: 12)),
                       const SizedBox(height: 16),
                       Expanded(
                         child: RadarChart(
@@ -175,7 +174,7 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                             borderData: FlBorderData(show: false),
                             radarBorderData: const BorderSide(color: Colors.transparent),
                             titlePositionPercentageOffset: 0.2,
-                            titleTextStyle: GoogleFonts.robotoMono(color: Colors.grey, fontSize: 10),
+                            titleTextStyle: TextStyle(fontFamily: 'RobotoMono',color: Colors.grey, fontSize: 10),
                             getTitle: (index, angle) {
                               switch (index) {
                                 case 0:
@@ -214,7 +213,7 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('GRIND SIZE OVER TIME', style: GoogleFonts.robotoMono(color: Colors.grey, fontSize: 12)),
+                        Text('GRIND SIZE OVER TIME', style: TextStyle(fontFamily: 'RobotoMono',color: Colors.grey, fontSize: 12)),
                         const SizedBox(height: 16),
                         Expanded(
                           child: LineChart(
@@ -258,7 +257,7 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                 const SizedBox(height: 16),
 
                 // Shot List
-                Text('HISTORY', style: GoogleFonts.robotoMono(fontWeight: FontWeight.bold, color: Colors.grey)),
+                Text('HISTORY', style: TextStyle(fontFamily: 'RobotoMono',fontWeight: FontWeight.bold, color: Colors.grey)),
                 const SizedBox(height: 8),
                 ...shots.map((shot) {
                   final machine = provider.machines.firstWhere((m) => m.id == shot.machineId, orElse: () => CoffeeMachine(name: 'Unknown', id: ''));
@@ -292,11 +291,11 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                             children: [
                               Text(
                                 DateFormat('MMM d, HH:mm').format(shot.timestamp),
-                                style: GoogleFonts.robotoMono(color: Colors.grey, fontSize: 12),
+                                style: TextStyle(fontFamily: 'RobotoMono',color: Colors.grey, fontSize: 12),
                               ),
                               Text(
                                 shot.grindSize.toStringAsFixed(1),
-                                style: GoogleFonts.robotoMono(
+                                style: TextStyle(fontFamily: 'RobotoMono',
                                   color: Theme.of(context).colorScheme.primary,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16,
@@ -316,7 +315,7 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                             const SizedBox(height: 8),
                             Text(
                               '${machine.name} • ${grinder.name}',
-                              style: GoogleFonts.robotoMono(color: Colors.grey[600], fontSize: 10),
+                              style: TextStyle(fontFamily: 'RobotoMono',color: Colors.grey[600], fontSize: 10),
                             ),
                           ],
                         ],
@@ -394,9 +393,9 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
       ),
       child: Column(
         children: [
-          Text(label, style: GoogleFonts.robotoMono(color: Colors.grey, fontSize: 10)),
+          Text(label, style: TextStyle(fontFamily: 'RobotoMono',color: Colors.grey, fontSize: 10)),
           const SizedBox(height: 4),
-          Text(value, style: GoogleFonts.robotoMono(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
+          Text(value, style: TextStyle(fontFamily: 'RobotoMono',color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
         ],
       ),
     );
@@ -412,7 +411,7 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
       ),
       child: Text(
         text.toUpperCase(),
-        style: GoogleFonts.robotoMono(
+        style: TextStyle(fontFamily: 'RobotoMono',
           color: Theme.of(context).colorScheme.primary,
           fontSize: 10,
           fontWeight: FontWeight.bold,

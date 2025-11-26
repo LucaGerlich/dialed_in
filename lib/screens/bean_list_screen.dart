@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../providers/coffee_provider.dart';
 import '../widgets/bean_card.dart';
 import 'add_bean_screen.dart';
@@ -98,7 +97,7 @@ class _BeanListScreenState extends State<BeanListScreen> {
                             const SizedBox(height: 16),
                             Text(
                               'No beans found',
-                              style: GoogleFonts.lato(
+                              style: TextStyle(fontFamily: 'RobotoMono',
                                 fontSize: 18,
                                 color: Theme.of(context).colorScheme.secondary,
                               ),

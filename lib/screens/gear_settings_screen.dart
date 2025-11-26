@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../models/models.dart';
 import '../providers/coffee_provider.dart';
 
@@ -60,7 +59,8 @@ class GearSettingsScreen extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 16),
       child: Text(
         title,
-        style: GoogleFonts.robotoMono(
+        style: TextStyle(
+          fontFamily: 'RobotoMono',
           fontSize: 20,
           fontWeight: FontWeight.bold,
           color: Theme.of(context).colorScheme.primary,

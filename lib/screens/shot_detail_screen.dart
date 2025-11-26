@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../models/models.dart';
@@ -34,7 +33,7 @@ class ShotDetailScreen extends StatelessWidget {
           appBar: AppBar(
             title: Text(
               DateFormat('MMM d, HH:mm').format(shot.timestamp),
-              style: GoogleFonts.robotoMono(fontWeight: FontWeight.bold),
+              style: TextStyle(fontFamily: 'RobotoMono',fontWeight: FontWeight.bold),
             ),
             actions: [
               IconButton(
@@ -68,10 +67,10 @@ class ShotDetailScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('BEAN', style: GoogleFonts.robotoMono(color: Colors.grey, fontSize: 12)),
+                      Text('BEAN', style: TextStyle(fontFamily: 'RobotoMono',color: Colors.grey, fontSize: 12)),
                       Text(
                         bean.name,
-                        style: GoogleFonts.robotoMono(
+                        style: TextStyle(fontFamily: 'RobotoMono',
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
                           color: Theme.of(context).colorScheme.primary,
@@ -81,7 +80,7 @@ class ShotDetailScreen extends StatelessWidget {
                       if (bean.origin.isNotEmpty)
                         Text(
                           bean.origin.toUpperCase(),
-                          style: GoogleFonts.robotoMono(color: Colors.white, fontSize: 16),
+                          style: TextStyle(fontFamily: 'RobotoMono',color: Colors.white, fontSize: 16),
                         ),
                       const SizedBox(height: 8),
                       Row(
@@ -98,11 +97,11 @@ class ShotDetailScreen extends StatelessWidget {
                           children: [
                             Text(
                               'ROASTED: ${DateFormat('MMM d').format(bean.roastDate!)}',
-                              style: GoogleFonts.robotoMono(color: Colors.grey, fontSize: 12),
+                              style: TextStyle(fontFamily: 'RobotoMono',color: Colors.grey, fontSize: 12),
                             ),
                             Text(
                               'RESTING: ${shot.timestamp.difference(bean.roastDate!).inDays} DAYS',
-                              style: GoogleFonts.robotoMono(
+                              style: TextStyle(fontFamily: 'RobotoMono',
                                 color: Theme.of(context).colorScheme.primary,
                                 fontSize: 12,
                                 fontWeight: FontWeight.bold,
@@ -148,12 +147,12 @@ class ShotDetailScreen extends StatelessWidget {
                         children: [
                           Icon(Icons.aspect_ratio, color: Theme.of(context).colorScheme.primary, size: 20),
                           const SizedBox(width: 12),
-                          Text('BREW RATIO', style: GoogleFonts.robotoMono(color: Colors.grey, fontSize: 12)),
+                          Text('BREW RATIO', style: TextStyle(fontFamily: 'RobotoMono',color: Colors.grey, fontSize: 12)),
                         ],
                       ),
                       Text(
                         '1 : ${(shot.doseOut / shot.doseIn).toStringAsFixed(1)}',
-                        style: GoogleFonts.robotoMono(
+                        style: TextStyle(fontFamily: 'RobotoMono',
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                           fontSize: 18,
@@ -168,7 +167,7 @@ class ShotDetailScreen extends StatelessWidget {
                 if (_hasAdvancedStats(shot)) ...[
                   Text(
                     'EXTRACTION PARAMETERS',
-                    style: GoogleFonts.robotoMono(color: Colors.grey, fontSize: 12, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontFamily: 'RobotoMono',color: Colors.grey, fontSize: 12, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 8),
                   _buildBentoContainer(
@@ -193,7 +192,7 @@ class ShotDetailScreen extends StatelessWidget {
                 if (machine.name != 'Unknown' || grinder.name != 'Unknown' || shot.water != null) ...[
                   Text(
                     'GEAR',
-                    style: GoogleFonts.robotoMono(color: Colors.grey, fontSize: 12, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontFamily: 'RobotoMono',color: Colors.grey, fontSize: 12, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 8),
                   _buildBentoContainer(
@@ -216,7 +215,7 @@ class ShotDetailScreen extends StatelessWidget {
                 if (shot.flavourX != null && shot.flavourY != null) ...[
                    Text(
                     'TASTE PROFILE',
-                    style: GoogleFonts.robotoMono(color: Colors.grey, fontSize: 12, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontFamily: 'RobotoMono',color: Colors.grey, fontSize: 12, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 8),
                   AspectRatio(
@@ -288,9 +287,9 @@ class ShotDetailScreen extends StatelessWidget {
         children: [
           Icon(icon, color: Theme.of(context).colorScheme.primary, size: 20),
           const SizedBox(height: 8),
-          Text(label, style: GoogleFonts.robotoMono(color: Colors.grey, fontSize: 10)),
+          Text(label, style: TextStyle(fontFamily: 'RobotoMono',color: Colors.grey, fontSize: 10)),
           const SizedBox(height: 4),
-          Text(value, style: GoogleFonts.robotoMono(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18)),
+          Text(value, style: TextStyle(fontFamily: 'RobotoMono',color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18)),
         ],
       ),
     );
@@ -315,8 +314,8 @@ class ShotDetailScreen extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: GoogleFonts.robotoMono(color: Colors.grey)),
-          Text(value, style: GoogleFonts.robotoMono(color: Colors.white, fontWeight: FontWeight.bold)),
+          Text(label, style: TextStyle(fontFamily: 'RobotoMono',color: Colors.grey)),
+          Text(value, style: TextStyle(fontFamily: 'RobotoMono',color: Colors.white, fontWeight: FontWeight.bold)),
         ],
       ),
     );
@@ -332,7 +331,7 @@ class ShotDetailScreen extends StatelessWidget {
       ),
       child: Text(
         text.toUpperCase(),
-        style: GoogleFonts.robotoMono(
+        style: TextStyle(fontFamily: 'RobotoMono',
           color: Theme.of(context).colorScheme.primary,
           fontSize: 10,
           fontWeight: FontWeight.bold,

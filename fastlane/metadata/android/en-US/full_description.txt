@@ -1,0 +1,9 @@
+Dialed In captures coffee bean metadata, roast notes, and brew history for specialty coffee lovers.
+
+Keep track of your beans, roasts, and shots to dial in the perfect espresso or pour-over. Visualize your brew ratios, track extraction times, and rate your shots to improve your barista skills.
+
+Features:
+- Track Coffee Beans: Record origin, roaster, roast date, and tasting notes.
+- Log Brews: Record dose, yield, time, and grind setting.
+- Visualize Data: See charts of your brew history.
+- Share Shots: Share your recipes with friends.
