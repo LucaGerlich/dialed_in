@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:gal/gal.dart';
 import 'package:pasteboard/pasteboard.dart';
 import '../models/models.dart';
@@ -149,7 +148,7 @@ class _ShareShotDialogState extends State<ShareShotDialog> {
               children: [
                 Text(
                   'Share Sticker',
-                  style: GoogleFonts.robotoMono(
+                  style: TextStyle(fontFamily: 'RobotoMono',
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
@@ -219,7 +218,7 @@ class _ShareShotDialogState extends State<ShareShotDialog> {
                         : const Icon(Icons.copy),
                     label: Text(
                       'Copy (Best for Insta Story)',
-                      style: GoogleFonts.robotoMono(fontWeight: FontWeight.bold),
+                      style: TextStyle(fontFamily: 'RobotoMono', fontWeight: FontWeight.bold),
                     ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFFF9F0A),
@@ -239,7 +238,7 @@ class _ShareShotDialogState extends State<ShareShotDialog> {
                         icon: _isSaving
                             ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
                             : const Icon(Icons.save_alt),
-                        label: Text('Save Image', style: GoogleFonts.robotoMono()),
+                        label: Text('Save Image', style: TextStyle(fontFamily: 'RobotoMono')),
                         style: OutlinedButton.styleFrom(
                           foregroundColor: Colors.white,
                           side: const BorderSide(color: Colors.white24),
@@ -255,7 +254,7 @@ class _ShareShotDialogState extends State<ShareShotDialog> {
                         icon: _isSharing
                             ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
                             : const Icon(Icons.share),
-                        label: Text('Share', style: GoogleFonts.robotoMono()),
+                        label: Text('Share', style: TextStyle(fontFamily: 'RobotoMono')),
                         style: OutlinedButton.styleFrom(
                           foregroundColor: Colors.white,
                           side: const BorderSide(color: Colors.white24),
