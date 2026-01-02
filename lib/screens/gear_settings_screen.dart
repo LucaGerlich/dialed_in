@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/models.dart';
 import 'package:dialed_in/providers/coffee_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class GearSettingsScreen extends StatelessWidget {
   const GearSettingsScreen({super.key});
@@ -50,6 +51,9 @@ class GearSettingsScreen extends StatelessWidget {
               const SizedBox(height: 32),
               _buildSectionHeader(context, 'Grind Settings'),
               _buildGrindSettings(context, provider),
+              const SizedBox(height: 32),
+              _buildSectionHeader(context, 'About Dialed In'),
+              _buildAboutSection(context),
             ],
           );
         },
@@ -309,6 +313,71 @@ class GearSettingsScreen extends StatelessWidget {
           onChanged: onChanged,
         ),
       ],
+    );
+  }
+
+  Widget _buildAboutSection(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Dialed In is a companion for specialty coffee enthusiasts. Track your beans, record every shot, and master the art of the perfect extraction.",
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurface,
+                  height: 1.5,
+                ),
+          ),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Icon(Icons.code, size: 16, color: Theme.of(context).colorScheme.primary),
+              const SizedBox(width: 8),
+              Text(
+                'Built by Luca Gerlich',
+                style: TextStyle(
+                  fontFamily: 'RobotoMono',
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.onSurface,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          InkWell(
+            onTap: () => launchUrl(Uri.parse('https://github.com/LucaGerlich/dialed_in')),
+            child: Row(
+              children: [
+                Icon(Icons.link, size: 16, color: Theme.of(context).colorScheme.primary),
+                const SizedBox(width: 8),
+                Text(
+                  'GitHub Project',
+                  style: TextStyle(
+                    fontFamily: 'RobotoMono',
+                    fontSize: 14,
+                    color: Theme.of(context).colorScheme.primary,
+                    decoration: TextDecoration.underline,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Version 1.1.0',
+            style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
+                ),
+          ),
+        ],
+      ),
     );
   }
 }
