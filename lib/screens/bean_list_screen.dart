@@ -64,7 +64,7 @@ class _BeanListScreenState extends State<BeanListScreen> {
                         backgroundColor: Theme.of(context).colorScheme.surface,
                         selectedColor: Theme.of(context).colorScheme.primary,
                         labelStyle: TextStyle(
-                          color: isSelected ? Colors.black : Colors.white,
+                          color: isSelected ? Theme.of(context).colorScheme.onPrimary : Theme.of(context).colorScheme.onSurface,
                           fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                         ),
                         shape: RoundedRectangleBorder(
@@ -72,7 +72,7 @@ class _BeanListScreenState extends State<BeanListScreen> {
                           side: BorderSide(
                             color: isSelected
                                 ? Theme.of(context).colorScheme.primary
-                                : Colors.white.withValues(alpha: 0.1),
+                                : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
                           ),
                         ),
                         showCheckmark: false,

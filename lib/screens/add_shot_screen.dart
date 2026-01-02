@@ -209,10 +209,10 @@ class _AddShotScreenState extends State<AddShotScreen> {
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.surface,
                   borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
-                  border: Border(top: BorderSide(color: Colors.white.withValues(alpha: 0.1))),
+                  border: Border(top: BorderSide(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1))),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.5),
+                      color: Colors.black.withValues(alpha: 0.2),
                       blurRadius: 10,
                       offset: const Offset(0, -5),
                     ),
@@ -231,7 +231,7 @@ class _AddShotScreenState extends State<AddShotScreen> {
                           height: 4,
                           margin: const EdgeInsets.only(bottom: 24),
                           decoration: BoxDecoration(
-                            color: Colors.grey[600],
+                            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.2),
                             borderRadius: BorderRadius.circular(2),
                           ),
                         ),
@@ -244,9 +244,9 @@ class _AddShotScreenState extends State<AddShotScreen> {
                             child: Container(
                               padding: const EdgeInsets.symmetric(vertical: 12),
                               decoration: BoxDecoration(
-                                color: Colors.black.withValues(alpha: 0.2),
+                                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.05),
                                 borderRadius: BorderRadius.circular(16),
-                                border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+                                border: Border.all(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.05)),
                               ),
                               child: Column(
                                 children: [
@@ -277,7 +277,7 @@ class _AddShotScreenState extends State<AddShotScreen> {
                                     child: Text(
                                       _isTimerRunning ? 'STOP' : 'START',
                                       style: TextStyle(
-                                        color: _isTimerRunning ? Colors.red : Colors.white,
+                                        color: _isTimerRunning ? Colors.red : Theme.of(context).colorScheme.onSurface,
                                         fontWeight: FontWeight.bold,
                                         letterSpacing: 1.5,
                                       ),
@@ -304,21 +304,21 @@ class _AddShotScreenState extends State<AddShotScreen> {
                       
                       // Gear Selection
                       if (provider.machines.isNotEmpty || provider.grinders.isNotEmpty) ...[
-                        Text('GEAR', style: TextStyle(fontFamily: 'RobotoMono', fontWeight: FontWeight.bold, color: Colors.grey)),
+                        Text('GEAR', style: TextStyle(fontFamily: 'RobotoMono', fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6))),
                         const SizedBox(height: 8),
                         Row(
                           children: [
                             if (provider.machines.isNotEmpty)
                               Expanded(
                                 child: InputDecorator(
-                                  decoration: _inputDecoration('Machine'),
+                                  decoration: _inputDecoration(context, 'Machine'),
                                   child: DropdownButtonHideUnderline(
                                     child: DropdownButton<String>(
                                       isExpanded: true,
                                       isDense: true,
                                       value: _selectedMachineId,
-                                      dropdownColor: const Color(0xFF1C1C1E),
-                                      style: const TextStyle(color: Colors.white),
+                                      dropdownColor: Theme.of(context).colorScheme.surface,
+                                      style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
                                       items: provider.machines.map((m) => DropdownMenuItem(
                                         value: m.id,
                                         child: Text(
@@ -344,14 +344,14 @@ class _AddShotScreenState extends State<AddShotScreen> {
                             if (provider.grinders.isNotEmpty)
                               Expanded(
                                 child: InputDecorator(
-                                  decoration: _inputDecoration('Grinder'),
+                                  decoration: _inputDecoration(context, 'Grinder'),
                                   child: DropdownButtonHideUnderline(
                                     child: DropdownButton<String>(
                                       isExpanded: true,
                                       isDense: true,
                                       value: _selectedGrinderId,
-                                      dropdownColor: const Color(0xFF1C1C1E),
-                                      style: const TextStyle(color: Colors.white),
+                                      dropdownColor: Theme.of(context).colorScheme.surface,
+                                      style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
                                       items: provider.grinders.map((g) => DropdownMenuItem(
                                         value: g.id,
                                         child: Text(
@@ -377,7 +377,7 @@ class _AddShotScreenState extends State<AddShotScreen> {
 
                       // Advanced Params
                       ExpansionTile(
-                        title: Text('ADVANCED PARAMETERS', style: TextStyle(fontFamily: 'RobotoMono', fontWeight: FontWeight.bold, fontSize: 14, color: Colors.white)),
+                        title: Text('ADVANCED PARAMETERS', style: TextStyle(fontFamily: 'RobotoMono', fontWeight: FontWeight.bold, fontSize: 14, color: Theme.of(context).colorScheme.onSurface)),
                         children: [
                           const SizedBox(height: 12),
                           Row(
@@ -404,7 +404,7 @@ class _AddShotScreenState extends State<AddShotScreen> {
 
                       // Flavour Graph
                       ExpansionTile(
-                        title: Text('FLAVOUR PROFILE', style: TextStyle(fontFamily: 'RobotoMono', fontWeight: FontWeight.bold, fontSize: 14, color: Colors.white)),
+                        title: Text('FLAVOUR PROFILE', style: TextStyle(fontFamily: 'RobotoMono', fontWeight: FontWeight.bold, fontSize: 14, color: Theme.of(context).colorScheme.onSurface)),
                         children: [
                           const SizedBox(height: 12),
                                                 Center(
@@ -412,9 +412,9 @@ class _AddShotScreenState extends State<AddShotScreen> {
                                                     width: 200,
                                                     height: 200,
                                                     decoration: BoxDecoration(
-                                                      color: Colors.black.withValues(alpha: 0.2),
+                                                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.05),
                                                       borderRadius: BorderRadius.circular(16),
-                                                      border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+                                                      border: Border.all(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1)),
                                                     ),
                                                     child: GestureDetector(
                                                       onPanUpdate: (details) {
@@ -438,7 +438,7 @@ class _AddShotScreenState extends State<AddShotScreen> {
                                                         });
                                                       },
                                                       child: CustomPaint(
-                                                        painter: _FlavourGraphPainter(_flavourX, _flavourY, Theme.of(context).colorScheme.primary),
+                                                        painter: _FlavourGraphPainter(_flavourX, _flavourY, Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.onSurface),
                                                       ),
                                                     ),
                                                   ),
@@ -485,7 +485,7 @@ class _AddShotScreenState extends State<AddShotScreen> {
                                                                           fontFamily: 'RobotoMono',
                                                                           fontSize: isHeader ? 12 : 11,
                                                                           fontWeight: isHeader ? FontWeight.bold : FontWeight.normal,
-                                                                          color: isHeader ? Colors.white : Colors.white70,
+                                                                          color: isHeader ? Theme.of(context).colorScheme.onSurface : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                                                                         ),
                                                                       ),
                                                                     );
@@ -508,7 +508,7 @@ class _AddShotScreenState extends State<AddShotScreen> {
                           onPressed: _saveShot,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Theme.of(context).colorScheme.primary,
-                            foregroundColor: Colors.black,
+                            foregroundColor: Theme.of(context).colorScheme.onPrimary,
                             padding: const EdgeInsets.symmetric(vertical: 20),
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                           ),
@@ -526,12 +526,12 @@ class _AddShotScreenState extends State<AddShotScreen> {
     );
   }
 
-  InputDecoration _inputDecoration(String label) {
+  InputDecoration _inputDecoration(BuildContext context, String label) {
     return InputDecoration(
       labelText: label,
       labelStyle: const TextStyle(color: Colors.grey),
       filled: true,
-      fillColor: Colors.black.withValues(alpha: 0.2),
+      fillColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.05),
       isDense: true,
       border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
       contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
@@ -542,19 +542,19 @@ class _AddShotScreenState extends State<AddShotScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.black.withValues(alpha: 0.2),
+        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+        border: Border.all(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.05)),
       ),
       child: Row(
         children: [
-          Text(label, style: TextStyle(color: Colors.grey[600], fontSize: 12, fontWeight: FontWeight.bold)),
+          Text(label, style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6), fontSize: 12, fontWeight: FontWeight.bold)),
           const SizedBox(width: 12),
           Expanded(
             child: TextField(
               controller: controller,
               keyboardType: keyboardType ?? const TextInputType.numberWithOptions(decimal: true),
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.white),
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.onSurface),
               textAlign: TextAlign.end,
               decoration: const InputDecoration(
                 border: InputBorder.none,
@@ -612,13 +612,14 @@ class _FlavourGraphPainter extends CustomPainter {
   final double x;
   final double y;
   final Color accentColor;
+  final Color onSurface;
 
-  _FlavourGraphPainter(this.x, this.y, this.accentColor);
+  _FlavourGraphPainter(this.x, this.y, this.accentColor, this.onSurface);
 
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.grey.withValues(alpha: 0.3)
+      ..color = onSurface.withValues(alpha: 0.3)
       ..strokeWidth = 1;
 
     // Axes
@@ -626,7 +627,7 @@ class _FlavourGraphPainter extends CustomPainter {
     canvas.drawLine(Offset(0, size.height / 2), Offset(size.width, size.height / 2), paint);
 
     // Labels
-    final textStyle = TextStyle(fontFamily: 'RobotoMono', fontSize: 10, color: Colors.grey);
+    final textStyle = TextStyle(fontFamily: 'RobotoMono', fontSize: 10, color: onSurface.withValues(alpha: 0.6));
     _drawText(canvas, 'Sour', Offset(10, size.height / 2), textStyle);
     _drawText(canvas, 'Bitter', Offset(size.width - 30, size.height / 2), textStyle);
     _drawText(canvas, 'Strong', Offset(size.width / 2, 10), textStyle);

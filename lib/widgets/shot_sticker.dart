@@ -46,7 +46,7 @@ class ShotSticker extends StatelessWidget {
             style: TextStyle(fontFamily: 'RobotoMono',
               fontSize: 24,
               fontWeight: FontWeight.bold,
-              color: const Color(0xFFFF9F0A), // Technical Orange
+              color: Theme.of(context).colorScheme.primary, // Use theme primary
               shadows: textShadow,
             ),
           ),
@@ -69,6 +69,7 @@ class ShotSticker extends StatelessWidget {
               // Grind
               Expanded(
                 child: _buildStatItem(
+                  context: context,
                   label: 'GRIND',
                   value: shot.grindSize.toStringAsFixed(1),
                   icon: Icons.settings,
@@ -78,6 +79,7 @@ class ShotSticker extends StatelessWidget {
               // Time
               Expanded(
                 child: _buildStatItem(
+                  context: context,
                   label: 'TIME',
                   value: '${shot.duration}s',
                   icon: Icons.timer,
@@ -93,6 +95,7 @@ class ShotSticker extends StatelessWidget {
               // Dose
               Expanded(
                 child: _buildStatItem(
+                  context: context,
                   label: 'IN',
                   value: '${shot.doseIn.toStringAsFixed(1)}g',
                   icon: Icons.arrow_downward,
@@ -102,6 +105,7 @@ class ShotSticker extends StatelessWidget {
               // Yield
               Expanded(
                 child: _buildStatItem(
+                  context: context,
                   label: 'OUT',
                   value: '${shot.doseOut.toStringAsFixed(1)}g',
                   icon: Icons.water_drop,
@@ -146,7 +150,7 @@ class ShotSticker extends StatelessWidget {
                   fontSize: 14,
                   fontWeight: FontWeight.w900,
                   fontStyle: FontStyle.italic,
-                  color: const Color(0xFFFF9F0A),
+                  color: Theme.of(context).colorScheme.primary,
                   shadows: textShadow,
                 ),
               ),
@@ -166,6 +170,7 @@ class ShotSticker extends StatelessWidget {
   }
 
   Widget _buildStatItem({
+    required BuildContext context,
     required String label,
     required String value,
     required IconData icon,
@@ -176,7 +181,7 @@ class ShotSticker extends StatelessWidget {
       children: [
         Row(
           children: [
-            Icon(icon, color: const Color(0xFFFF9F0A), size: 16, shadows: const [Shadow(blurRadius: 2, color: Colors.black)]),
+            Icon(icon, color: Theme.of(context).colorScheme.primary, size: 16, shadows: const [Shadow(blurRadius: 2, color: Colors.black)]),
             const SizedBox(width: 4),
             Text(
               label,

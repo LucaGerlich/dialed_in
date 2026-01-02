@@ -136,7 +136,7 @@ class _ShareShotDialogState extends State<ShareShotDialog> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      backgroundColor: const Color(0xFF1C1C1E),
+      backgroundColor: Theme.of(context).colorScheme.surface,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -151,7 +151,7 @@ class _ShareShotDialogState extends State<ShareShotDialog> {
                   style: TextStyle(fontFamily: 'RobotoMono',
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
                 IconButton(
@@ -221,8 +221,8 @@ class _ShareShotDialogState extends State<ShareShotDialog> {
                       style: TextStyle(fontFamily: 'RobotoMono', fontWeight: FontWeight.bold),
                     ),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFFF9F0A),
-                      foregroundColor: Colors.black,
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      foregroundColor: Theme.of(context).colorScheme.onPrimary,
                       padding: const EdgeInsets.symmetric(vertical: 12),
                     ),
                   ),
@@ -240,8 +240,8 @@ class _ShareShotDialogState extends State<ShareShotDialog> {
                             : const Icon(Icons.save_alt),
                         label: Text('Save Image', style: TextStyle(fontFamily: 'RobotoMono')),
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: Colors.white,
-                          side: const BorderSide(color: Colors.white24),
+                          foregroundColor: Theme.of(context).colorScheme.onSurface,
+                          side: BorderSide(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1)),
                           padding: const EdgeInsets.symmetric(vertical: 12),
                         ),
                       ),
@@ -256,8 +256,8 @@ class _ShareShotDialogState extends State<ShareShotDialog> {
                             : const Icon(Icons.share),
                         label: Text('Share', style: TextStyle(fontFamily: 'RobotoMono')),
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: Colors.white,
-                          side: const BorderSide(color: Colors.white24),
+                          foregroundColor: Theme.of(context).colorScheme.onSurface,
+                          side: BorderSide(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1)),
                           padding: const EdgeInsets.symmetric(vertical: 12),
                         ),
                       ),

@@ -16,7 +16,7 @@ class BeanCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+          border: Border.all(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1)),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -25,7 +25,7 @@ class BeanCard extends StatelessWidget {
             Container(
               height: 120,
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.05),
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.05),
                 borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
               ),
               child: Stack(
@@ -34,7 +34,7 @@ class BeanCard extends StatelessWidget {
                     child: Icon(
                       Icons.coffee,
                       size: 48,
-                      color: Colors.white.withValues(alpha: 0.2),
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.2),
                     ),
                   ),
                   Positioned(

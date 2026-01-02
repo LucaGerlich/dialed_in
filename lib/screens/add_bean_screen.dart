@@ -115,12 +115,12 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
           data: Theme.of(context).copyWith(
             colorScheme: Theme.of(context).colorScheme.copyWith(
               primary: Theme.of(context).colorScheme.primary,
-              onPrimary: Colors.black,
-              surface: const Color(0xFF1C1C1E),
-              onSurface: Colors.white,
+              onPrimary: Theme.of(context).colorScheme.onPrimary,
+              surface: Theme.of(context).colorScheme.surface,
+              onSurface: Theme.of(context).colorScheme.onSurface,
             ),
             dialogTheme: DialogThemeData(
-              backgroundColor: const Color(0xFF1C1C1E),
+              backgroundColor: Theme.of(context).colorScheme.surface,
             ),
           ),
           child: child!,
@@ -161,7 +161,7 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.surface,
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+                  border: Border.all(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.05)),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -171,7 +171,7 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
                           ? 'Select Date'
                           : '${_roastDate!.day}/${_roastDate!.month}/${_roastDate!.year}',
                       style: TextStyle(
-                        color: _roastDate == null ? Colors.grey[700] : Colors.white,
+                        color: _roastDate == null ? Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6) : Theme.of(context).colorScheme.onSurface,
                         fontSize: 16,
                       ),
                     ),
@@ -198,7 +198,7 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
                     backgroundColor: Theme.of(context).colorScheme.surface,
                     selectedColor: Theme.of(context).colorScheme.primary,
                     labelStyle: TextStyle(
-                      color: isSelected ? Colors.black : Colors.white,
+                      color: isSelected ? Theme.of(context).colorScheme.onPrimary : Theme.of(context).colorScheme.onSurface,
                       fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                     ),
                     shape: RoundedRectangleBorder(
@@ -206,7 +206,7 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
                       side: BorderSide(
                         color: isSelected
                             ? Theme.of(context).colorScheme.primary
-                            : Colors.white.withValues(alpha: 0.1),
+                            : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
                       ),
                     ),
                     showCheckmark: false,
@@ -242,7 +242,7 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
                 IconButton.filled(
                   onPressed: _addTag,
                   icon: const Icon(Icons.add),
-                  style: IconButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.primary, foregroundColor: Colors.black),
+                  style: IconButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.primary, foregroundColor: Theme.of(context).colorScheme.onPrimary),
                 ),
               ],
             ),
@@ -252,9 +252,9 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
               runSpacing: 8,
               children: _flavourTags.map((tag) {
                 return Chip(
-                  label: Text(tag, style: TextStyle(fontFamily: 'RobotoMono',fontSize: 12, color: Colors.black)),
+                  label: Text(tag, style: TextStyle(fontFamily: 'RobotoMono',fontSize: 12, color: Theme.of(context).colorScheme.onPrimary)),
                   backgroundColor: Theme.of(context).colorScheme.primary,
-                  deleteIcon: const Icon(Icons.close, size: 14, color: Colors.black),
+                  deleteIcon: Icon(Icons.close, size: 14, color: Theme.of(context).colorScheme.onPrimary),
                   onDeleted: () => _removeTag(tag),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20), side: BorderSide.none),
                 );
@@ -268,11 +268,11 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
                 onPressed: _saveBean,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Theme.of(context).colorScheme.primary,
-                  foregroundColor: Colors.black,
+                  foregroundColor: Theme.of(context).colorScheme.onPrimary,
                   padding: const EdgeInsets.symmetric(vertical: 20),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                 ),
-                child: const Text('ADD BEAN', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, letterSpacing: 1.2)),
+                child: Text(widget.bean != null ? 'UPDATE BEAN' : 'ADD BEAN', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, letterSpacing: 1.2)),
               ),
             ),
           ],
@@ -288,15 +288,15 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(label, style: const TextStyle(color: Colors.white70, fontSize: 12)),
+            Text(label, style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6), fontSize: 12)),
             Text(value.toStringAsFixed(1), style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold)),
           ],
         ),
         SliderTheme(
           data: SliderTheme.of(context).copyWith(
             activeTrackColor: Theme.of(context).colorScheme.primary,
-            inactiveTrackColor: Colors.white.withValues(alpha: 0.1),
-            thumbColor: Colors.white,
+            inactiveTrackColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
+            thumbColor: Theme.of(context).colorScheme.onSurface,
             overlayColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
           ),
           child: Slider(
@@ -320,7 +320,7 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
         style: TextStyle(fontFamily: 'RobotoMono',
           fontSize: 12,
           fontWeight: FontWeight.bold,
-          color: Colors.grey,
+          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
         ),
       ),
     );
@@ -330,10 +330,10 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
     return TextField(
       controller: controller,
       maxLines: maxLines,
-      style: const TextStyle(color: Colors.white),
+      style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
       decoration: InputDecoration(
         hintText: hint,
-        hintStyle: TextStyle(color: Colors.grey[700]),
+        hintStyle: TextStyle(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4)),
         filled: true,
         fillColor: Theme.of(context).colorScheme.surface,
         border: OutlineInputBorder(
@@ -342,7 +342,7 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.05)),
+          borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.05)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),

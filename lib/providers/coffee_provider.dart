@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/models.dart';
 
@@ -13,6 +13,9 @@ class CoffeeProvider with ChangeNotifier {
   double _grindMax = 30.0;
   double _grindStep = 0.5;
 
+  // Theme Settings
+  ThemeMode _themeMode = ThemeMode.system;
+
   List<Bean> get beans => _beans;
   List<CoffeeMachine> get machines => _machines;
   List<Grinder> get grinders => _grinders;
@@ -20,6 +23,7 @@ class CoffeeProvider with ChangeNotifier {
   double get grindMin => _grindMin;
   double get grindMax => _grindMax;
   double get grindStep => _grindStep;
+  ThemeMode get themeMode => _themeMode;
 
   CoffeeProvider() {
     _loadData();
@@ -49,6 +53,14 @@ class CoffeeProvider with ChangeNotifier {
     _grindMax = prefs.getDouble('grindMax') ?? 30.0;
     _grindStep = prefs.getDouble('grindStep') ?? 0.5;
     
+    final String? themeModeStr = prefs.getString('themeMode');
+    if (themeModeStr != null) {
+      _themeMode = ThemeMode.values.firstWhere(
+        (e) => e.toString() == themeModeStr,
+        orElse: () => ThemeMode.system,
+      );
+    }
+    
     notifyListeners();
   }
 
@@ -66,12 +78,19 @@ class CoffeeProvider with ChangeNotifier {
     await prefs.setDouble('grindMin', _grindMin);
     await prefs.setDouble('grindMax', _grindMax);
     await prefs.setDouble('grindStep', _grindStep);
+    await prefs.setString('themeMode', _themeMode.toString());
   }
   
   void updateGrindSettings(double min, double max, double step) {
     _grindMin = min;
     _grindMax = max;
     _grindStep = step;
+    _saveData();
+    notifyListeners();
+  }
+
+  void setThemeMode(ThemeMode mode) {
+    _themeMode = mode;
     _saveData();
     notifyListeners();
   }
