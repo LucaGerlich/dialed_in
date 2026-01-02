@@ -64,8 +64,8 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('ORIGIN', style: TextStyle(fontFamily: 'RobotoMono',color: Colors.grey, fontSize: 12)),
-                      Text(bean.origin.isEmpty ? 'Unknown' : bean.origin, style: TextStyle(fontFamily: 'RobotoMono',fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
+                      Text('ORIGIN', style: TextStyle(fontFamily: 'RobotoMono', color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6), fontSize: 12)),
+                      Text(bean.origin.isEmpty ? 'Unknown' : bean.origin, style: TextStyle(fontFamily: 'RobotoMono', fontSize: 18, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onSurface)),
                       const SizedBox(height: 8),
                       Row(
                         children: [
@@ -82,20 +82,20 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('ROAST DATE', style: TextStyle(fontFamily: 'RobotoMono',color: Colors.grey, fontSize: 12)),
+                                Text('ROAST DATE', style: TextStyle(fontFamily: 'RobotoMono', color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6), fontSize: 12)),
                                 Text(
                                   DateFormat('MMM d, yyyy').format(bean.roastDate!),
-                                  style: TextStyle(fontFamily: 'RobotoMono',color: Colors.white, fontWeight: FontWeight.bold),
+                                  style: TextStyle(fontFamily: 'RobotoMono', color: Theme.of(context).colorScheme.onSurface, fontWeight: FontWeight.bold),
                                 ),
                               ],
                             ),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
-                                Text('RESTING', style: TextStyle(fontFamily: 'RobotoMono',color: Colors.grey, fontSize: 12)),
+                                Text('RESTING', style: TextStyle(fontFamily: 'RobotoMono', color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6), fontSize: 12)),
                                 Text(
                                   '${DateTime.now().difference(bean.roastDate!).inDays} days',
-                                  style: TextStyle(fontFamily: 'RobotoMono',color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold),
+                                  style: TextStyle(fontFamily: 'RobotoMono', color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold),
                                 ),
                               ],
                             ),
@@ -103,11 +103,11 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                         ),
                         const SizedBox(height: 12),
                       ],
-                      Text('NOTES', style: TextStyle(fontFamily: 'RobotoMono',color: Colors.grey, fontSize: 12)),
-                      Text(bean.notes, style: TextStyle(fontFamily: 'RobotoMono',color: Colors.white70)),
+                      Text('NOTES', style: TextStyle(fontFamily: 'RobotoMono', color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6), fontSize: 12)),
+                      Text(bean.notes, style: TextStyle(fontFamily: 'RobotoMono', color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7))),
                       if (bean.flavourTags.isNotEmpty) ...[
                         const SizedBox(height: 12),
-                        Text('FLAVORS', style: TextStyle(fontFamily: 'RobotoMono',color: Colors.grey, fontSize: 12)),
+                        Text('FLAVORS', style: TextStyle(fontFamily: 'RobotoMono', color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6), fontSize: 12)),
                         const SizedBox(height: 4),
                         Wrap(
                           spacing: 8,
@@ -121,7 +121,7 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                               ),
                               child: Text(
                                 tag,
-                                style: TextStyle(fontFamily: 'RobotoMono',color: Colors.black, fontWeight: FontWeight.bold, fontSize: 11),
+                                style: TextStyle(fontFamily: 'RobotoMono', color: Theme.of(context).colorScheme.onPrimary, fontWeight: FontWeight.bold, fontSize: 11),
                               ),
                             );
                           }).toList(),
@@ -150,7 +150,7 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                   height: 300,
                   child: Column(
                     children: [
-                      Text('FLAVOR PROFILE', style: TextStyle(fontFamily: 'RobotoMono',color: Colors.grey, fontSize: 12)),
+                      Text('FLAVOR PROFILE', style: TextStyle(fontFamily: 'RobotoMono', color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6), fontSize: 12)),
                       const SizedBox(height: 16),
                       Expanded(
                         child: RadarChart(
@@ -174,7 +174,7 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                             borderData: FlBorderData(show: false),
                             radarBorderData: const BorderSide(color: Colors.transparent),
                             titlePositionPercentageOffset: 0.2,
-                            titleTextStyle: TextStyle(fontFamily: 'RobotoMono',color: Colors.grey, fontSize: 10),
+                            titleTextStyle: TextStyle(fontFamily: 'RobotoMono', color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6), fontSize: 10),
                             getTitle: (index, angle) {
                               switch (index) {
                                 case 0:
@@ -193,8 +193,8 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                             },
                             tickCount: 5,
                             ticksTextStyle: const TextStyle(color: Colors.transparent, fontSize: 0.0), // Hide ticks
-                            tickBorderData: BorderSide(color: Colors.white.withValues(alpha: 0.1)),
-                            gridBorderData: BorderSide(color: Colors.white.withValues(alpha: 0.1), width: 1),
+                            tickBorderData: BorderSide(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1)),
+                            gridBorderData: BorderSide(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1), width: 1),
                           ),
                           duration: const Duration(milliseconds: 150),
                           curve: Curves.linear,
@@ -213,7 +213,7 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('GRIND SIZE OVER TIME', style: TextStyle(fontFamily: 'RobotoMono',color: Colors.grey, fontSize: 12)),
+                        Text('GRIND SIZE OVER TIME', style: TextStyle(fontFamily: 'RobotoMono', color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6), fontSize: 12)),
                         const SizedBox(height: 16),
                         Expanded(
                           child: LineChart(
@@ -221,7 +221,7 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                               gridData: FlGridData(
                                 show: true,
                                 drawVerticalLine: false,
-                                getDrawingHorizontalLine: (value) => FlLine(color: Colors.white.withValues(alpha:0.05), strokeWidth: 1),
+                                getDrawingHorizontalLine: (value) => FlLine(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.05), strokeWidth: 1),
                               ),
                               titlesData: const FlTitlesData(show: false),
                               borderData: FlBorderData(show: false),
@@ -239,7 +239,7 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                                       radius: 4,
                                       color: Theme.of(context).colorScheme.primary,
                                       strokeWidth: 2,
-                                      strokeColor: Colors.black,
+                                      strokeColor: Theme.of(context).colorScheme.surface,
                                     ),
                                   ),
                                   belowBarData: BarAreaData(
@@ -257,7 +257,7 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                 const SizedBox(height: 16),
 
                 // Shot List
-                Text('HISTORY', style: TextStyle(fontFamily: 'RobotoMono',fontWeight: FontWeight.bold, color: Colors.grey)),
+                Text('HISTORY', style: TextStyle(fontFamily: 'RobotoMono', fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6))),
                 const SizedBox(height: 8),
                 ...shots.map((shot) {
                   final machine = provider.machines.firstWhere((m) => m.id == shot.machineId, orElse: () => CoffeeMachine(name: 'Unknown', id: ''));
@@ -281,7 +281,7 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                       decoration: BoxDecoration(
                         color: Theme.of(context).colorScheme.surface,
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.white.withValues(alpha:0.05)),
+                        border: Border.all(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.05)),
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -307,8 +307,8 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('${shot.doseIn}g -> ${shot.doseOut}g', style: const TextStyle(color: Colors.white)),
-                              Text('${shot.duration}s', style: const TextStyle(color: Colors.white)),
+                              Text('${shot.doseIn}g -> ${shot.doseOut}g', style: TextStyle(color: Theme.of(context).colorScheme.onSurface)),
+                              Text('${shot.duration}s', style: TextStyle(color: Theme.of(context).colorScheme.onSurface)),
                             ],
                           ),
                           if (machine.name != 'Unknown' || grinder.name != 'Unknown') ...[
@@ -377,7 +377,7 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.white.withValues(alpha:0.05)),
+        border: Border.all(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.05)),
       ),
       child: child,
     );
@@ -389,13 +389,13 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withValues(alpha:0.05)),
+        border: Border.all(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.05)),
       ),
       child: Column(
         children: [
-          Text(label, style: TextStyle(fontFamily: 'RobotoMono',color: Colors.grey, fontSize: 10)),
+          Text(label, style: TextStyle(fontFamily: 'RobotoMono', color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6), fontSize: 10)),
           const SizedBox(height: 4),
-          Text(value, style: TextStyle(fontFamily: 'RobotoMono',color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
+          Text(value, style: TextStyle(fontFamily: 'RobotoMono', color: Theme.of(context).colorScheme.onSurface, fontWeight: FontWeight.bold, fontSize: 16)),
         ],
       ),
     );

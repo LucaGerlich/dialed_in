@@ -102,16 +102,16 @@ class _AnalogDialState extends State<AnalogDial> {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
           decoration: BoxDecoration(
-            color: const Color(0xFF1C1C1E), // Dark surface
+            color: Theme.of(context).colorScheme.surface, // Theme surface
             borderRadius: BorderRadius.circular(40),
-            border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+            border: Border.all(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1)),
           ),
           child: Text(
             _currentValue.toStringAsFixed(1),
             style: TextStyle(fontFamily: 'RobotoMono',
               fontSize: 56,
               fontWeight: FontWeight.bold,
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
         ),
@@ -152,7 +152,7 @@ class _RadioTunerPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round;
 
     final activeTickPaint = Paint()
-      ..color = Colors.white
+      ..color = color
       ..strokeWidth = 2
       ..strokeCap = StrokeCap.round;
 
