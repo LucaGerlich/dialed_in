@@ -207,7 +207,10 @@ class CoffeeProvider with ChangeNotifier {
     return file.path;
   }
 
-  /// Imports data from a JSON string, merging with or replacing existing data
+  /// Imports data from a JSON string, merging with or replacing existing data.
+  /// When [replaceExisting] is true, all data including settings is replaced.
+  /// When [replaceExisting] is false, only beans/machines/grinders not already 
+  /// present (by ID) are added, and settings are preserved.
   Future<void> importDataFromJson(String jsonString, {bool replaceExisting = true}) async {
     final Map<String, dynamic> data = jsonDecode(jsonString);
     
@@ -260,15 +263,16 @@ class CoffeeProvider with ChangeNotifier {
       }
     }
 
-    // Import settings (only if replacing or if they exist in the import)
+    // Import settings only when replacing (merge preserves current settings)
     if (data['settings'] != null && replaceExisting) {
       final settings = data['settings'];
       _grindMin = settings['grindMin']?.toDouble() ?? _grindMin;
       _grindMax = settings['grindMax']?.toDouble() ?? _grindMax;
       _grindStep = settings['grindStep']?.toDouble() ?? _grindStep;
       if (settings['themeMode'] != null) {
+        final themeModeStr = settings['themeMode'].toString();
         _themeMode = ThemeMode.values.firstWhere(
-          (e) => e.toString() == settings['themeMode'],
+          (e) => e.toString() == themeModeStr || e.name == themeModeStr,
           orElse: () => _themeMode,
         );
       }
