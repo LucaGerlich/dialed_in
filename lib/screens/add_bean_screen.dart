@@ -57,9 +57,14 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // Initialize custom flavor values for any custom attributes that aren't already set
     final provider = Provider.of<CoffeeProvider>(context, listen: false);
-    for (final attr in provider.customFlavorAttributes) {
+    final currentCustomAttrs = provider.customFlavorAttributes.toSet();
+    
+    // Remove any custom flavor values for attributes that no longer exist in settings
+    _customFlavorValues.removeWhere((key, _) => !currentCustomAttrs.contains(key));
+    
+    // Initialize custom flavor values for any new custom attributes
+    for (final attr in currentCustomAttrs) {
       _customFlavorValues[attr] ??= 5.0;
     }
   }

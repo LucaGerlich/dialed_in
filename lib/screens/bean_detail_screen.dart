@@ -275,7 +275,9 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                       final defaultLabels = ['Acidity', 'Body', 'Sweetness', 'Bitterness', 'Aftertaste'];
                       final defaultValues = [bean.acidity, bean.body, bean.sweetness, bean.bitterness, bean.aftertaste];
                       
-                      // Get custom attributes from provider
+                      // Get custom attributes currently defined in settings
+                      // Custom attributes not in settings are intentionally excluded
+                      // New custom attributes default to 5.0 if not yet set for this bean
                       final customAttrs = provider.customFlavorAttributes;
                       
                       // Build combined lists
