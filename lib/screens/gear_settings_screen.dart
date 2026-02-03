@@ -55,6 +55,9 @@ class GearSettingsScreen extends StatelessWidget {
               _buildSectionHeader(context, 'Grind Settings'),
               _buildGrindSettings(context, provider),
               const SizedBox(height: 32),
+              _buildSectionHeader(context, 'Flavor Profile'),
+              _buildFlavorProfileSettings(context, provider),
+              const SizedBox(height: 32),
               _buildSectionHeader(context, 'Data Management'),
               _buildDataManagementSection(context, provider),
               const SizedBox(height: 32),
@@ -357,6 +360,159 @@ class GearSettingsScreen extends StatelessWidget {
                 if (step != null) provider.updateGrindSettings(provider.grindMin, provider.grindMax, step);
               })),
             ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFlavorProfileSettings(BuildContext context, CoffeeProvider provider) {
+    final defaultAttributes = ['Acidity', 'Body', 'Sweetness', 'Bitterness', 'Aftertaste'];
+    final customAttributes = provider.customFlavorAttributes;
+    final canAddMore = customAttributes.length < 3;
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Default attributes are always shown. Add up to 3 custom attributes.',
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                  height: 1.5,
+                ),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'DEFAULT ATTRIBUTES',
+            style: TextStyle(
+              fontFamily: 'RobotoMono',
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: defaultAttributes.map((attr) => Chip(
+              label: Text(
+                attr,
+                style: TextStyle(
+                  fontFamily: 'RobotoMono',
+                  fontSize: 12,
+                  color: Theme.of(context).colorScheme.onSurface,
+                ),
+              ),
+              backgroundColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+                side: BorderSide.none,
+              ),
+            )).toList(),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'CUSTOM ATTRIBUTES (${customAttributes.length}/3)',
+            style: TextStyle(
+              fontFamily: 'RobotoMono',
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+            ),
+          ),
+          const SizedBox(height: 8),
+          if (customAttributes.isNotEmpty) ...[
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: customAttributes.map((attr) => Chip(
+                label: Text(
+                  attr,
+                  style: TextStyle(
+                    fontFamily: 'RobotoMono',
+                    fontSize: 12,
+                    color: Theme.of(context).colorScheme.onPrimary,
+                  ),
+                ),
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                deleteIcon: Icon(
+                  Icons.close,
+                  size: 16,
+                  color: Theme.of(context).colorScheme.onPrimary,
+                ),
+                onDeleted: () => provider.removeCustomFlavorAttribute(attr),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                  side: BorderSide.none,
+                ),
+              )).toList(),
+            ),
+            const SizedBox(height: 12),
+          ],
+          if (canAddMore)
+            OutlinedButton.icon(
+              onPressed: () => _showAddCustomAttributeDialog(context, provider),
+              icon: const Icon(Icons.add),
+              label: const Text('Add Custom Attribute'),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: Theme.of(context).colorScheme.primary,
+                side: BorderSide(color: Theme.of(context).colorScheme.primary),
+                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  void _showAddCustomAttributeDialog(BuildContext context, CoffeeProvider provider) {
+    final controller = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        title: Text('Add Custom Attribute', style: TextStyle(color: Theme.of(context).colorScheme.onSurface)),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+          decoration: InputDecoration(
+            labelText: 'Attribute Name',
+            hintText: 'e.g. Fruity, Nutty, Floral',
+            labelStyle: const TextStyle(color: Colors.grey),
+            hintStyle: TextStyle(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4)),
+            enabledBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.2)),
+            ),
+            focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),
+            ),
+          ),
+          textCapitalization: TextCapitalization.words,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              final name = controller.text.trim();
+              if (name.isNotEmpty) {
+                provider.addCustomFlavorAttribute(name);
+                Navigator.pop(ctx);
+              }
+            },
+            child: const Text('Add'),
           ),
         ],
       ),

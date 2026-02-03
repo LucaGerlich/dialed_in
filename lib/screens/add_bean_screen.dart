@@ -30,6 +30,9 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
   double _sweetness = 5.0;
   double _bitterness = 5.0;
   double _aftertaste = 5.0;
+  
+  // Custom Flavor Values
+  Map<String, double> _customFlavorValues = {};
 
   @override
   void initState() {
@@ -47,6 +50,7 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
       _sweetness = widget.bean!.sweetness;
       _bitterness = widget.bean!.bitterness;
       _aftertaste = widget.bean!.aftertaste;
+      _customFlavorValues = Map.from(widget.bean!.customFlavorValues);
     }
   }
 
@@ -93,6 +97,7 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
         sweetness: _sweetness,
         bitterness: _bitterness,
         aftertaste: _aftertaste,
+        customFlavorValues: _customFlavorValues,
       );
 
       if (widget.bean != null) {
@@ -230,6 +235,24 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
             _buildSlider('Sweetness', _sweetness, (val) => setState(() => _sweetness = val)),
             _buildSlider('Bitterness', _bitterness, (val) => setState(() => _bitterness = val)),
             _buildSlider('Aftertaste', _aftertaste, (val) => setState(() => _aftertaste = val)),
+            // Custom flavor attributes from settings
+            Consumer<CoffeeProvider>(
+              builder: (context, provider, child) {
+                final customAttrs = provider.customFlavorAttributes;
+                if (customAttrs.isEmpty) return const SizedBox.shrink();
+                return Column(
+                  children: customAttrs.map((attr) {
+                    // Initialize custom value if not present
+                    _customFlavorValues[attr] ??= 5.0;
+                    return _buildSlider(
+                      attr,
+                      _customFlavorValues[attr]!,
+                      (val) => setState(() => _customFlavorValues[attr] = val),
+                    );
+                  }).toList(),
+                );
+              },
+            ),
             const SizedBox(height: 24),
 
             _buildLabel('FLAVOR TAGS'),

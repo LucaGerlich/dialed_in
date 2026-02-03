@@ -155,6 +155,9 @@ class Bean {
   final double sweetness;
   final double bitterness;
   final double aftertaste;
+  
+  // Custom Flavor Attributes (name -> value)
+  final Map<String, double> customFlavorValues;
 
   Bean({
     String? id,
@@ -172,8 +175,10 @@ class Bean {
     this.sweetness = 5.0,
     this.bitterness = 5.0,
     this.aftertaste = 5.0,
+    Map<String, double>? customFlavorValues,
   }) : id = id ?? const Uuid().v4(),
-       shots = shots ?? [];
+       shots = shots ?? [],
+       customFlavorValues = customFlavorValues ?? {};
 
   Map<String, dynamic> toJson() {
     return {
@@ -192,6 +197,7 @@ class Bean {
       'sweetness': sweetness,
       'bitterness': bitterness,
       'aftertaste': aftertaste,
+      'customFlavorValues': customFlavorValues,
     };
   }
 
@@ -217,6 +223,8 @@ class Bean {
       sweetness: json['sweetness']?.toDouble() ?? 5.0,
       bitterness: json['bitterness']?.toDouble() ?? 5.0,
       aftertaste: json['aftertaste']?.toDouble() ?? 5.0,
+      customFlavorValues: (json['customFlavorValues'] as Map<String, dynamic>?)
+          ?.map((key, value) => MapEntry(key, (value as num).toDouble())) ?? {},
     );
   }
 }

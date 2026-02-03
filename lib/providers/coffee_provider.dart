@@ -18,6 +18,9 @@ class CoffeeProvider with ChangeNotifier {
   // Theme Settings
   ThemeMode _themeMode = ThemeMode.system;
 
+  // Custom Flavor Profile Attributes (up to 3 additional)
+  List<String> _customFlavorAttributes = [];
+
   // Onboarding Settings
   bool _hasCompletedOnboarding = false;
   bool _isLoading = true;
@@ -32,6 +35,7 @@ class CoffeeProvider with ChangeNotifier {
   ThemeMode get themeMode => _themeMode;
   bool get hasCompletedOnboarding => _hasCompletedOnboarding;
   bool get isLoading => _isLoading;
+  List<String> get customFlavorAttributes => _customFlavorAttributes;
 
   CoffeeProvider() {
     _loadData();
@@ -70,6 +74,14 @@ class CoffeeProvider with ChangeNotifier {
     }
     
     _hasCompletedOnboarding = prefs.getBool('hasCompletedOnboarding') ?? false;
+    
+    // Load custom flavor attributes
+    final String? customFlavorJson = prefs.getString('customFlavorAttributes');
+    if (customFlavorJson != null) {
+      final List<dynamic> decoded = jsonDecode(customFlavorJson);
+      _customFlavorAttributes = decoded.map((e) => e.toString()).toList();
+    }
+    
     _isLoading = false;
     
     notifyListeners();
@@ -90,6 +102,7 @@ class CoffeeProvider with ChangeNotifier {
     await prefs.setDouble('grindMax', _grindMax);
     await prefs.setDouble('grindStep', _grindStep);
     await prefs.setString('themeMode', _themeMode.toString());
+    await prefs.setString('customFlavorAttributes', jsonEncode(_customFlavorAttributes));
   }
   
   void updateGrindSettings(double min, double max, double step) {
@@ -102,6 +115,22 @@ class CoffeeProvider with ChangeNotifier {
 
   void setThemeMode(ThemeMode mode) {
     _themeMode = mode;
+    _saveData();
+    notifyListeners();
+  }
+
+  /// Adds a custom flavor attribute (max 3)
+  void addCustomFlavorAttribute(String name) {
+    if (_customFlavorAttributes.length < 3 && name.isNotEmpty) {
+      _customFlavorAttributes.add(name);
+      _saveData();
+      notifyListeners();
+    }
+  }
+
+  /// Removes a custom flavor attribute by name
+  void removeCustomFlavorAttribute(String name) {
+    _customFlavorAttributes.remove(name);
     _saveData();
     notifyListeners();
   }
@@ -172,6 +201,7 @@ class CoffeeProvider with ChangeNotifier {
         sweetness: bean.sweetness,
         bitterness: bean.bitterness,
         aftertaste: bean.aftertaste,
+        customFlavorValues: bean.customFlavorValues,
       );
       
       _saveData();
@@ -216,6 +246,7 @@ class CoffeeProvider with ChangeNotifier {
         'grindMax': _grindMax,
         'grindStep': _grindStep,
         'themeMode': _themeMode.toString(),
+        'customFlavorAttributes': _customFlavorAttributes,
       },
     };
     return const JsonEncoder.withIndent('  ').convert(exportData);
@@ -298,6 +329,10 @@ class CoffeeProvider with ChangeNotifier {
           (e) => e.toString() == themeModeStr || e.name == themeModeStr,
           orElse: () => _themeMode,
         );
+      }
+      if (settings['customFlavorAttributes'] != null) {
+        final List<dynamic> customAttrs = settings['customFlavorAttributes'];
+        _customFlavorAttributes = customAttrs.map((e) => e.toString()).toList();
       }
     }
 

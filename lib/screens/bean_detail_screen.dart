@@ -269,107 +269,97 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                 _buildBentoContainer(
                   context,
                   height: 300,
-                  child: Column(
-                    children: [
-                      Text(
-                        'FLAVOR PROFILE',
-                        style: TextStyle(
-                          fontFamily: 'RobotoMono',
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.onSurface.withValues(alpha: 0.6),
-                          fontSize: 12,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      Expanded(
-                        child: RadarChart(
-                          RadarChartData(
-                            dataSets: [
-                              RadarDataSet(
-                                fillColor: Theme.of(
-                                  context,
-                                ).colorScheme.primary.withValues(alpha: 0.3),
-                                borderColor: Theme.of(
-                                  context,
-                                ).colorScheme.primary,
-                                entryRadius: 2,
-                                dataEntries: [
-                                  RadarEntry(value: bean.acidity),
-                                  RadarEntry(value: bean.body),
-                                  RadarEntry(value: bean.sweetness),
-                                  RadarEntry(value: bean.bitterness),
-                                  RadarEntry(value: bean.aftertaste),
-                                ],
-                                borderWidth: 2,
-                              ),
-                            ],
-                            radarBackgroundColor: Colors.transparent,
-                            borderData: FlBorderData(show: false),
-                            radarBorderData: const BorderSide(
-                              color: Colors.transparent,
-                            ),
-                            titlePositionPercentageOffset: 0.2,
-                            titleTextStyle: TextStyle(
+                  child: Builder(
+                    builder: (context) {
+                      // Default flavor attributes
+                      final defaultLabels = ['Acidity', 'Body', 'Sweetness', 'Bitterness', 'Aftertaste'];
+                      final defaultValues = [bean.acidity, bean.body, bean.sweetness, bean.bitterness, bean.aftertaste];
+                      
+                      // Get custom attributes from provider
+                      final customAttrs = provider.customFlavorAttributes;
+                      
+                      // Build combined lists
+                      final allLabels = [...defaultLabels, ...customAttrs];
+                      final allValues = [
+                        ...defaultValues,
+                        ...customAttrs.map((attr) => bean.customFlavorValues[attr] ?? 5.0),
+                      ];
+                      
+                      return Column(
+                        children: [
+                          Text(
+                            'FLAVOR PROFILE',
+                            style: TextStyle(
                               fontFamily: 'RobotoMono',
                               color: Theme.of(
                                 context,
                               ).colorScheme.onSurface.withValues(alpha: 0.6),
-                              fontSize: 10,
-                            ),
-                            getTitle: (index, angle) {
-                              switch (index) {
-                                case 0:
-                                  return RadarChartTitle(
-                                    text: 'Acidity',
-                                    angle: angle,
-                                  );
-                                case 1:
-                                  return RadarChartTitle(
-                                    text: 'Body',
-                                    angle: angle,
-                                  );
-                                case 2:
-                                  return RadarChartTitle(
-                                    text: 'Sweetness',
-                                    angle: angle,
-                                  );
-                                case 3:
-                                  return RadarChartTitle(
-                                    text: 'Bitterness',
-                                    angle: angle,
-                                  );
-                                case 4:
-                                  return RadarChartTitle(
-                                    text: 'Aftertaste',
-                                    angle: angle,
-                                  );
-                                default:
-                                  return const RadarChartTitle(text: '');
-                              }
-                            },
-                            tickCount: 5,
-                            ticksTextStyle: const TextStyle(
-                              color: Colors.transparent,
-                              fontSize: 0.0,
-                            ), // Hide ticks
-                            tickBorderData: BorderSide(
-                              color: Theme.of(
-                                context,
-                              ).colorScheme.onSurface.withValues(alpha: 0.1),
-                            ),
-                            gridBorderData: BorderSide(
-                              color: Theme.of(
-                                context,
-                              ).colorScheme.onSurface.withValues(alpha: 0.1),
-                              width: 1,
+                              fontSize: 12,
                             ),
                           ),
-                          duration: const Duration(milliseconds: 150),
-                          curve: Curves.linear,
-                        ),
-                      ),
-                    ],
+                          const SizedBox(height: 16),
+                          Expanded(
+                            child: RadarChart(
+                              RadarChartData(
+                                dataSets: [
+                                  RadarDataSet(
+                                    fillColor: Theme.of(
+                                      context,
+                                    ).colorScheme.primary.withValues(alpha: 0.3),
+                                    borderColor: Theme.of(
+                                      context,
+                                    ).colorScheme.primary,
+                                    entryRadius: 2,
+                                    dataEntries: allValues.map((v) => RadarEntry(value: v)).toList(),
+                                    borderWidth: 2,
+                                  ),
+                                ],
+                                radarBackgroundColor: Colors.transparent,
+                                borderData: FlBorderData(show: false),
+                                radarBorderData: const BorderSide(
+                                  color: Colors.transparent,
+                                ),
+                                titlePositionPercentageOffset: 0.2,
+                                titleTextStyle: TextStyle(
+                                  fontFamily: 'RobotoMono',
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurface.withValues(alpha: 0.6),
+                                  fontSize: 10,
+                                ),
+                                getTitle: (index, angle) {
+                                  if (index < allLabels.length) {
+                                    return RadarChartTitle(
+                                      text: allLabels[index],
+                                      angle: angle,
+                                    );
+                                  }
+                                  return const RadarChartTitle(text: '');
+                                },
+                                tickCount: 5,
+                                ticksTextStyle: const TextStyle(
+                                  color: Colors.transparent,
+                                  fontSize: 0.0,
+                                ), // Hide ticks
+                                tickBorderData: BorderSide(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurface.withValues(alpha: 0.1),
+                                ),
+                                gridBorderData: BorderSide(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurface.withValues(alpha: 0.1),
+                                  width: 1,
+                                ),
+                              ),
+                              duration: const Duration(milliseconds: 150),
+                              curve: Curves.linear,
+                            ),
+                          ),
+                        ],
+                      );
+                    },
                   ),
                 ),
                 const SizedBox(height: 16),
