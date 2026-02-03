@@ -58,11 +58,75 @@ class GearSettingsScreen extends StatelessWidget {
               _buildSectionHeader(context, 'Data Management'),
               _buildDataManagementSection(context, provider),
               const SizedBox(height: 32),
+              _buildSectionHeader(context, 'Help'),
+              _buildHelpSection(context, provider),
+              const SizedBox(height: 32),
               _buildSectionHeader(context, 'About Dialed In'),
               _buildAboutSection(context),
             ],
           );
         },
+      ),
+    );
+  }
+
+  Widget _buildHelpSection(BuildContext context, CoffeeProvider provider) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          InkWell(
+            onTap: () async {
+              // Reset onboarding and navigate back to trigger it
+              await provider.resetOnboarding();
+              if (context.mounted) {
+                Navigator.of(context).popUntil((route) => route.isFirst);
+              }
+            },
+            child: Row(
+              children: [
+                Icon(Icons.help_outline, size: 20, color: Theme.of(context).colorScheme.primary),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'View App Tutorial',
+                        style: TextStyle(
+                          fontFamily: 'RobotoMono',
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).colorScheme.onSurface,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Learn how to use Dialed In',
+                        style: TextStyle(
+                          fontFamily: 'RobotoMono',
+                          fontSize: 12,
+                          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Icon(
+                  Icons.arrow_forward_ios,
+                  size: 16,
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

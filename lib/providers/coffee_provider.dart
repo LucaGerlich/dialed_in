@@ -18,6 +18,10 @@ class CoffeeProvider with ChangeNotifier {
   // Theme Settings
   ThemeMode _themeMode = ThemeMode.system;
 
+  // Onboarding Settings
+  bool _hasCompletedOnboarding = false;
+  bool _isLoading = true;
+
   List<Bean> get beans => _beans;
   List<CoffeeMachine> get machines => _machines;
   List<Grinder> get grinders => _grinders;
@@ -26,6 +30,8 @@ class CoffeeProvider with ChangeNotifier {
   double get grindMax => _grindMax;
   double get grindStep => _grindStep;
   ThemeMode get themeMode => _themeMode;
+  bool get hasCompletedOnboarding => _hasCompletedOnboarding;
+  bool get isLoading => _isLoading;
 
   CoffeeProvider() {
     _loadData();
@@ -63,6 +69,9 @@ class CoffeeProvider with ChangeNotifier {
       );
     }
     
+    _hasCompletedOnboarding = prefs.getBool('hasCompletedOnboarding') ?? false;
+    _isLoading = false;
+    
     notifyListeners();
   }
 
@@ -94,6 +103,20 @@ class CoffeeProvider with ChangeNotifier {
   void setThemeMode(ThemeMode mode) {
     _themeMode = mode;
     _saveData();
+    notifyListeners();
+  }
+
+  Future<void> completeOnboarding() async {
+    _hasCompletedOnboarding = true;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('hasCompletedOnboarding', true);
+    notifyListeners();
+  }
+
+  Future<void> resetOnboarding() async {
+    _hasCompletedOnboarding = false;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('hasCompletedOnboarding', false);
     notifyListeners();
   }
 

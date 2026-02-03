@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:dialed_in/providers/coffee_provider.dart';
 import 'screens/bean_list_screen.dart';
+import 'screens/onboarding_screen.dart';
 
 void main() {
   runApp(
@@ -83,7 +84,7 @@ class MyApp extends StatelessWidget {
               foregroundColor: Colors.black,
             ),
           ),
-          home: const BeanListScreen(),
+          home: const AppHome(),
         );
       },
     );
@@ -128,6 +129,40 @@ class MyApp extends StatelessWidget {
         fontSize: 14,
         color: secondaryColor,
       ),
+    );
+  }
+}
+
+class AppHome extends StatelessWidget {
+  const AppHome({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<CoffeeProvider>(
+      builder: (context, provider, child) {
+        // Show loading indicator while data is being loaded
+        if (provider.isLoading) {
+          return Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ),
+          );
+        }
+
+        // Show onboarding if not completed
+        if (!provider.hasCompletedOnboarding) {
+          return OnboardingScreen(
+            onComplete: () async {
+              await provider.completeOnboarding();
+            },
+          );
+        }
+
+        // Show main app
+        return const BeanListScreen();
+      },
     );
   }
 }
