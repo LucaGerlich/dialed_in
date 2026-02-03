@@ -18,7 +18,7 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
   late TextEditingController _processController;
   late TextEditingController _notesController;
   final TextEditingController _tagController = TextEditingController();
-  
+
   String _roastLevel = 'Medium';
   final List<String> _roastLevels = ['Light', 'Medium', 'Dark'];
   DateTime? _roastDate;
@@ -31,6 +31,9 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
   double _bitterness = 5.0;
   double _aftertaste = 5.0;
 
+  // Custom Flavor Values
+  Map<String, double> _customFlavorValues = {};
+
   // Bean Composition
   double _arabicaPercentage = 100.0;
   double _robustaPercentage = 0.0;
@@ -40,7 +43,9 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
     super.initState();
     _nameController = TextEditingController(text: widget.bean?.name ?? '');
     _originController = TextEditingController(text: widget.bean?.origin ?? '');
-    _processController = TextEditingController(text: widget.bean?.process ?? '');
+    _processController = TextEditingController(
+      text: widget.bean?.process ?? '',
+    );
     _notesController = TextEditingController(text: widget.bean?.notes ?? '');
     if (widget.bean != null) {
       _roastLevel = widget.bean!.roastLevel;
@@ -53,6 +58,24 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
       _aftertaste = widget.bean!.aftertaste;
       _arabicaPercentage = widget.bean!.arabicaPercentage;
       _robustaPercentage = widget.bean!.robustaPercentage;
+      _customFlavorValues = Map.from(widget.bean!.customFlavorValues);
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final provider = Provider.of<CoffeeProvider>(context, listen: false);
+    final currentCustomAttrs = provider.customFlavorAttributes.toSet();
+
+    // Remove any custom flavor values for attributes that no longer exist in settings
+    _customFlavorValues.removeWhere(
+      (key, _) => !currentCustomAttrs.contains(key),
+    );
+
+    // Initialize custom flavor values for any new custom attributes
+    for (final attr in currentCustomAttrs) {
+      _customFlavorValues[attr] ??= 5.0;
     }
   }
 
@@ -101,6 +124,7 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
         aftertaste: _aftertaste,
         arabicaPercentage: _arabicaPercentage,
         robustaPercentage: _robustaPercentage,
+        customFlavorValues: _customFlavorValues,
       );
 
       if (widget.bean != null) {
@@ -156,7 +180,7 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
             _buildLabel('BEAN NAME'),
             _buildTextField(_nameController, 'e.g. Ethiopia Yirgacheffe'),
             const SizedBox(height: 24),
-            
+
             _buildLabel('ORIGIN'),
             _buildTextField(_originController, 'e.g. Ethiopia'),
             const SizedBox(height: 24),
@@ -165,11 +189,18 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
             GestureDetector(
               onTap: () => _selectDate(context),
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 16,
+                ),
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.surface,
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.05)),
+                  border: Border.all(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withValues(alpha: 0.05),
+                  ),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -179,11 +210,19 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
                           ? 'Select Date'
                           : '${_roastDate!.day}/${_roastDate!.month}/${_roastDate!.year}',
                       style: TextStyle(
-                        color: _roastDate == null ? Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6) : Theme.of(context).colorScheme.onSurface,
+                        color: _roastDate == null
+                            ? Theme.of(
+                                context,
+                              ).colorScheme.onSurface.withValues(alpha: 0.6)
+                            : Theme.of(context).colorScheme.onSurface,
                         fontSize: 16,
                       ),
                     ),
-                    Icon(Icons.calendar_today, color: Theme.of(context).colorScheme.primary, size: 20),
+                    Icon(
+                      Icons.calendar_today,
+                      color: Theme.of(context).colorScheme.primary,
+                      size: 20,
+                    ),
                   ],
                 ),
               ),
@@ -206,15 +245,21 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
                     backgroundColor: Theme.of(context).colorScheme.surface,
                     selectedColor: Theme.of(context).colorScheme.primary,
                     labelStyle: TextStyle(
-                      color: isSelected ? Theme.of(context).colorScheme.onPrimary : Theme.of(context).colorScheme.onSurface,
-                      fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                      color: isSelected
+                          ? Theme.of(context).colorScheme.onPrimary
+                          : Theme.of(context).colorScheme.onSurface,
+                      fontWeight: isSelected
+                          ? FontWeight.bold
+                          : FontWeight.normal,
                     ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                       side: BorderSide(
                         color: isSelected
                             ? Theme.of(context).colorScheme.primary
-                            : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
+                            : Theme.of(
+                                context,
+                              ).colorScheme.onSurface.withValues(alpha: 0.1),
                       ),
                     ),
                     showCheckmark: false,
@@ -236,24 +281,41 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Arabica', style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6), fontSize: 12)),
+                      Text(
+                        'Arabica',
+                        style: TextStyle(
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.onSurface.withValues(alpha: 0.6),
+                          fontSize: 12,
+                        ),
+                      ),
                       const SizedBox(height: 4),
                       Row(
                         children: [
                           Expanded(
                             child: SliderTheme(
                               data: SliderTheme.of(context).copyWith(
-                                activeTrackColor: Theme.of(context).colorScheme.primary,
-                                inactiveTrackColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
-                                thumbColor: Theme.of(context).colorScheme.onSurface,
-                                overlayColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
+                                activeTrackColor: Theme.of(
+                                  context,
+                                ).colorScheme.primary,
+                                inactiveTrackColor: Theme.of(
+                                  context,
+                                ).colorScheme.onSurface.withValues(alpha: 0.1),
+                                thumbColor: Theme.of(
+                                  context,
+                                ).colorScheme.onSurface,
+                                overlayColor: Theme.of(
+                                  context,
+                                ).colorScheme.primary.withValues(alpha: 0.2),
                               ),
                               child: Slider(
                                 value: _arabicaPercentage,
                                 min: 0.0,
                                 max: 100.0,
                                 divisions: 20,
-                                label: '${_arabicaPercentage.toStringAsFixed(0)}%',
+                                label:
+                                    '${_arabicaPercentage.toStringAsFixed(0)}%',
                                 onChanged: (val) {
                                   setState(() {
                                     _arabicaPercentage = val;
@@ -268,7 +330,11 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
                             width: 50,
                             child: Text(
                               '${_arabicaPercentage.toStringAsFixed(0)}%',
-                              style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold, fontSize: 16),
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.primary,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
                               textAlign: TextAlign.right,
                             ),
                           ),
@@ -286,24 +352,41 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Robusta', style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6), fontSize: 12)),
+                      Text(
+                        'Robusta',
+                        style: TextStyle(
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.onSurface.withValues(alpha: 0.6),
+                          fontSize: 12,
+                        ),
+                      ),
                       const SizedBox(height: 4),
                       Row(
                         children: [
                           Expanded(
                             child: SliderTheme(
                               data: SliderTheme.of(context).copyWith(
-                                activeTrackColor: Theme.of(context).colorScheme.primary,
-                                inactiveTrackColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
-                                thumbColor: Theme.of(context).colorScheme.onSurface,
-                                overlayColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
+                                activeTrackColor: Theme.of(
+                                  context,
+                                ).colorScheme.primary,
+                                inactiveTrackColor: Theme.of(
+                                  context,
+                                ).colorScheme.onSurface.withValues(alpha: 0.1),
+                                thumbColor: Theme.of(
+                                  context,
+                                ).colorScheme.onSurface,
+                                overlayColor: Theme.of(
+                                  context,
+                                ).colorScheme.primary.withValues(alpha: 0.2),
                               ),
                               child: Slider(
                                 value: _robustaPercentage,
                                 min: 0.0,
                                 max: 100.0,
                                 divisions: 20,
-                                label: '${_robustaPercentage.toStringAsFixed(0)}%',
+                                label:
+                                    '${_robustaPercentage.toStringAsFixed(0)}%',
                                 onChanged: (val) {
                                   setState(() {
                                     _robustaPercentage = val;
@@ -318,7 +401,11 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
                             width: 50,
                             child: Text(
                               '${_robustaPercentage.toStringAsFixed(0)}%',
-                              style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold, fontSize: 16),
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.primary,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
                               textAlign: TextAlign.right,
                             ),
                           ),
@@ -332,28 +419,71 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
             const SizedBox(height: 24),
 
             _buildLabel('NOTES'),
-            _buildTextField(_notesController, 'Tasting notes, etc.', maxLines: 3),
+            _buildTextField(
+              _notesController,
+              'Tasting notes, etc.',
+              maxLines: 3,
+            ),
             const SizedBox(height: 24),
 
             _buildLabel('FLAVOR PROFILE'),
-            _buildSlider('Acidity', _acidity, (val) => setState(() => _acidity = val)),
+            _buildSlider(
+              'Acidity',
+              _acidity,
+              (val) => setState(() => _acidity = val),
+            ),
             _buildSlider('Body', _body, (val) => setState(() => _body = val)),
-            _buildSlider('Sweetness', _sweetness, (val) => setState(() => _sweetness = val)),
-            _buildSlider('Bitterness', _bitterness, (val) => setState(() => _bitterness = val)),
-            _buildSlider('Aftertaste', _aftertaste, (val) => setState(() => _aftertaste = val)),
+            _buildSlider(
+              'Sweetness',
+              _sweetness,
+              (val) => setState(() => _sweetness = val),
+            ),
+            _buildSlider(
+              'Bitterness',
+              _bitterness,
+              (val) => setState(() => _bitterness = val),
+            ),
+            _buildSlider(
+              'Aftertaste',
+              _aftertaste,
+              (val) => setState(() => _aftertaste = val),
+            ),
+            // Custom flavor attributes from settings
+            Consumer<CoffeeProvider>(
+              builder: (context, provider, child) {
+                final customAttrs = provider.customFlavorAttributes;
+                if (customAttrs.isEmpty) return const SizedBox.shrink();
+                // Build sliders using current values (initialized in didChangeDependencies)
+                return Column(
+                  children: customAttrs.map((attr) {
+                    return _buildSlider(
+                      attr,
+                      _customFlavorValues[attr] ?? 5.0,
+                      (val) => setState(() => _customFlavorValues[attr] = val),
+                    );
+                  }).toList(),
+                );
+              },
+            ),
             const SizedBox(height: 24),
 
             _buildLabel('FLAVOR TAGS'),
             Row(
               children: [
                 Expanded(
-                  child: _buildTextField(_tagController, 'Add a tag (e.g. Blueberry)'),
+                  child: _buildTextField(
+                    _tagController,
+                    'Add a tag (e.g. Blueberry)',
+                  ),
                 ),
                 const SizedBox(width: 8),
                 IconButton.filled(
                   onPressed: _addTag,
                   icon: const Icon(Icons.add),
-                  style: IconButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.primary, foregroundColor: Theme.of(context).colorScheme.onPrimary),
+                  style: IconButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                  ),
                 ),
               ],
             ),
@@ -363,11 +493,25 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
               runSpacing: 8,
               children: _flavourTags.map((tag) {
                 return Chip(
-                  label: Text(tag, style: TextStyle(fontFamily: 'RobotoMono',fontSize: 12, color: Theme.of(context).colorScheme.onPrimary)),
+                  label: Text(
+                    tag,
+                    style: TextStyle(
+                      fontFamily: 'RobotoMono',
+                      fontSize: 12,
+                      color: Theme.of(context).colorScheme.onPrimary,
+                    ),
+                  ),
                   backgroundColor: Theme.of(context).colorScheme.primary,
-                  deleteIcon: Icon(Icons.close, size: 14, color: Theme.of(context).colorScheme.onPrimary),
+                  deleteIcon: Icon(
+                    Icons.close,
+                    size: 14,
+                    color: Theme.of(context).colorScheme.onPrimary,
+                  ),
                   onDeleted: () => _removeTag(tag),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20), side: BorderSide.none),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    side: BorderSide.none,
+                  ),
                 );
               }).toList(),
             ),
@@ -381,9 +525,18 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
                   backgroundColor: Theme.of(context).colorScheme.primary,
                   foregroundColor: Theme.of(context).colorScheme.onPrimary,
                   padding: const EdgeInsets.symmetric(vertical: 20),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
                 ),
-                child: Text(widget.bean != null ? 'UPDATE BEAN' : 'ADD BEAN', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, letterSpacing: 1.2)),
+                child: Text(
+                  widget.bean != null ? 'UPDATE BEAN' : 'ADD BEAN',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.2,
+                  ),
+                ),
               ),
             ),
           ],
@@ -392,23 +545,45 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
     );
   }
 
-  Widget _buildSlider(String label, double value, ValueChanged<double> onChanged) {
+  Widget _buildSlider(
+    String label,
+    double value,
+    ValueChanged<double> onChanged,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(label, style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6), fontSize: 12)),
-            Text(value.toStringAsFixed(1), style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold)),
+            Text(
+              label,
+              style: TextStyle(
+                color: Theme.of(
+                  context,
+                ).colorScheme.onSurface.withValues(alpha: 0.6),
+                fontSize: 12,
+              ),
+            ),
+            Text(
+              value.toStringAsFixed(1),
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.primary,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ],
         ),
         SliderTheme(
           data: SliderTheme.of(context).copyWith(
             activeTrackColor: Theme.of(context).colorScheme.primary,
-            inactiveTrackColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
+            inactiveTrackColor: Theme.of(
+              context,
+            ).colorScheme.onSurface.withValues(alpha: 0.1),
             thumbColor: Theme.of(context).colorScheme.onSurface,
-            overlayColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
+            overlayColor: Theme.of(
+              context,
+            ).colorScheme.primary.withValues(alpha: 0.2),
           ),
           child: Slider(
             value: value,
@@ -428,7 +603,8 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
       padding: const EdgeInsets.only(bottom: 8),
       child: Text(
         text,
-        style: TextStyle(fontFamily: 'RobotoMono',
+        style: TextStyle(
+          fontFamily: 'RobotoMono',
           fontSize: 12,
           fontWeight: FontWeight.bold,
           color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
@@ -437,14 +613,20 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
     );
   }
 
-  Widget _buildTextField(TextEditingController controller, String hint, {int maxLines = 1}) {
+  Widget _buildTextField(
+    TextEditingController controller,
+    String hint, {
+    int maxLines = 1,
+  }) {
     return TextField(
       controller: controller,
       maxLines: maxLines,
       style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
       decoration: InputDecoration(
         hintText: hint,
-        hintStyle: TextStyle(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4)),
+        hintStyle: TextStyle(
+          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
+        ),
         filled: true,
         fillColor: Theme.of(context).colorScheme.surface,
         border: OutlineInputBorder(
@@ -453,11 +635,17 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.05)),
+          borderSide: BorderSide(
+            color: Theme.of(
+              context,
+            ).colorScheme.onSurface.withValues(alpha: 0.05),
+          ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.5)),
+          borderSide: BorderSide(
+            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.5),
+          ),
         ),
         contentPadding: const EdgeInsets.all(16),
       ),
