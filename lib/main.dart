@@ -154,8 +154,8 @@ class AppHome extends StatelessWidget {
         // Show onboarding if not completed
         if (!provider.hasCompletedOnboarding) {
           return OnboardingScreen(
-            onComplete: () {
-              provider.completeOnboarding();
+            onComplete: () async {
+              await provider.completeOnboarding();
             },
           );
         }
