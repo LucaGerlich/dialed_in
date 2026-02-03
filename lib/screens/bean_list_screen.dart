@@ -16,7 +16,7 @@ class BeanListScreen extends StatefulWidget {
 class _BeanListScreenState extends State<BeanListScreen> {
   String _selectedFilter = 'All';
   final List<String> _filters = ['All', 'Light', 'Medium', 'Dark'];
-  String _sortBy = 'Default';
+  String _sortBy = 'Ranking';
   final List<String> _sortOptions = ['Default', 'Ranking'];
 
   @override

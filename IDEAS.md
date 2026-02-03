@@ -4,6 +4,31 @@ This document outlines potential features, improvements, and future updates for 
 
 ---
 
+## ✅ Recently Completed (February 2026)
+
+### Bean Composition Tracking
+**Status:** ✅ Completed  
+**Description:** Track arabica and robusta percentages for each bean.
+- **Features:**
+  - Dual sliders for arabica/robusta percentages (auto-sync to 100%)
+  - Display composition on bean detail screen
+  - Show composition badge on home screen bean cards
+  - Smart formatting (blend vs pure arabica/robusta)
+- **UI Integration:**
+  - Added to bean add/edit screen
+  - Visible on bean cards with grind size
+  - Displayed in bean detail info section
+
+### Default Ranking Sort
+**Status:** ✅ Completed  
+**Description:** Beans now sort by ranking (star rating) by default on home screen.
+- **Features:**
+  - Highest-rated beans appear first
+  - Maintains roast level filtering
+  - Manual sort option still available (Default/Ranking toggle)
+
+---
+
 ## 🚀 High Priority Features
 
 ### 1. Cloud Sync & Backup
@@ -73,17 +98,17 @@ This document outlines potential features, improvements, and future updates for 
   - Save comparison as a reference
 
 ### 6. Bean Performance Scoring
-**Priority:** Medium  
-**Description:** Automated scoring system to rank beans based on shot success.
-- **Scoring Factors:**
-  - Consistency of extractions (variance in grind/time)
-  - Average taste profile ratings
+**Status:** ✅ Partially Implemented  
+**Description:** Bean ranking system is in place with manual star ratings.
+- **Current Features:**
+  - Manual 0-5 star ranking per bean
+  - Sortable bean list by ranking
+  - Star indicator on bean cards
+- **Future Enhancements:**
+  - Automated scoring based on shot success
+  - Consistency metrics (variance in grind/time)
   - Ease of dialing in (shots to achieve good result)
-  - User ratings and notes sentiment analysis
-- **Display:**
-  - Star ratings on bean cards
-  - Sortable bean list by score
-  - "Hall of Fame" for top beans
+  - Notes sentiment analysis
 
 ---
 
@@ -483,4 +508,10 @@ This document outlines potential features, improvements, and future updates for 
 ---
 
 **Last Updated:** 2026-02-03  
+**Recent Changes:**
+- ✅ Added arabica/robusta percentage tracking
+- ✅ Bean composition display on home screen and detail view
+- ✅ Default sort by ranking implemented
+- 🔧 Fixed Gradle wrapper checksum for Android builds
+
 **Contributors Welcome!** See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines (if exists).
