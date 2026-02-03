@@ -230,6 +230,73 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                           }).toList(),
                         ),
                       ],
+                      if ((bean.arabicaPercentage > 0 && bean.arabicaPercentage < 100) || bean.robustaPercentage > 0) ...[
+                        const SizedBox(height: 12),
+                        Text(
+                          'COMPOSITION',
+                          style: TextStyle(
+                            fontFamily: 'RobotoMono',
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onSurface.withValues(alpha: 0.6),
+                            fontSize: 12,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Row(
+                          children: [
+                            if (bean.arabicaPercentage > 0) ...[
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 6,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(
+                                    color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.5),
+                                  ),
+                                ),
+                                child: Text(
+                                  'Arabica ${bean.arabicaPercentage.toStringAsFixed(0)}%',
+                                  style: TextStyle(
+                                    fontFamily: 'RobotoMono',
+                                    color: Theme.of(context).colorScheme.primary,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                            ],
+                            if (bean.robustaPercentage > 0) ...[
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 6,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(
+                                    color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.5),
+                                  ),
+                                ),
+                                child: Text(
+                                  'Robusta ${bean.robustaPercentage.toStringAsFixed(0)}%',
+                                  style: TextStyle(
+                                    fontFamily: 'RobotoMono',
+                                    color: Theme.of(context).colorScheme.primary,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ],
                     ],
                   ),
                 ),

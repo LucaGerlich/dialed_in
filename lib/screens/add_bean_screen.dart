@@ -31,6 +31,10 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
   double _bitterness = 5.0;
   double _aftertaste = 5.0;
 
+  // Bean Composition
+  double _arabicaPercentage = 100.0;
+  double _robustaPercentage = 0.0;
+
   @override
   void initState() {
     super.initState();
@@ -47,6 +51,8 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
       _sweetness = widget.bean!.sweetness;
       _bitterness = widget.bean!.bitterness;
       _aftertaste = widget.bean!.aftertaste;
+      _arabicaPercentage = widget.bean!.arabicaPercentage;
+      _robustaPercentage = widget.bean!.robustaPercentage;
     }
   }
 
@@ -93,6 +99,8 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
         sweetness: _sweetness,
         bitterness: _bitterness,
         aftertaste: _aftertaste,
+        arabicaPercentage: _arabicaPercentage,
+        robustaPercentage: _robustaPercentage,
       );
 
       if (widget.bean != null) {
@@ -218,6 +226,109 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
 
             _buildLabel('PROCESS'),
             _buildTextField(_processController, 'e.g. Washed, Natural'),
+            const SizedBox(height: 24),
+
+            _buildLabel('BEAN COMPOSITION'),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Arabica', style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6), fontSize: 12)),
+                      const SizedBox(height: 4),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: SliderTheme(
+                              data: SliderTheme.of(context).copyWith(
+                                activeTrackColor: Theme.of(context).colorScheme.primary,
+                                inactiveTrackColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
+                                thumbColor: Theme.of(context).colorScheme.onSurface,
+                                overlayColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
+                              ),
+                              child: Slider(
+                                value: _arabicaPercentage,
+                                min: 0.0,
+                                max: 100.0,
+                                divisions: 20,
+                                label: '${_arabicaPercentage.toStringAsFixed(0)}%',
+                                onChanged: (val) {
+                                  setState(() {
+                                    _arabicaPercentage = val;
+                                    _robustaPercentage = 100.0 - val;
+                                  });
+                                },
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          SizedBox(
+                            width: 50,
+                            child: Text(
+                              '${_arabicaPercentage.toStringAsFixed(0)}%',
+                              style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold, fontSize: 16),
+                              textAlign: TextAlign.right,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Robusta', style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6), fontSize: 12)),
+                      const SizedBox(height: 4),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: SliderTheme(
+                              data: SliderTheme.of(context).copyWith(
+                                activeTrackColor: Theme.of(context).colorScheme.primary,
+                                inactiveTrackColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
+                                thumbColor: Theme.of(context).colorScheme.onSurface,
+                                overlayColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
+                              ),
+                              child: Slider(
+                                value: _robustaPercentage,
+                                min: 0.0,
+                                max: 100.0,
+                                divisions: 20,
+                                label: '${_robustaPercentage.toStringAsFixed(0)}%',
+                                onChanged: (val) {
+                                  setState(() {
+                                    _robustaPercentage = val;
+                                    _arabicaPercentage = 100.0 - val;
+                                  });
+                                },
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          SizedBox(
+                            width: 50,
+                            child: Text(
+                              '${_robustaPercentage.toStringAsFixed(0)}%',
+                              style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold, fontSize: 16),
+                              textAlign: TextAlign.right,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
             const SizedBox(height: 24),
 
             _buildLabel('NOTES'),

@@ -156,6 +156,10 @@ class Bean {
   final double bitterness;
   final double aftertaste;
 
+  // Bean Composition (Arabica + Robusta should equal 100)
+  final double arabicaPercentage;
+  final double robustaPercentage;
+
   Bean({
     String? id,
     required this.name,
@@ -172,6 +176,8 @@ class Bean {
     this.sweetness = 5.0,
     this.bitterness = 5.0,
     this.aftertaste = 5.0,
+    this.arabicaPercentage = 100.0,
+    this.robustaPercentage = 0.0,
   }) : id = id ?? const Uuid().v4(),
        shots = shots ?? [];
 
@@ -192,6 +198,8 @@ class Bean {
       'sweetness': sweetness,
       'bitterness': bitterness,
       'aftertaste': aftertaste,
+      'arabicaPercentage': arabicaPercentage,
+      'robustaPercentage': robustaPercentage,
     };
   }
 
@@ -217,6 +225,8 @@ class Bean {
       sweetness: json['sweetness']?.toDouble() ?? 5.0,
       bitterness: json['bitterness']?.toDouble() ?? 5.0,
       aftertaste: json['aftertaste']?.toDouble() ?? 5.0,
+      arabicaPercentage: json['arabicaPercentage']?.toDouble() ?? 100.0,
+      robustaPercentage: json['robustaPercentage']?.toDouble() ?? 0.0,
     );
   }
 }
