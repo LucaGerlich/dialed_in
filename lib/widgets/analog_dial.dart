@@ -112,7 +112,7 @@ class _AnalogDialState extends State<AnalogDial> {
         ),
         const SizedBox(width: 20),
         // The Readout (Right side)
-        Container(
+        SizedBox(
           //padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
           width: 150,
           // decoration: BoxDecoration(

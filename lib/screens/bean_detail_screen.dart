@@ -230,7 +230,9 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                           }).toList(),
                         ),
                       ],
-                      if ((bean.arabicaPercentage > 0 && bean.arabicaPercentage < 100) || bean.robustaPercentage > 0) ...[
+                      if ((bean.arabicaPercentage > 0 &&
+                              bean.arabicaPercentage < 100) ||
+                          bean.robustaPercentage > 0) ...[
                         const SizedBox(height: 12),
                         Text(
                           'COMPOSITION',
@@ -252,17 +254,22 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                                   vertical: 6,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.primary.withValues(alpha: 0.2),
                                   borderRadius: BorderRadius.circular(8),
                                   border: Border.all(
-                                    color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.5),
+                                    color: Theme.of(context).colorScheme.primary
+                                        .withValues(alpha: 0.5),
                                   ),
                                 ),
                                 child: Text(
                                   'Arabica ${bean.arabicaPercentage.toStringAsFixed(0)}%',
                                   style: TextStyle(
                                     fontFamily: 'RobotoMono',
-                                    color: Theme.of(context).colorScheme.primary,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.primary,
                                     fontSize: 10,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -277,17 +284,22 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                                   vertical: 6,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.primary.withValues(alpha: 0.2),
                                   borderRadius: BorderRadius.circular(8),
                                   border: Border.all(
-                                    color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.5),
+                                    color: Theme.of(context).colorScheme.primary
+                                        .withValues(alpha: 0.5),
                                   ),
                                 ),
                                 child: Text(
                                   'Robusta ${bean.robustaPercentage.toStringAsFixed(0)}%',
                                   style: TextStyle(
                                     fontFamily: 'RobotoMono',
-                                    color: Theme.of(context).colorScheme.primary,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.primary,
                                     fontSize: 10,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -339,21 +351,35 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                   child: Builder(
                     builder: (context) {
                       // Default flavor attributes
-                      final defaultLabels = ['Acidity', 'Body', 'Sweetness', 'Bitterness', 'Aftertaste'];
-                      final defaultValues = [bean.acidity, bean.body, bean.sweetness, bean.bitterness, bean.aftertaste];
-                      
+                      final defaultLabels = [
+                        'Acidity',
+                        'Body',
+                        'Sweetness',
+                        'Bitterness',
+                        'Aftertaste',
+                      ];
+                      final defaultValues = [
+                        bean.acidity,
+                        bean.body,
+                        bean.sweetness,
+                        bean.bitterness,
+                        bean.aftertaste,
+                      ];
+
                       // Get custom attributes currently defined in settings
                       // Custom attributes not in settings are intentionally excluded
                       // New custom attributes default to 5.0 if not yet set for this bean
                       final customAttrs = provider.customFlavorAttributes;
-                      
+
                       // Build combined lists
                       final allLabels = [...defaultLabels, ...customAttrs];
                       final allValues = [
                         ...defaultValues,
-                        ...customAttrs.map((attr) => bean.customFlavorValues[attr] ?? 5.0),
+                        ...customAttrs.map(
+                          (attr) => bean.customFlavorValues[attr] ?? 5.0,
+                        ),
                       ];
-                      
+
                       return Column(
                         children: [
                           Text(
@@ -372,14 +398,17 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                               RadarChartData(
                                 dataSets: [
                                   RadarDataSet(
-                                    fillColor: Theme.of(
-                                      context,
-                                    ).colorScheme.primary.withValues(alpha: 0.3),
+                                    fillColor: Theme.of(context)
+                                        .colorScheme
+                                        .primary
+                                        .withValues(alpha: 0.3),
                                     borderColor: Theme.of(
                                       context,
                                     ).colorScheme.primary,
                                     entryRadius: 2,
-                                    dataEntries: allValues.map((v) => RadarEntry(value: v)).toList(),
+                                    dataEntries: allValues
+                                        .map((v) => RadarEntry(value: v))
+                                        .toList(),
                                     borderWidth: 2,
                                   ),
                                 ],
@@ -391,9 +420,8 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                                 titlePositionPercentageOffset: 0.2,
                                 titleTextStyle: TextStyle(
                                   fontFamily: 'RobotoMono',
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.onSurface.withValues(alpha: 0.6),
+                                  color: Theme.of(context).colorScheme.onSurface
+                                      .withValues(alpha: 0.6),
                                   fontSize: 10,
                                 ),
                                 getTitle: (index, angle) {
@@ -411,14 +439,12 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                                   fontSize: 0.0,
                                 ), // Hide ticks
                                 tickBorderData: BorderSide(
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.onSurface.withValues(alpha: 0.1),
+                                  color: Theme.of(context).colorScheme.onSurface
+                                      .withValues(alpha: 0.1),
                                 ),
                                 gridBorderData: BorderSide(
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.onSurface.withValues(alpha: 0.1),
+                                  color: Theme.of(context).colorScheme.onSurface
+                                      .withValues(alpha: 0.1),
                                   width: 1,
                                 ),
                               ),
@@ -486,8 +512,8 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                                         ),
                                         children: [
                                           TextSpan(
-                                            text:
-                                                '${shot.grindSize.toStringAsFixed(1)}',
+                                            text: shot.grindSize
+                                                .toStringAsFixed(1),
                                             style: TextStyle(
                                               fontFamily: 'RobotoMono',
                                               color: Theme.of(

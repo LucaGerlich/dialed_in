@@ -458,21 +458,25 @@ class _AddShotScreenState extends State<AddShotScreen> {
                                             _selectedMachineId = val;
                                             final machine = provider.machines
                                                 .firstWhere((m) => m.id == val);
-                                            if (machine.defaultPressure != null)
+                                            if (machine.defaultPressure !=
+                                                null) {
                                               _pressureController.text = machine
                                                   .defaultPressure
                                                   .toString();
+                                            }
                                             if (machine.defaultTemperature !=
-                                                null)
+                                                null) {
                                               _tempController.text = machine
                                                   .defaultTemperature
                                                   .toString();
+                                            }
                                             if (machine
                                                     .defaultPreInfusionTime !=
-                                                null)
+                                                null) {
                                               _preInfusionController.text =
                                                   machine.defaultPreInfusionTime
                                                       .toString();
+                                            }
                                           });
                                         },
                                       ),
@@ -519,10 +523,11 @@ class _AddShotScreenState extends State<AddShotScreen> {
                                             _selectedGrinderId = val;
                                             final grinder = provider.grinders
                                                 .firstWhere((g) => g.id == val);
-                                            if (grinder.defaultRpm != null)
+                                            if (grinder.defaultRpm != null) {
                                               _rpmController.text = grinder
                                                   .defaultRpm
                                                   .toString();
+                                            }
                                           });
                                         },
                                       ),
