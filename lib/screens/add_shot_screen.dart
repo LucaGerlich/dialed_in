@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/models.dart';
@@ -76,67 +77,132 @@ class _AddShotScreenState extends State<AddShotScreen> {
     }
   }
 
-  void _onDurationChanged(String value) {
-    if (_isTimerRunning) return; // Don't parse while timer is running
+  void _showTimePicker() {
+    if (_isTimerRunning) return;
 
-    int newDurationMs = 0;
-    try {
-      if (value.contains(':')) {
-        final parts = value.split(':');
-        int minutes = 0;
-        int seconds = 0;
-        int milliseconds = 0;
+    // Convert current duration to minutes, seconds, tenths
+    int totalSeconds = _durationMs ~/ 1000;
+    int minutes = totalSeconds ~/ 60;
+    int seconds = totalSeconds % 60;
+    int tenths = (_durationMs % 1000) ~/ 100;
 
-        if (parts.length >= 2) {
-          minutes = int.tryParse(parts[0]) ?? 0;
+    int selectedMinute = minutes;
+    int selectedSecond = seconds;
+    int selectedTenth = tenths;
 
-          if (parts[1].contains('.')) {
-            final secParts = parts[1].split('.');
-            seconds = int.tryParse(secParts[0]) ?? 0;
-            // Truncate to first 3 digits, then pad if needed
-            String msString = secParts[1].substring(
-              0,
-              secParts[1].length > 3 ? 3 : secParts[1].length,
-            );
-            milliseconds = int.tryParse(msString.padRight(3, '0')) ?? 0;
-          } else {
-            seconds = int.tryParse(parts[1]) ?? 0;
-          }
-        } else if (parts.length == 1 && value.contains('.')) {
-          // e.g., "30.5"
-          final secParts = parts[0].split('.');
-          seconds = int.tryParse(secParts[0]) ?? 0;
-          // Truncate to first 3 digits, then pad if needed
-          String msString = secParts[1].substring(
-            0,
-            secParts[1].length > 3 ? 3 : secParts[1].length,
-          );
-          milliseconds = int.tryParse(msString.padRight(3, '0')) ?? 0;
-        }
-
-        newDurationMs = minutes * 60 * 1000 + seconds * 1000 + milliseconds;
-      } else if (value.contains('.')) {
-        // e.g., "30.5" or ".5"
-        final secParts = value.split('.');
-        int seconds = int.tryParse(secParts[0]) ?? 0;
-        // Truncate to first 3 digits, then pad if needed
-        String msString = secParts[1].substring(
-          0,
-          secParts[1].length > 3 ? 3 : secParts[1].length,
-        );
-        int milliseconds = int.tryParse(msString.padRight(3, '0')) ?? 0;
-        newDurationMs = seconds * 1000 + milliseconds;
-      } else {
-        newDurationMs = (int.tryParse(value) ?? 0) * 1000;
-      }
-    } catch (e) {
-      // Ignore parsing errors for now, keep old duration
-      newDurationMs = _durationMs;
-    }
-
-    setState(() {
-      _durationMs = newDurationMs;
-    });
+    showCupertinoModalPopup(
+      context: context,
+      builder: (context) => Container(
+        height: 250,
+        color: CupertinoColors.systemBackground.resolveFrom(context),
+        child: Column(
+          children: [
+            // Toolbar
+            Container(
+              color: CupertinoColors.systemBackground.resolveFrom(context),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  CupertinoButton(
+                    child: const Text('Cancel'),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                  CupertinoButton(
+                    child: const Text('Done'),
+                    onPressed: () {
+                      setState(() {
+                        _durationMs =
+                            selectedMinute * 60 * 1000 +
+                            selectedSecond * 1000 +
+                            selectedTenth * 100;
+                        _durationController.text = _formatDuration(_durationMs);
+                      });
+                      Navigator.pop(context);
+                    },
+                  ),
+                ],
+              ),
+            ),
+            // Picker
+            Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Minutes
+                  SizedBox(
+                    width: 60,
+                    child: CupertinoPicker(
+                      scrollController: FixedExtentScrollController(
+                        initialItem: minutes,
+                      ),
+                      itemExtent: 32,
+                      onSelectedItemChanged: (index) {
+                        selectedMinute = index;
+                      },
+                      children: List.generate(
+                        10,
+                        (i) => Center(
+                          child: Text(
+                            i.toString(),
+                            style: const TextStyle(fontSize: 20),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const Text(':', style: TextStyle(fontSize: 20)),
+                  // Seconds
+                  SizedBox(
+                    width: 60,
+                    child: CupertinoPicker(
+                      scrollController: FixedExtentScrollController(
+                        initialItem: seconds,
+                      ),
+                      itemExtent: 32,
+                      onSelectedItemChanged: (index) {
+                        selectedSecond = index;
+                      },
+                      children: List.generate(
+                        60,
+                        (i) => Center(
+                          child: Text(
+                            i.toString().padLeft(2, '0'),
+                            style: const TextStyle(fontSize: 20),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const Text('.', style: TextStyle(fontSize: 20)),
+                  // Tenths
+                  SizedBox(
+                    width: 40,
+                    child: CupertinoPicker(
+                      scrollController: FixedExtentScrollController(
+                        initialItem: tenths,
+                      ),
+                      itemExtent: 32,
+                      onSelectedItemChanged: (index) {
+                        selectedTenth = index;
+                      },
+                      children: List.generate(
+                        10,
+                        (i) => Center(
+                          child: Text(
+                            i.toString(),
+                            style: const TextStyle(fontSize: 20),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   void _saveShot() {
@@ -229,498 +295,510 @@ class _AddShotScreenState extends State<AddShotScreen> {
                     ),
                   ],
                 ),
-                child: SingleChildScrollView(
-                  controller: scrollController,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Drag Handle
-                      Center(
-                        child: Container(
-                          width: 40,
-                          height: 4,
-                          margin: const EdgeInsets.only(bottom: 24),
-                          decoration: BoxDecoration(
-                            color: Theme.of(
-                              context,
-                            ).colorScheme.onSurface.withValues(alpha: 0.2),
-                            borderRadius: BorderRadius.circular(2),
+                child: GestureDetector(
+                  onTap: () => FocusScope.of(context).unfocus(),
+                  child: SingleChildScrollView(
+                    controller: scrollController,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Drag Handle
+                        Center(
+                          child: Container(
+                            width: 40,
+                            height: 4,
+                            margin: const EdgeInsets.only(bottom: 24),
+                            decoration: BoxDecoration(
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.onSurface.withValues(alpha: 0.2),
+                              borderRadius: BorderRadius.circular(2),
+                            ),
                           ),
                         ),
-                      ),
 
-                      // Timer Row
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(vertical: 12),
-                              decoration: BoxDecoration(
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.onSurface.withValues(alpha: 0.05),
-                                borderRadius: BorderRadius.circular(16),
-                                border: Border.all(
+                        // Timer Row
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 12,
+                                ),
+                                decoration: BoxDecoration(
                                   color: Theme.of(context).colorScheme.onSurface
                                       .withValues(alpha: 0.05),
+                                  borderRadius: BorderRadius.circular(16),
+                                  border: Border.all(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurface
+                                        .withValues(alpha: 0.05),
+                                  ),
+                                ),
+                                child: Column(
+                                  children: [
+                                    SizedBox(
+                                      width: 180,
+                                      child: TextField(
+                                        controller: _durationController,
+                                        enabled: !_isTimerRunning,
+                                        readOnly: true,
+                                        onTap: _showTimePicker,
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontFamily: 'RobotoMono',
+                                          fontSize: 32,
+                                          fontWeight: FontWeight.bold,
+                                          color: Theme.of(
+                                            context,
+                                          ).colorScheme.primary,
+                                        ),
+                                        decoration: const InputDecoration(
+                                          border: InputBorder.none,
+                                          isDense: true,
+                                          contentPadding: EdgeInsets.zero,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    GestureDetector(
+                                      onTap: _toggleTimer,
+                                      child: Text(
+                                        _isTimerRunning ? 'STOP' : 'START',
+                                        style: TextStyle(
+                                          color: _isTimerRunning
+                                              ? Colors.red
+                                              : Theme.of(
+                                                  context,
+                                                ).colorScheme.onSurface,
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 1.5,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
+                            ),
+                            const SizedBox(width: 12),
+                            // Dose Inputs
+                            Expanded(
                               child: Column(
                                 children: [
-                                  SizedBox(
-                                    width: 180,
-                                    child: TextField(
-                                      controller: _durationController,
-                                      enabled: !_isTimerRunning,
-                                      onChanged: _onDurationChanged,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontFamily: 'RobotoMono',
-                                        fontSize: 32,
-                                        fontWeight: FontWeight.bold,
-                                        color: Theme.of(
-                                          context,
-                                        ).colorScheme.primary,
-                                      ),
-                                      decoration: const InputDecoration(
-                                        border: InputBorder.none,
-                                        isDense: true,
-                                        contentPadding: EdgeInsets.zero,
-                                      ),
-                                      keyboardType: TextInputType.number,
-                                    ),
+                                  _buildCompactInput(
+                                    context,
+                                    'IN',
+                                    _doseInController,
                                   ),
-                                  const SizedBox(height: 4),
-                                  GestureDetector(
-                                    onTap: _toggleTimer,
-                                    child: Text(
-                                      _isTimerRunning ? 'STOP' : 'START',
-                                      style: TextStyle(
-                                        color: _isTimerRunning
-                                            ? Colors.red
-                                            : Theme.of(
-                                                context,
-                                              ).colorScheme.onSurface,
-                                        fontWeight: FontWeight.bold,
-                                        letterSpacing: 1.5,
-                                      ),
-                                    ),
+                                  const SizedBox(height: 8),
+                                  _buildCompactInput(
+                                    context,
+                                    'OUT',
+                                    _doseOutController,
                                   ),
                                 ],
                               ),
                             ),
-                          ),
-                          const SizedBox(width: 12),
-                          // Dose Inputs
-                          Expanded(
-                            child: Column(
-                              children: [
-                                _buildCompactInput(
-                                  context,
-                                  'IN',
-                                  _doseInController,
-                                ),
-                                const SizedBox(height: 8),
-                                _buildCompactInput(
-                                  context,
-                                  'OUT',
-                                  _doseOutController,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-
-                      // Gear Selection
-                      if (provider.machines.isNotEmpty ||
-                          provider.grinders.isNotEmpty) ...[
-                        Text(
-                          'GEAR',
-                          style: TextStyle(
-                            fontFamily: 'RobotoMono',
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(
-                              context,
-                            ).colorScheme.onSurface.withValues(alpha: 0.6),
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Row(
-                          children: [
-                            if (provider.machines.isNotEmpty)
-                              Expanded(
-                                child: InputDecorator(
-                                  decoration: _inputDecoration(
-                                    context,
-                                    'Machine',
-                                  ),
-                                  child: DropdownButtonHideUnderline(
-                                    child: DropdownButton<String>(
-                                      isExpanded: true,
-                                      isDense: true,
-                                      value: _selectedMachineId,
-                                      dropdownColor: Theme.of(
-                                        context,
-                                      ).colorScheme.surface,
-                                      style: TextStyle(
-                                        color: Theme.of(
-                                          context,
-                                        ).colorScheme.onSurface,
-                                      ),
-                                      items: provider.machines
-                                          .map(
-                                            (m) => DropdownMenuItem(
-                                              value: m.id,
-                                              child: Text(
-                                                m.name,
-                                                overflow: TextOverflow.ellipsis,
-                                              ),
-                                            ),
-                                          )
-                                          .toList(),
-                                      onChanged: (val) {
-                                        setState(() {
-                                          _selectedMachineId = val;
-                                          final machine = provider.machines
-                                              .firstWhere((m) => m.id == val);
-                                          if (machine.defaultPressure != null)
-                                            _pressureController.text = machine
-                                                .defaultPressure
-                                                .toString();
-                                          if (machine.defaultTemperature !=
-                                              null)
-                                            _tempController.text = machine
-                                                .defaultTemperature
-                                                .toString();
-                                          if (machine.defaultPreInfusionTime !=
-                                              null)
-                                            _preInfusionController.text =
-                                                machine.defaultPreInfusionTime
-                                                    .toString();
-                                        });
-                                      },
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            if (provider.machines.isNotEmpty &&
-                                provider.grinders.isNotEmpty)
-                              const SizedBox(width: 12),
-                            if (provider.grinders.isNotEmpty)
-                              Expanded(
-                                child: InputDecorator(
-                                  decoration: _inputDecoration(
-                                    context,
-                                    'Grinder',
-                                  ),
-                                  child: DropdownButtonHideUnderline(
-                                    child: DropdownButton<String>(
-                                      isExpanded: true,
-                                      isDense: true,
-                                      value: _selectedGrinderId,
-                                      dropdownColor: Theme.of(
-                                        context,
-                                      ).colorScheme.surface,
-                                      style: TextStyle(
-                                        color: Theme.of(
-                                          context,
-                                        ).colorScheme.onSurface,
-                                      ),
-                                      items: provider.grinders
-                                          .map(
-                                            (g) => DropdownMenuItem(
-                                              value: g.id,
-                                              child: Text(
-                                                g.name,
-                                                overflow: TextOverflow.ellipsis,
-                                              ),
-                                            ),
-                                          )
-                                          .toList(),
-                                      onChanged: (val) {
-                                        setState(() {
-                                          _selectedGrinderId = val;
-                                          final grinder = provider.grinders
-                                              .firstWhere((g) => g.id == val);
-                                          if (grinder.defaultRpm != null)
-                                            _rpmController.text = grinder
-                                                .defaultRpm
-                                                .toString();
-                                        });
-                                      },
-                                    ),
-                                  ),
-                                ),
-                              ),
                           ],
                         ),
                         const SizedBox(height: 16),
-                      ],
 
-                      // Advanced Params
-                      ExpansionTile(
-                        title: Text(
-                          'ADVANCED PARAMETERS',
-                          style: TextStyle(
-                            fontFamily: 'RobotoMono',
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                            color: Theme.of(context).colorScheme.onSurface,
-                          ),
-                        ),
-                        children: [
-                          const SizedBox(height: 12),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: _buildCompactInput(
-                                  context,
-                                  'RPM',
-                                  _rpmController,
-                                ),
-                              ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: _buildCompactInput(
-                                  context,
-                                  'BAR',
-                                  _pressureController,
-                                ),
-                              ),
-                            ],
+                        // Gear Selection
+                        if (provider.machines.isNotEmpty ||
+                            provider.grinders.isNotEmpty) ...[
+                          Text(
+                            'GEAR',
+                            style: TextStyle(
+                              fontFamily: 'RobotoMono',
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.onSurface.withValues(alpha: 0.6),
+                            ),
                           ),
                           const SizedBox(height: 8),
                           Row(
                             children: [
-                              Expanded(
-                                child: _buildCompactInput(
-                                  context,
-                                  '°C',
-                                  _tempController,
+                              if (provider.machines.isNotEmpty)
+                                Expanded(
+                                  child: InputDecorator(
+                                    decoration: _inputDecoration(
+                                      context,
+                                      'Machine',
+                                    ),
+                                    child: DropdownButtonHideUnderline(
+                                      child: DropdownButton<String>(
+                                        isExpanded: true,
+                                        isDense: true,
+                                        value: _selectedMachineId,
+                                        dropdownColor: Theme.of(
+                                          context,
+                                        ).colorScheme.surface,
+                                        style: TextStyle(
+                                          color: Theme.of(
+                                            context,
+                                          ).colorScheme.onSurface,
+                                        ),
+                                        items: provider.machines
+                                            .map(
+                                              (m) => DropdownMenuItem(
+                                                value: m.id,
+                                                child: Text(
+                                                  m.name,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                              ),
+                                            )
+                                            .toList(),
+                                        onChanged: (val) {
+                                          setState(() {
+                                            _selectedMachineId = val;
+                                            final machine = provider.machines
+                                                .firstWhere((m) => m.id == val);
+                                            if (machine.defaultPressure != null)
+                                              _pressureController.text = machine
+                                                  .defaultPressure
+                                                  .toString();
+                                            if (machine.defaultTemperature !=
+                                                null)
+                                              _tempController.text = machine
+                                                  .defaultTemperature
+                                                  .toString();
+                                            if (machine
+                                                    .defaultPreInfusionTime !=
+                                                null)
+                                              _preInfusionController.text =
+                                                  machine.defaultPreInfusionTime
+                                                      .toString();
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: _buildCompactInput(
-                                  context,
-                                  'PRE-INF (s)',
-                                  _preInfusionController,
+                              if (provider.machines.isNotEmpty &&
+                                  provider.grinders.isNotEmpty)
+                                const SizedBox(width: 12),
+                              if (provider.grinders.isNotEmpty)
+                                Expanded(
+                                  child: InputDecorator(
+                                    decoration: _inputDecoration(
+                                      context,
+                                      'Grinder',
+                                    ),
+                                    child: DropdownButtonHideUnderline(
+                                      child: DropdownButton<String>(
+                                        isExpanded: true,
+                                        isDense: true,
+                                        value: _selectedGrinderId,
+                                        dropdownColor: Theme.of(
+                                          context,
+                                        ).colorScheme.surface,
+                                        style: TextStyle(
+                                          color: Theme.of(
+                                            context,
+                                          ).colorScheme.onSurface,
+                                        ),
+                                        items: provider.grinders
+                                            .map(
+                                              (g) => DropdownMenuItem(
+                                                value: g.id,
+                                                child: Text(
+                                                  g.name,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                              ),
+                                            )
+                                            .toList(),
+                                        onChanged: (val) {
+                                          setState(() {
+                                            _selectedGrinderId = val;
+                                            final grinder = provider.grinders
+                                                .firstWhere((g) => g.id == val);
+                                            if (grinder.defaultRpm != null)
+                                              _rpmController.text = grinder
+                                                  .defaultRpm
+                                                  .toString();
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                  ),
                                 ),
-                              ),
                             ],
                           ),
-                          const SizedBox(height: 8),
-                          _buildCompactInput(
-                            context,
-                            'WATER',
-                            _waterController,
-                            keyboardType: TextInputType.text,
-                          ),
-                          const SizedBox(height: 12),
+                          const SizedBox(height: 16),
                         ],
-                      ),
-                      const SizedBox(height: 12),
 
-                      // Flavour Graph
-                      ExpansionTile(
-                        title: Text(
-                          'FLAVOUR PROFILE',
-                          style: TextStyle(
-                            fontFamily: 'RobotoMono',
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                            color: Theme.of(context).colorScheme.onSurface,
+                        // Advanced Params
+                        ExpansionTile(
+                          title: Text(
+                            'ADVANCED PARAMETERS',
+                            style: TextStyle(
+                              fontFamily: 'RobotoMono',
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                              color: Theme.of(context).colorScheme.onSurface,
+                            ),
                           ),
-                        ),
-                        children: [
-                          const SizedBox(height: 12),
-                          Center(
-                            child: Container(
-                              width: 200,
-                              height: 200,
-                              decoration: BoxDecoration(
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.onSurface.withValues(alpha: 0.05),
-                                borderRadius: BorderRadius.circular(16),
-                                border: Border.all(
-                                  color: Theme.of(context).colorScheme.onSurface
-                                      .withValues(alpha: 0.1),
+                          children: [
+                            const SizedBox(height: 12),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: _buildCompactInput(
+                                    context,
+                                    'RPM',
+                                    _rpmController,
+                                  ),
                                 ),
-                              ),
-                              child: GestureDetector(
-                                onPanUpdate: (details) {
-                                  setState(() {
-                                    // Map local position to -1 to 1
-                                    // This is tricky inside a scroll view, let's use relative position
-                                    // Assuming 200x200 box
-                                    double dx = details.localPosition.dx;
-                                    double dy = details.localPosition.dy;
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: _buildCompactInput(
+                                    context,
+                                    'BAR',
+                                    _pressureController,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 8),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: _buildCompactInput(
+                                    context,
+                                    '°C',
+                                    _tempController,
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: _buildCompactInput(
+                                    context,
+                                    'PRE-INF (s)',
+                                    _preInfusionController,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 8),
+                            _buildCompactInput(
+                              context,
+                              'WATER',
+                              _waterController,
+                              keyboardType: TextInputType.text,
+                            ),
+                            const SizedBox(height: 12),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
 
-                                    _flavourX = ((dx / 200) * 2 - 1).clamp(
-                                      -1.0,
-                                      1.0,
-                                    );
-                                    _flavourY = -((dy / 200) * 2 - 1).clamp(
-                                      -1.0,
-                                      1.0,
-                                    ); // Invert Y so up is positive
-                                  });
-                                },
-                                onTapDown: (details) {
-                                  setState(() {
-                                    double dx = details.localPosition.dx;
-                                    double dy = details.localPosition.dy;
-                                    _flavourX = ((dx / 200) * 2 - 1).clamp(
-                                      -1.0,
-                                      1.0,
-                                    );
-                                    _flavourY = -((dy / 200) * 2 - 1).clamp(
-                                      -1.0,
-                                      1.0,
-                                    );
-                                  });
-                                },
-                                child: CustomPaint(
-                                  painter: _FlavourGraphPainter(
-                                    _flavourX,
-                                    _flavourY,
-                                    Theme.of(context).colorScheme.primary,
-                                    Theme.of(context).colorScheme.onSurface,
+                        // Flavour Graph
+                        ExpansionTile(
+                          title: Text(
+                            'FLAVOUR PROFILE',
+                            style: TextStyle(
+                              fontFamily: 'RobotoMono',
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                              color: Theme.of(context).colorScheme.onSurface,
+                            ),
+                          ),
+                          children: [
+                            const SizedBox(height: 12),
+                            Center(
+                              child: Container(
+                                width: 200,
+                                height: 200,
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).colorScheme.onSurface
+                                      .withValues(alpha: 0.05),
+                                  borderRadius: BorderRadius.circular(16),
+                                  border: Border.all(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurface
+                                        .withValues(alpha: 0.1),
+                                  ),
+                                ),
+                                child: GestureDetector(
+                                  onPanUpdate: (details) {
+                                    setState(() {
+                                      // Map local position to -1 to 1
+                                      // This is tricky inside a scroll view, let's use relative position
+                                      // Assuming 200x200 box
+                                      double dx = details.localPosition.dx;
+                                      double dy = details.localPosition.dy;
+
+                                      _flavourX = ((dx / 200) * 2 - 1).clamp(
+                                        -1.0,
+                                        1.0,
+                                      );
+                                      _flavourY = -((dy / 200) * 2 - 1).clamp(
+                                        -1.0,
+                                        1.0,
+                                      ); // Invert Y so up is positive
+                                    });
+                                  },
+                                  onTapDown: (details) {
+                                    setState(() {
+                                      double dx = details.localPosition.dx;
+                                      double dy = details.localPosition.dy;
+                                      _flavourX = ((dx / 200) * 2 - 1).clamp(
+                                        -1.0,
+                                        1.0,
+                                      );
+                                      _flavourY = -((dy / 200) * 2 - 1).clamp(
+                                        -1.0,
+                                        1.0,
+                                      );
+                                    });
+                                  },
+                                  child: CustomPaint(
+                                    painter: _FlavourGraphPainter(
+                                      _flavourX,
+                                      _flavourY,
+                                      Theme.of(context).colorScheme.primary,
+                                      Theme.of(context).colorScheme.onSurface,
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                          AnimatedSize(
-                            duration: const Duration(milliseconds: 300),
-                            curve: Curves.easeInOut,
-                            child: _getTroubleshootingTips().isNotEmpty
-                                ? Column(
-                                    children: [
-                                      const SizedBox(height: 16),
-                                      Container(
-                                        padding: const EdgeInsets.all(12),
-                                        decoration: BoxDecoration(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primary
-                                              .withValues(alpha: 0.1),
-                                          borderRadius: BorderRadius.circular(
-                                            12,
-                                          ),
-                                          border: Border.all(
+                            AnimatedSize(
+                              duration: const Duration(milliseconds: 300),
+                              curve: Curves.easeInOut,
+                              child: _getTroubleshootingTips().isNotEmpty
+                                  ? Column(
+                                      children: [
+                                        const SizedBox(height: 16),
+                                        Container(
+                                          padding: const EdgeInsets.all(12),
+                                          decoration: BoxDecoration(
                                             color: Theme.of(context)
                                                 .colorScheme
                                                 .primary
-                                                .withValues(alpha: 0.3),
+                                                .withValues(alpha: 0.1),
+                                            borderRadius: BorderRadius.circular(
+                                              12,
+                                            ),
+                                            border: Border.all(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primary
+                                                  .withValues(alpha: 0.3),
+                                            ),
                                           ),
-                                        ),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Row(
-                                              children: [
-                                                Icon(
-                                                  Icons.lightbulb,
-                                                  size: 16,
-                                                  color: Theme.of(
-                                                    context,
-                                                  ).colorScheme.primary,
-                                                ),
-                                                const SizedBox(width: 8),
-                                                Text(
-                                                  'TROUBLESHOOTER',
-                                                  style: TextStyle(
-                                                    fontFamily: 'RobotoMono',
-                                                    fontSize: 12,
-                                                    fontWeight: FontWeight.bold,
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Icon(
+                                                    Icons.lightbulb,
+                                                    size: 16,
                                                     color: Theme.of(
                                                       context,
                                                     ).colorScheme.primary,
                                                   ),
-                                                ),
-                                              ],
-                                            ),
-                                            const SizedBox(height: 8),
-                                            ..._getTroubleshootingTips().map((
-                                              tip,
-                                            ) {
-                                              final isHeader = tip.endsWith(
-                                                ':',
-                                              );
-                                              return Padding(
-                                                padding: const EdgeInsets.only(
-                                                  bottom: 4,
-                                                ),
-                                                child: Text(
-                                                  tip,
-                                                  style: TextStyle(
-                                                    fontFamily: 'RobotoMono',
-                                                    fontSize: isHeader
-                                                        ? 12
-                                                        : 11,
-                                                    fontWeight: isHeader
-                                                        ? FontWeight.bold
-                                                        : FontWeight.normal,
-                                                    color: isHeader
-                                                        ? Theme.of(context)
-                                                              .colorScheme
-                                                              .onSurface
-                                                        : Theme.of(context)
-                                                              .colorScheme
-                                                              .onSurface
-                                                              .withValues(
-                                                                alpha: 0.7,
-                                                              ),
+                                                  const SizedBox(width: 8),
+                                                  Text(
+                                                    'TROUBLESHOOTER',
+                                                    style: TextStyle(
+                                                      fontFamily: 'RobotoMono',
+                                                      fontSize: 12,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Theme.of(
+                                                        context,
+                                                      ).colorScheme.primary,
+                                                    ),
                                                   ),
-                                                ),
-                                              );
-                                            }),
-                                          ],
+                                                ],
+                                              ),
+                                              const SizedBox(height: 8),
+                                              ..._getTroubleshootingTips().map((
+                                                tip,
+                                              ) {
+                                                final isHeader = tip.endsWith(
+                                                  ':',
+                                                );
+                                                return Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                        bottom: 4,
+                                                      ),
+                                                  child: Text(
+                                                    tip,
+                                                    style: TextStyle(
+                                                      fontFamily: 'RobotoMono',
+                                                      fontSize: isHeader
+                                                          ? 12
+                                                          : 11,
+                                                      fontWeight: isHeader
+                                                          ? FontWeight.bold
+                                                          : FontWeight.normal,
+                                                      color: isHeader
+                                                          ? Theme.of(context)
+                                                                .colorScheme
+                                                                .onSurface
+                                                          : Theme.of(context)
+                                                                .colorScheme
+                                                                .onSurface
+                                                                .withValues(
+                                                                  alpha: 0.7,
+                                                                ),
+                                                    ),
+                                                  ),
+                                                );
+                                              }),
+                                            ],
+                                          ),
                                         ),
-                                      ),
-                                    ],
-                                  )
-                                : const SizedBox.shrink(),
-                          ),
-                          const SizedBox(height: 12),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-
-                      // Save Button
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: _saveShot,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Theme.of(
-                              context,
-                            ).colorScheme.primary,
-                            foregroundColor: Theme.of(
-                              context,
-                            ).colorScheme.onPrimary,
-                            padding: const EdgeInsets.symmetric(vertical: 20),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
+                                      ],
+                                    )
+                                  : const SizedBox.shrink(),
                             ),
-                          ),
-                          child: const Text(
-                            'SAVE SHOT',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 1.2,
+                            const SizedBox(height: 12),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+
+                        // Save Button
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: _saveShot,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Theme.of(
+                                context,
+                              ).colorScheme.primary,
+                              foregroundColor: Theme.of(
+                                context,
+                              ).colorScheme.onPrimary,
+                              padding: const EdgeInsets.symmetric(vertical: 20),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                            ),
+                            child: const Text(
+                              'SAVE SHOT',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 1.2,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               );
