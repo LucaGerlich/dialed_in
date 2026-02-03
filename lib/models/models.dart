@@ -41,18 +41,11 @@ class Grinder {
   final String name;
   final double? defaultRpm;
 
-  Grinder({
-    String? id,
-    required this.name,
-    this.defaultRpm,
-  }) : id = id ?? const Uuid().v4();
+  Grinder({String? id, required this.name, this.defaultRpm})
+    : id = id ?? const Uuid().v4();
 
   Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'defaultRpm': defaultRpm,
-    };
+    return {'id': id, 'name': name, 'defaultRpm': defaultRpm};
   }
 
   factory Grinder.fromJson(Map<String, dynamic> json) {
@@ -148,7 +141,7 @@ class Bean {
   final String notes;
   final double preferredGrindSize;
   final List<Shot> shots;
-  
+
   // New Fields
   final String origin;
   final String roastLevel; // Light, Medium, Dark
@@ -179,8 +172,8 @@ class Bean {
     this.sweetness = 5.0,
     this.bitterness = 5.0,
     this.aftertaste = 5.0,
-  })  : id = id ?? const Uuid().v4(),
-        shots = shots ?? [];
+  }) : id = id ?? const Uuid().v4(),
+       shots = shots ?? [];
 
   Map<String, dynamic> toJson() {
     return {
@@ -208,15 +201,17 @@ class Bean {
       name: json['name'],
       notes: json['notes'] ?? '',
       preferredGrindSize: json['preferredGrindSize']?.toDouble() ?? 10.0,
-      shots: (json['shots'] as List?)
-              ?.map((s) => Shot.fromJson(s))
-              .toList() ??
-          [],
+      shots:
+          (json['shots'] as List?)?.map((s) => Shot.fromJson(s)).toList() ?? [],
       origin: json['origin'] ?? '',
       roastLevel: json['roastLevel'] ?? 'Medium',
       process: json['process'] ?? '',
-      flavourTags: (json['flavourTags'] as List?)?.map((e) => e.toString()).toList() ?? [],
-      roastDate: json['roastDate'] != null ? DateTime.parse(json['roastDate']) : null,
+      flavourTags:
+          (json['flavourTags'] as List?)?.map((e) => e.toString()).toList() ??
+          [],
+      roastDate: json['roastDate'] != null
+          ? DateTime.parse(json['roastDate'])
+          : null,
       acidity: json['acidity']?.toDouble() ?? 5.0,
       body: json['body']?.toDouble() ?? 5.0,
       sweetness: json['sweetness']?.toDouble() ?? 5.0,

@@ -18,7 +18,7 @@ class _AddShotScreenState extends State<AddShotScreen> {
   final _doseInController = TextEditingController(text: '18.0');
   final _doseOutController = TextEditingController(text: '36.0');
   final _durationController = TextEditingController(text: '00:00.0');
-  
+
   // Advanced Params Controllers
   final _rpmController = TextEditingController();
   final _pressureController = TextEditingController();
@@ -30,11 +30,12 @@ class _AddShotScreenState extends State<AddShotScreen> {
   int _durationMs = 0; // Duration in milliseconds
   Timer? _timer;
   bool _isTimerRunning = false;
-  final bool _updatePreferred = false; // Fixed: made final as it's never changed
-  
+  final bool _updatePreferred =
+      false; // Fixed: made final as it's never changed
+
   String? _selectedMachineId;
   String? _selectedGrinderId;
-  
+
   // Flavour Coordinates (-1 to 1)
   double _flavourX = 0;
   double _flavourY = 0;
@@ -65,7 +66,8 @@ class _AddShotScreenState extends State<AddShotScreen> {
         _durationMs = 0; // Reset duration
         _durationController.text = _formatDuration(_durationMs);
       });
-      _timer = Timer.periodic(const Duration(milliseconds: 100), (timer) { // Update faster
+      _timer = Timer.periodic(const Duration(milliseconds: 100), (timer) {
+        // Update faster
         setState(() {
           _durationMs += 100; // Increment by 100ms
           _durationController.text = _formatDuration(_durationMs);
@@ -76,7 +78,7 @@ class _AddShotScreenState extends State<AddShotScreen> {
 
   void _onDurationChanged(String value) {
     if (_isTimerRunning) return; // Don't parse while timer is running
-    
+
     int newDurationMs = 0;
     try {
       if (value.contains(':')) {
@@ -87,34 +89,43 @@ class _AddShotScreenState extends State<AddShotScreen> {
 
         if (parts.length >= 2) {
           minutes = int.tryParse(parts[0]) ?? 0;
-          
+
           if (parts[1].contains('.')) {
             final secParts = parts[1].split('.');
             seconds = int.tryParse(secParts[0]) ?? 0;
-            milliseconds = int.tryParse(secParts[1].padRight(3, '0')) ?? 0;
-            // Only take first 3 digits for ms
-            if (milliseconds > 999) milliseconds = int.parse(milliseconds.toString().substring(0,3));
-
+            // Truncate to first 3 digits, then pad if needed
+            String msString = secParts[1].substring(
+              0,
+              secParts[1].length > 3 ? 3 : secParts[1].length,
+            );
+            milliseconds = int.tryParse(msString.padRight(3, '0')) ?? 0;
           } else {
             seconds = int.tryParse(parts[1]) ?? 0;
           }
-        } else if (parts.length == 1 && value.contains('.')) { // e.g., "30.5"
-             final secParts = parts[0].split('.');
-            seconds = int.tryParse(secParts[0]) ?? 0;
-            milliseconds = int.tryParse(secParts[1].padRight(3, '0')) ?? 0;
-            if (milliseconds > 999) milliseconds = int.parse(milliseconds.toString().substring(0,3));
+        } else if (parts.length == 1 && value.contains('.')) {
+          // e.g., "30.5"
+          final secParts = parts[0].split('.');
+          seconds = int.tryParse(secParts[0]) ?? 0;
+          // Truncate to first 3 digits, then pad if needed
+          String msString = secParts[1].substring(
+            0,
+            secParts[1].length > 3 ? 3 : secParts[1].length,
+          );
+          milliseconds = int.tryParse(msString.padRight(3, '0')) ?? 0;
         }
 
-
         newDurationMs = minutes * 60 * 1000 + seconds * 1000 + milliseconds;
-
-      } else if (value.contains('.')) { // e.g., "30.5" or ".5"
+      } else if (value.contains('.')) {
+        // e.g., "30.5" or ".5"
         final secParts = value.split('.');
         int seconds = int.tryParse(secParts[0]) ?? 0;
-        int milliseconds = int.tryParse(secParts[1].padRight(3, '0')) ?? 0;
-        if (milliseconds > 999) milliseconds = int.parse(milliseconds.toString().substring(0,3));
+        // Truncate to first 3 digits, then pad if needed
+        String msString = secParts[1].substring(
+          0,
+          secParts[1].length > 3 ? 3 : secParts[1].length,
+        );
+        int milliseconds = int.tryParse(msString.padRight(3, '0')) ?? 0;
         newDurationMs = seconds * 1000 + milliseconds;
-
       } else {
         newDurationMs = (int.tryParse(value) ?? 0) * 1000;
       }
@@ -122,15 +133,9 @@ class _AddShotScreenState extends State<AddShotScreen> {
       // Ignore parsing errors for now, keep old duration
       newDurationMs = _durationMs;
     }
-    
+
     setState(() {
       _durationMs = newDurationMs;
-      // Ensure the displayed text matches the parsed duration (e.g. if user types 30, it becomes 00:30.0)
-      _durationController.text = _formatDuration(_durationMs);
-      // Move cursor to end
-      _durationController.selection = TextSelection.fromPosition(
-        TextPosition(offset: _durationController.text.length)
-      );
     });
   }
 
@@ -156,11 +161,10 @@ class _AddShotScreenState extends State<AddShotScreen> {
         flavourY: _flavourY,
       );
 
-      Provider.of<CoffeeProvider>(context, listen: false).addShot(
-        widget.beanId,
-        shot,
-        updatePreferredGrind: _updatePreferred,
-      );
+      Provider.of<CoffeeProvider>(
+        context,
+        listen: false,
+      ).addShot(widget.beanId, shot, updatePreferredGrind: _updatePreferred);
       Navigator.pop(context);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -172,16 +176,15 @@ class _AddShotScreenState extends State<AddShotScreen> {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<CoffeeProvider>(context);
-    
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Dial-In'),
-      ),
+      appBar: AppBar(title: const Text('Add Shot')),
       body: Stack(
         children: [
           // Expanded Dial Area (Background)
           Positioned.fill(
-            bottom: 150, // Reserve space for the minimized sheet header
+            //bottom: 300, // Reserve space for the minimized sheet header
+            top: -500,
             child: Center(
               child: AnalogDial(
                 value: _grindSize,
@@ -200,16 +203,24 @@ class _AddShotScreenState extends State<AddShotScreen> {
 
           // Draggable Bottom Sheet
           DraggableScrollableSheet(
-            initialChildSize: 0.5,
+            initialChildSize: 0.6,
             minChildSize: 0.4,
-            maxChildSize: 0.92,
+            maxChildSize: 0.90,
             builder: (context, scrollController) {
               return Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.surface,
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
-                  border: Border(top: BorderSide(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1))),
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(32),
+                  ),
+                  border: Border(
+                    top: BorderSide(
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.onSurface.withValues(alpha: 0.1),
+                    ),
+                  ),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withValues(alpha: 0.2),
@@ -231,7 +242,9 @@ class _AddShotScreenState extends State<AddShotScreen> {
                           height: 4,
                           margin: const EdgeInsets.only(bottom: 24),
                           decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.2),
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onSurface.withValues(alpha: 0.2),
                             borderRadius: BorderRadius.circular(2),
                           ),
                         ),
@@ -244,9 +257,14 @@ class _AddShotScreenState extends State<AddShotScreen> {
                             child: Container(
                               padding: const EdgeInsets.symmetric(vertical: 12),
                               decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.05),
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurface.withValues(alpha: 0.05),
                                 borderRadius: BorderRadius.circular(16),
-                                border: Border.all(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.05)),
+                                border: Border.all(
+                                  color: Theme.of(context).colorScheme.onSurface
+                                      .withValues(alpha: 0.05),
+                                ),
                               ),
                               child: Column(
                                 children: [
@@ -261,7 +279,9 @@ class _AddShotScreenState extends State<AddShotScreen> {
                                         fontFamily: 'RobotoMono',
                                         fontSize: 32,
                                         fontWeight: FontWeight.bold,
-                                        color: Theme.of(context).colorScheme.primary,
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.primary,
                                       ),
                                       decoration: const InputDecoration(
                                         border: InputBorder.none,
@@ -277,7 +297,11 @@ class _AddShotScreenState extends State<AddShotScreen> {
                                     child: Text(
                                       _isTimerRunning ? 'STOP' : 'START',
                                       style: TextStyle(
-                                        color: _isTimerRunning ? Colors.red : Theme.of(context).colorScheme.onSurface,
+                                        color: _isTimerRunning
+                                            ? Colors.red
+                                            : Theme.of(
+                                                context,
+                                              ).colorScheme.onSurface,
                                         fontWeight: FontWeight.bold,
                                         letterSpacing: 1.5,
                                       ),
@@ -292,78 +316,139 @@ class _AddShotScreenState extends State<AddShotScreen> {
                           Expanded(
                             child: Column(
                               children: [
-                                _buildCompactInput(context, 'IN', _doseInController),
+                                _buildCompactInput(
+                                  context,
+                                  'IN',
+                                  _doseInController,
+                                ),
                                 const SizedBox(height: 8),
-                                _buildCompactInput(context, 'OUT', _doseOutController),
+                                _buildCompactInput(
+                                  context,
+                                  'OUT',
+                                  _doseOutController,
+                                ),
                               ],
                             ),
                           ),
                         ],
                       ),
                       const SizedBox(height: 16),
-                      
+
                       // Gear Selection
-                      if (provider.machines.isNotEmpty || provider.grinders.isNotEmpty) ...[
-                        Text('GEAR', style: TextStyle(fontFamily: 'RobotoMono', fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6))),
+                      if (provider.machines.isNotEmpty ||
+                          provider.grinders.isNotEmpty) ...[
+                        Text(
+                          'GEAR',
+                          style: TextStyle(
+                            fontFamily: 'RobotoMono',
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onSurface.withValues(alpha: 0.6),
+                          ),
+                        ),
                         const SizedBox(height: 8),
                         Row(
                           children: [
                             if (provider.machines.isNotEmpty)
                               Expanded(
                                 child: InputDecorator(
-                                  decoration: _inputDecoration(context, 'Machine'),
+                                  decoration: _inputDecoration(
+                                    context,
+                                    'Machine',
+                                  ),
                                   child: DropdownButtonHideUnderline(
                                     child: DropdownButton<String>(
                                       isExpanded: true,
                                       isDense: true,
                                       value: _selectedMachineId,
-                                      dropdownColor: Theme.of(context).colorScheme.surface,
-                                      style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
-                                      items: provider.machines.map((m) => DropdownMenuItem(
-                                        value: m.id,
-                                        child: Text(
-                                          m.name,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      )).toList(),
+                                      dropdownColor: Theme.of(
+                                        context,
+                                      ).colorScheme.surface,
+                                      style: TextStyle(
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.onSurface,
+                                      ),
+                                      items: provider.machines
+                                          .map(
+                                            (m) => DropdownMenuItem(
+                                              value: m.id,
+                                              child: Text(
+                                                m.name,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                          )
+                                          .toList(),
                                       onChanged: (val) {
                                         setState(() {
                                           _selectedMachineId = val;
-                                          final machine = provider.machines.firstWhere((m) => m.id == val);
-                                          if (machine.defaultPressure != null) _pressureController.text = machine.defaultPressure.toString();
-                                          if (machine.defaultTemperature != null) _tempController.text = machine.defaultTemperature.toString();
-                                          if (machine.defaultPreInfusionTime != null) _preInfusionController.text = machine.defaultPreInfusionTime.toString();
+                                          final machine = provider.machines
+                                              .firstWhere((m) => m.id == val);
+                                          if (machine.defaultPressure != null)
+                                            _pressureController.text = machine
+                                                .defaultPressure
+                                                .toString();
+                                          if (machine.defaultTemperature !=
+                                              null)
+                                            _tempController.text = machine
+                                                .defaultTemperature
+                                                .toString();
+                                          if (machine.defaultPreInfusionTime !=
+                                              null)
+                                            _preInfusionController.text =
+                                                machine.defaultPreInfusionTime
+                                                    .toString();
                                         });
                                       },
                                     ),
                                   ),
                                 ),
                               ),
-                            if (provider.machines.isNotEmpty && provider.grinders.isNotEmpty)
+                            if (provider.machines.isNotEmpty &&
+                                provider.grinders.isNotEmpty)
                               const SizedBox(width: 12),
                             if (provider.grinders.isNotEmpty)
                               Expanded(
                                 child: InputDecorator(
-                                  decoration: _inputDecoration(context, 'Grinder'),
+                                  decoration: _inputDecoration(
+                                    context,
+                                    'Grinder',
+                                  ),
                                   child: DropdownButtonHideUnderline(
                                     child: DropdownButton<String>(
                                       isExpanded: true,
                                       isDense: true,
                                       value: _selectedGrinderId,
-                                      dropdownColor: Theme.of(context).colorScheme.surface,
-                                      style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
-                                      items: provider.grinders.map((g) => DropdownMenuItem(
-                                        value: g.id,
-                                        child: Text(
-                                          g.name,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      )).toList(),
+                                      dropdownColor: Theme.of(
+                                        context,
+                                      ).colorScheme.surface,
+                                      style: TextStyle(
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.onSurface,
+                                      ),
+                                      items: provider.grinders
+                                          .map(
+                                            (g) => DropdownMenuItem(
+                                              value: g.id,
+                                              child: Text(
+                                                g.name,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                          )
+                                          .toList(),
                                       onChanged: (val) {
                                         setState(() {
                                           _selectedGrinderId = val;
-                                          final grinder = provider.grinders.firstWhere((g) => g.id == val);
-                                          if (grinder.defaultRpm != null) _rpmController.text = grinder.defaultRpm.toString();
+                                          final grinder = provider.grinders
+                                              .firstWhere((g) => g.id == val);
+                                          if (grinder.defaultRpm != null)
+                                            _rpmController.text = grinder
+                                                .defaultRpm
+                                                .toString();
                                         });
                                       },
                                     ),
@@ -377,26 +462,63 @@ class _AddShotScreenState extends State<AddShotScreen> {
 
                       // Advanced Params
                       ExpansionTile(
-                        title: Text('ADVANCED PARAMETERS', style: TextStyle(fontFamily: 'RobotoMono', fontWeight: FontWeight.bold, fontSize: 14, color: Theme.of(context).colorScheme.onSurface)),
+                        title: Text(
+                          'ADVANCED PARAMETERS',
+                          style: TextStyle(
+                            fontFamily: 'RobotoMono',
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                            color: Theme.of(context).colorScheme.onSurface,
+                          ),
+                        ),
                         children: [
                           const SizedBox(height: 12),
                           Row(
                             children: [
-                              Expanded(child: _buildCompactInput(context, 'RPM', _rpmController)),
+                              Expanded(
+                                child: _buildCompactInput(
+                                  context,
+                                  'RPM',
+                                  _rpmController,
+                                ),
+                              ),
                               const SizedBox(width: 12),
-                              Expanded(child: _buildCompactInput(context, 'BAR', _pressureController)),
+                              Expanded(
+                                child: _buildCompactInput(
+                                  context,
+                                  'BAR',
+                                  _pressureController,
+                                ),
+                              ),
                             ],
                           ),
                           const SizedBox(height: 8),
                           Row(
                             children: [
-                              Expanded(child: _buildCompactInput(context, '°C', _tempController)),
+                              Expanded(
+                                child: _buildCompactInput(
+                                  context,
+                                  '°C',
+                                  _tempController,
+                                ),
+                              ),
                               const SizedBox(width: 12),
-                              Expanded(child: _buildCompactInput(context, 'PRE-INF (s)', _preInfusionController)),
+                              Expanded(
+                                child: _buildCompactInput(
+                                  context,
+                                  'PRE-INF (s)',
+                                  _preInfusionController,
+                                ),
+                              ),
                             ],
                           ),
                           const SizedBox(height: 8),
-                          _buildCompactInput(context, 'WATER', _waterController, keyboardType: TextInputType.text),
+                          _buildCompactInput(
+                            context,
+                            'WATER',
+                            _waterController,
+                            keyboardType: TextInputType.text,
+                          ),
                           const SizedBox(height: 12),
                         ],
                       ),
@@ -404,102 +526,172 @@ class _AddShotScreenState extends State<AddShotScreen> {
 
                       // Flavour Graph
                       ExpansionTile(
-                        title: Text('FLAVOUR PROFILE', style: TextStyle(fontFamily: 'RobotoMono', fontWeight: FontWeight.bold, fontSize: 14, color: Theme.of(context).colorScheme.onSurface)),
+                        title: Text(
+                          'FLAVOUR PROFILE',
+                          style: TextStyle(
+                            fontFamily: 'RobotoMono',
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                            color: Theme.of(context).colorScheme.onSurface,
+                          ),
+                        ),
                         children: [
                           const SizedBox(height: 12),
-                                                Center(
-                                                  child: Container(
-                                                    width: 200,
-                                                    height: 200,
-                                                    decoration: BoxDecoration(
-                                                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.05),
-                                                      borderRadius: BorderRadius.circular(16),
-                                                      border: Border.all(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1)),
-                                                    ),
-                                                    child: GestureDetector(
-                                                      onPanUpdate: (details) {
-                                                        setState(() {
-                                                          // Map local position to -1 to 1
-                                                          // This is tricky inside a scroll view, let's use relative position
-                                                          // Assuming 200x200 box
-                                                          double dx = details.localPosition.dx;
-                                                          double dy = details.localPosition.dy;
-                                                          
-                                                          _flavourX = ((dx / 200) * 2 - 1).clamp(-1.0, 1.0);
-                                                          _flavourY = -((dy / 200) * 2 - 1).clamp(-1.0, 1.0); // Invert Y so up is positive
-                                                        });
-                                                      },
-                                                      onTapDown: (details) {
-                                                        setState(() {
-                                                          double dx = details.localPosition.dx;
-                                                          double dy = details.localPosition.dy;
-                                                          _flavourX = ((dx / 200) * 2 - 1).clamp(-1.0, 1.0);
-                                                          _flavourY = -((dy / 200) * 2 - 1).clamp(-1.0, 1.0);
-                                                        });
-                                                      },
-                                                      child: CustomPaint(
-                                                        painter: _FlavourGraphPainter(_flavourX, _flavourY, Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.onSurface),
-                                                      ),
-                                                    ),
+                          Center(
+                            child: Container(
+                              width: 200,
+                              height: 200,
+                              decoration: BoxDecoration(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurface.withValues(alpha: 0.05),
+                                borderRadius: BorderRadius.circular(16),
+                                border: Border.all(
+                                  color: Theme.of(context).colorScheme.onSurface
+                                      .withValues(alpha: 0.1),
+                                ),
+                              ),
+                              child: GestureDetector(
+                                onPanUpdate: (details) {
+                                  setState(() {
+                                    // Map local position to -1 to 1
+                                    // This is tricky inside a scroll view, let's use relative position
+                                    // Assuming 200x200 box
+                                    double dx = details.localPosition.dx;
+                                    double dy = details.localPosition.dy;
+
+                                    _flavourX = ((dx / 200) * 2 - 1).clamp(
+                                      -1.0,
+                                      1.0,
+                                    );
+                                    _flavourY = -((dy / 200) * 2 - 1).clamp(
+                                      -1.0,
+                                      1.0,
+                                    ); // Invert Y so up is positive
+                                  });
+                                },
+                                onTapDown: (details) {
+                                  setState(() {
+                                    double dx = details.localPosition.dx;
+                                    double dy = details.localPosition.dy;
+                                    _flavourX = ((dx / 200) * 2 - 1).clamp(
+                                      -1.0,
+                                      1.0,
+                                    );
+                                    _flavourY = -((dy / 200) * 2 - 1).clamp(
+                                      -1.0,
+                                      1.0,
+                                    );
+                                  });
+                                },
+                                child: CustomPaint(
+                                  painter: _FlavourGraphPainter(
+                                    _flavourX,
+                                    _flavourY,
+                                    Theme.of(context).colorScheme.primary,
+                                    Theme.of(context).colorScheme.onSurface,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          AnimatedSize(
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.easeInOut,
+                            child: _getTroubleshootingTips().isNotEmpty
+                                ? Column(
+                                    children: [
+                                      const SizedBox(height: 16),
+                                      Container(
+                                        padding: const EdgeInsets.all(12),
+                                        decoration: BoxDecoration(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary
+                                              .withValues(alpha: 0.1),
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
+                                          border: Border.all(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primary
+                                                .withValues(alpha: 0.3),
+                                          ),
+                                        ),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Icon(
+                                                  Icons.lightbulb,
+                                                  size: 16,
+                                                  color: Theme.of(
+                                                    context,
+                                                  ).colorScheme.primary,
+                                                ),
+                                                const SizedBox(width: 8),
+                                                Text(
+                                                  'TROUBLESHOOTER',
+                                                  style: TextStyle(
+                                                    fontFamily: 'RobotoMono',
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Theme.of(
+                                                      context,
+                                                    ).colorScheme.primary,
                                                   ),
                                                 ),
-                                                AnimatedSize(
-                                                  duration: const Duration(milliseconds: 300),
-                                                  curve: Curves.easeInOut,
-                                                  child: _getTroubleshootingTips().isNotEmpty
-                                                      ? Column(
-                                                          children: [
-                                                            const SizedBox(height: 16),
-                                                            Container(
-                                                              padding: const EdgeInsets.all(12),
-                                                              decoration: BoxDecoration(
-                                                                color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
-                                                                borderRadius: BorderRadius.circular(12),
-                                                                border: Border.all(
-                                                                    color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3)),
-                                                              ),
-                                                              child: Column(
-                                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                                children: [
-                                                                  Row(
-                                                                    children: [
-                                                                      Icon(Icons.lightbulb,
-                                                                          size: 16, color: Theme.of(context).colorScheme.primary),
-                                                                      const SizedBox(width: 8),
-                                                                      Text('TROUBLESHOOTER',
-                                                                          style: TextStyle(
-                                                                              fontFamily: 'RobotoMono',
-                                                                              fontSize: 12,
-                                                                              fontWeight: FontWeight.bold,
-                                                                              color: Theme.of(context).colorScheme.primary)),
-                                                                    ],
-                                                                  ),
-                                                                  const SizedBox(height: 8),
-                                                                  ..._getTroubleshootingTips().map((tip) {
-                                                                    final isHeader = tip.endsWith(':');
-                                                                    return Padding(
-                                                                      padding: const EdgeInsets.only(bottom: 4),
-                                                                      child: Text(
-                                                                        tip,
-                                                                        style: TextStyle(
-                                                                          fontFamily: 'RobotoMono',
-                                                                          fontSize: isHeader ? 12 : 11,
-                                                                          fontWeight: isHeader ? FontWeight.bold : FontWeight.normal,
-                                                                          color: isHeader ? Theme.of(context).colorScheme.onSurface : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
-                                                                        ),
-                                                                      ),
-                                                                    );
-                                                                  }),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        )
-                                                      : const SizedBox.shrink(),
-                                                ),
-                                                const SizedBox(height: 12),
                                               ],
-                                            ),                      const SizedBox(height: 16),
+                                            ),
+                                            const SizedBox(height: 8),
+                                            ..._getTroubleshootingTips().map((
+                                              tip,
+                                            ) {
+                                              final isHeader = tip.endsWith(
+                                                ':',
+                                              );
+                                              return Padding(
+                                                padding: const EdgeInsets.only(
+                                                  bottom: 4,
+                                                ),
+                                                child: Text(
+                                                  tip,
+                                                  style: TextStyle(
+                                                    fontFamily: 'RobotoMono',
+                                                    fontSize: isHeader
+                                                        ? 12
+                                                        : 11,
+                                                    fontWeight: isHeader
+                                                        ? FontWeight.bold
+                                                        : FontWeight.normal,
+                                                    color: isHeader
+                                                        ? Theme.of(context)
+                                                              .colorScheme
+                                                              .onSurface
+                                                        : Theme.of(context)
+                                                              .colorScheme
+                                                              .onSurface
+                                                              .withValues(
+                                                                alpha: 0.7,
+                                                              ),
+                                                  ),
+                                                ),
+                                              );
+                                            }),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                : const SizedBox.shrink(),
+                          ),
+                          const SizedBox(height: 12),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
 
                       // Save Button
                       SizedBox(
@@ -507,12 +699,25 @@ class _AddShotScreenState extends State<AddShotScreen> {
                         child: ElevatedButton(
                           onPressed: _saveShot,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Theme.of(context).colorScheme.primary,
-                            foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                            backgroundColor: Theme.of(
+                              context,
+                            ).colorScheme.primary,
+                            foregroundColor: Theme.of(
+                              context,
+                            ).colorScheme.onPrimary,
                             padding: const EdgeInsets.symmetric(vertical: 20),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
                           ),
-                          child: const Text('SAVE SHOT', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, letterSpacing: 1.2)),
+                          child: const Text(
+                            'SAVE SHOT',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1.2,
+                            ),
+                          ),
                         ),
                       ),
                     ],
@@ -531,30 +736,57 @@ class _AddShotScreenState extends State<AddShotScreen> {
       labelText: label,
       labelStyle: const TextStyle(color: Colors.grey),
       filled: true,
-      fillColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.05),
+      fillColor: Theme.of(
+        context,
+      ).colorScheme.onSurface.withValues(alpha: 0.05),
       isDense: true,
-      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide.none,
+      ),
       contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
     );
   }
 
-  Widget _buildCompactInput(BuildContext context, String label, TextEditingController controller, {TextInputType? keyboardType}) {
+  Widget _buildCompactInput(
+    BuildContext context,
+    String label,
+    TextEditingController controller, {
+    TextInputType? keyboardType,
+  }) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.05)),
+        border: Border.all(
+          color: Theme.of(
+            context,
+          ).colorScheme.onSurface.withValues(alpha: 0.05),
+        ),
       ),
       child: Row(
         children: [
-          Text(label, style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6), fontSize: 12, fontWeight: FontWeight.bold)),
+          Text(
+            label,
+            style: TextStyle(
+              color: Theme.of(
+                context,
+              ).colorScheme.onSurface.withValues(alpha: 0.6),
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           const SizedBox(width: 12),
           Expanded(
             child: TextField(
               controller: controller,
-              keyboardType: keyboardType ?? const TextInputType.numberWithOptions(decimal: true),
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.onSurface),
+              keyboardType:
+                  keyboardType ??
+                  const TextInputType.numberWithOptions(decimal: true),
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
               textAlign: TextAlign.end,
               decoration: const InputDecoration(
                 border: InputBorder.none,
@@ -572,24 +804,30 @@ class _AddShotScreenState extends State<AddShotScreen> {
     final List<String> tips = [];
     const threshold = 0.3; // Sensitivity for suggestions
 
-    if (_flavourX < -threshold) { // Sour
+    if (_flavourX < -threshold) {
+      // Sour
       tips.add('SOUR (Under-extracted):');
       tips.add('• Grind Finer');
       tips.add('• Increase Yield (ratio)');
       tips.add('• Increase Temperature');
-    } else if (_flavourX > threshold) { // Bitter
+    } else if (_flavourX > threshold) {
+      // Bitter
       tips.add('BITTER (Over-extracted):');
       tips.add('• Grind Coarser');
       tips.add('• Decrease Yield (ratio)');
       tips.add('• Decrease Temperature');
     }
 
-    if (_flavourY < -threshold) { // Weak
-      tips.add(_flavourX.abs() > threshold ? '' : 'WEAK (Watery):'); // Header if needed
+    if (_flavourY < -threshold) {
+      // Weak
+      tips.add(
+        _flavourX.abs() > threshold ? '' : 'WEAK (Watery):',
+      ); // Header if needed
       if (_flavourX.abs() >= threshold) tips.add('WEAK (Watery):');
       tips.add('• Increase Dose (in)');
       tips.add('• Grind Finer');
-    } else if (_flavourY > threshold) { // Strong
+    } else if (_flavourY > threshold) {
+      // Strong
       tips.add(_flavourX.abs() > threshold ? '' : 'STRONG (Overpowering):');
       if (_flavourX.abs() >= threshold) tips.add('STRONG (Overpowering):');
       tips.add('• Decrease Dose (in)');
@@ -623,15 +861,37 @@ class _FlavourGraphPainter extends CustomPainter {
       ..strokeWidth = 1;
 
     // Axes
-    canvas.drawLine(Offset(size.width / 2, 0), Offset(size.width / 2, size.height), paint);
-    canvas.drawLine(Offset(0, size.height / 2), Offset(size.width, size.height / 2), paint);
+    canvas.drawLine(
+      Offset(size.width / 2, 0),
+      Offset(size.width / 2, size.height),
+      paint,
+    );
+    canvas.drawLine(
+      Offset(0, size.height / 2),
+      Offset(size.width, size.height / 2),
+      paint,
+    );
 
     // Labels
-    final textStyle = TextStyle(fontFamily: 'RobotoMono', fontSize: 10, color: onSurface.withValues(alpha: 0.6));
+    final textStyle = TextStyle(
+      fontFamily: 'RobotoMono',
+      fontSize: 10,
+      color: onSurface.withValues(alpha: 0.6),
+    );
     _drawText(canvas, 'Sour', Offset(10, size.height / 2), textStyle);
-    _drawText(canvas, 'Bitter', Offset(size.width - 30, size.height / 2), textStyle);
+    _drawText(
+      canvas,
+      'Bitter',
+      Offset(size.width - 30, size.height / 2),
+      textStyle,
+    );
     _drawText(canvas, 'Strong', Offset(size.width / 2, 10), textStyle);
-    _drawText(canvas, 'Weak', Offset(size.width / 2, size.height - 20), textStyle);
+    _drawText(
+      canvas,
+      'Weak',
+      Offset(size.width / 2, size.height - 20),
+      textStyle,
+    );
 
     // Point
     // Map -1..1 to 0..width
@@ -639,11 +899,18 @@ class _FlavourGraphPainter extends CustomPainter {
     final py = (-y + 1) / 2 * size.height; // Invert Y
 
     canvas.drawCircle(Offset(px, py), 8, Paint()..color = accentColor);
-    canvas.drawCircle(Offset(px, py), 12, Paint()..color = accentColor.withValues(alpha: 0.3));
+    canvas.drawCircle(
+      Offset(px, py),
+      12,
+      Paint()..color = accentColor.withValues(alpha: 0.3),
+    );
   }
 
   void _drawText(Canvas canvas, String text, Offset offset, TextStyle style) {
-    final tp = TextPainter(text: TextSpan(text: text, style: style), textDirection: TextDirection.ltr);
+    final tp = TextPainter(
+      text: TextSpan(text: text, style: style),
+      textDirection: TextDirection.ltr,
+    );
     tp.layout();
     tp.paint(canvas, offset - Offset(tp.width / 2, tp.height / 2));
   }
