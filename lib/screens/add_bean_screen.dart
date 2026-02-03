@@ -55,6 +55,16 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Initialize custom flavor values for any custom attributes that aren't already set
+    final provider = Provider.of<CoffeeProvider>(context, listen: false);
+    for (final attr in provider.customFlavorAttributes) {
+      _customFlavorValues[attr] ??= 5.0;
+    }
+  }
+
+  @override
   void dispose() {
     _nameController.dispose();
     _originController.dispose();
@@ -240,13 +250,12 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
               builder: (context, provider, child) {
                 final customAttrs = provider.customFlavorAttributes;
                 if (customAttrs.isEmpty) return const SizedBox.shrink();
+                // Build sliders using current values (initialized in didChangeDependencies)
                 return Column(
                   children: customAttrs.map((attr) {
-                    // Initialize custom value if not present
-                    _customFlavorValues[attr] ??= 5.0;
                     return _buildSlider(
                       attr,
-                      _customFlavorValues[attr]!,
+                      _customFlavorValues[attr] ?? 5.0,
                       (val) => setState(() => _customFlavorValues[attr] = val),
                     );
                   }).toList(),

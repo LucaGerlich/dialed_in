@@ -508,8 +508,20 @@ class GearSettingsScreen extends StatelessWidget {
             onPressed: () {
               final name = controller.text.trim();
               if (name.isNotEmpty) {
-                provider.addCustomFlavorAttribute(name);
-                Navigator.pop(ctx);
+                final success = provider.addCustomFlavorAttribute(name);
+                if (success) {
+                  Navigator.pop(ctx);
+                } else {
+                  // Show error message
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        'Cannot add "$name". It may be a duplicate or conflict with a default attribute.',
+                      ),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
               }
             },
             child: const Text('Add'),

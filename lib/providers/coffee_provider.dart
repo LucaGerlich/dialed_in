@@ -120,12 +120,25 @@ class CoffeeProvider with ChangeNotifier {
   }
 
   /// Adds a custom flavor attribute (max 3)
-  void addCustomFlavorAttribute(String name) {
-    if (_customFlavorAttributes.length < 3 && name.isNotEmpty) {
-      _customFlavorAttributes.add(name);
-      _saveData();
-      notifyListeners();
+  /// Returns true if added successfully, false if duplicate or limit reached
+  bool addCustomFlavorAttribute(String name) {
+    if (_customFlavorAttributes.length >= 3 || name.isEmpty) {
+      return false;
     }
+    // Check for duplicates (case-insensitive)
+    final nameLower = name.toLowerCase();
+    if (_customFlavorAttributes.any((attr) => attr.toLowerCase() == nameLower)) {
+      return false;
+    }
+    // Check for conflicts with default attributes
+    final defaultAttributes = ['acidity', 'body', 'sweetness', 'bitterness', 'aftertaste'];
+    if (defaultAttributes.contains(nameLower)) {
+      return false;
+    }
+    _customFlavorAttributes.add(name);
+    _saveData();
+    notifyListeners();
+    return true;
   }
 
   /// Removes a custom flavor attribute by name
