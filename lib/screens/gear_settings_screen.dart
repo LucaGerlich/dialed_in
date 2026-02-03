@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:file_picker/file_picker.dart';
+import 'dart:io';
 import '../models/models.dart';
 import 'package:dialed_in/providers/coffee_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -51,6 +54,9 @@ class GearSettingsScreen extends StatelessWidget {
               const SizedBox(height: 32),
               _buildSectionHeader(context, 'Grind Settings'),
               _buildGrindSettings(context, provider),
+              const SizedBox(height: 32),
+              _buildSectionHeader(context, 'Data Management'),
+              _buildDataManagementSection(context, provider),
               const SizedBox(height: 32),
               _buildSectionHeader(context, 'About Dialed In'),
               _buildAboutSection(context),
@@ -314,6 +320,159 @@ class GearSettingsScreen extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  Widget _buildDataManagementSection(BuildContext context, CoffeeProvider provider) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Export and import your brew logs as JSON for backup or external analysis.',
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurface,
+                  height: 1.5,
+                ),
+          ),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: () => _exportData(context, provider),
+                  icon: const Icon(Icons.upload_file),
+                  label: const Text('Export'),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: Theme.of(context).colorScheme.primary,
+                    side: BorderSide(color: Theme.of(context).colorScheme.primary),
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: () => _importData(context, provider),
+                  icon: const Icon(Icons.download),
+                  label: const Text('Import'),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: Theme.of(context).colorScheme.primary,
+                    side: BorderSide(color: Theme.of(context).colorScheme.primary),
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _exportData(BuildContext context, CoffeeProvider provider) async {
+    try {
+      final filePath = await provider.exportDataToFile();
+      
+      if (context.mounted) {
+        // ignore: deprecated_member_use
+        await Share.shareXFiles(
+          [XFile(filePath)],
+          text: 'Dialed In - Coffee Data Export',
+        );
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error exporting data: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _importData(BuildContext context, CoffeeProvider provider) async {
+    try {
+      final result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['json'],
+      );
+
+      if (result == null || result.files.isEmpty) {
+        return; // User cancelled the picker
+      }
+
+      final file = result.files.first;
+      String jsonContent;
+
+      if (file.bytes != null) {
+        // For web platform
+        jsonContent = String.fromCharCodes(file.bytes!);
+      } else if (file.path != null) {
+        // For native platforms
+        jsonContent = await File(file.path!).readAsString();
+      } else {
+        throw Exception('Unable to read file');
+      }
+
+      if (context.mounted) {
+        // Show confirmation dialog
+        final shouldReplace = await showDialog<bool>(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            backgroundColor: Theme.of(context).colorScheme.surface,
+            title: Text('Import Data', style: TextStyle(color: Theme.of(context).colorScheme.onSurface)),
+            content: Text(
+              'Do you want to replace all existing data or merge with current data?',
+              style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx),
+                child: const Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(ctx, false),
+                child: const Text('Merge'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(ctx, true),
+                child: const Text('Replace'),
+              ),
+            ],
+          ),
+        );
+
+        if (shouldReplace != null && context.mounted) {
+          await provider.importDataFromJson(jsonContent, replaceExisting: shouldReplace);
+          
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(shouldReplace ? 'Data imported successfully!' : 'Data merged successfully!'),
+                backgroundColor: Colors.green,
+              ),
+            );
+          }
+        }
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error importing data: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 
   Widget _buildAboutSection(BuildContext context) {

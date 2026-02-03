@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/models.dart';
 
@@ -175,6 +177,104 @@ class CoffeeProvider with ChangeNotifier {
   void deleteGrinder(String id) {
     _grinders.removeWhere((g) => g.id == id);
     _saveData();
+    notifyListeners();
+  }
+
+  /// Returns all data as a JSON string for export
+  String exportDataToJson() {
+    final exportData = {
+      'version': 1,
+      'exportedAt': DateTime.now().toIso8601String(),
+      'beans': _beans.map((b) => b.toJson()).toList(),
+      'machines': _machines.map((m) => m.toJson()).toList(),
+      'grinders': _grinders.map((g) => g.toJson()).toList(),
+      'settings': {
+        'grindMin': _grindMin,
+        'grindMax': _grindMax,
+        'grindStep': _grindStep,
+        'themeMode': _themeMode.toString(),
+      },
+    };
+    return const JsonEncoder.withIndent('  ').convert(exportData);
+  }
+
+  /// Exports data to a JSON file and returns the file path
+  Future<String> exportDataToFile() async {
+    final directory = await getApplicationDocumentsDirectory();
+    final timestamp = DateTime.now().toIso8601String().replaceAll(':', '-').split('.').first;
+    final file = File('${directory.path}/dialed_in_export_$timestamp.json');
+    await file.writeAsString(exportDataToJson());
+    return file.path;
+  }
+
+  /// Imports data from a JSON string, merging with or replacing existing data
+  Future<void> importDataFromJson(String jsonString, {bool replaceExisting = true}) async {
+    final Map<String, dynamic> data = jsonDecode(jsonString);
+    
+    // Import beans
+    if (data['beans'] != null) {
+      final List<dynamic> beansJson = data['beans'];
+      final importedBeans = beansJson.map((item) => Bean.fromJson(item)).toList();
+      if (replaceExisting) {
+        _beans = importedBeans;
+      } else {
+        // Merge: add beans that don't already exist by ID
+        final existingIds = _beans.map((b) => b.id).toSet();
+        for (final bean in importedBeans) {
+          if (!existingIds.contains(bean.id)) {
+            _beans.add(bean);
+          }
+        }
+      }
+    }
+
+    // Import machines
+    if (data['machines'] != null) {
+      final List<dynamic> machinesJson = data['machines'];
+      final importedMachines = machinesJson.map((item) => CoffeeMachine.fromJson(item)).toList();
+      if (replaceExisting) {
+        _machines = importedMachines;
+      } else {
+        final existingIds = _machines.map((m) => m.id).toSet();
+        for (final machine in importedMachines) {
+          if (!existingIds.contains(machine.id)) {
+            _machines.add(machine);
+          }
+        }
+      }
+    }
+
+    // Import grinders
+    if (data['grinders'] != null) {
+      final List<dynamic> grindersJson = data['grinders'];
+      final importedGrinders = grindersJson.map((item) => Grinder.fromJson(item)).toList();
+      if (replaceExisting) {
+        _grinders = importedGrinders;
+      } else {
+        final existingIds = _grinders.map((g) => g.id).toSet();
+        for (final grinder in importedGrinders) {
+          if (!existingIds.contains(grinder.id)) {
+            _grinders.add(grinder);
+          }
+        }
+      }
+    }
+
+    // Import settings (only if replacing or if they exist in the import)
+    if (data['settings'] != null && replaceExisting) {
+      final settings = data['settings'];
+      _grindMin = settings['grindMin']?.toDouble() ?? _grindMin;
+      _grindMax = settings['grindMax']?.toDouble() ?? _grindMax;
+      _grindStep = settings['grindStep']?.toDouble() ?? _grindStep;
+      if (settings['themeMode'] != null) {
+        _themeMode = ThemeMode.values.firstWhere(
+          (e) => e.toString() == settings['themeMode'],
+          orElse: () => _themeMode,
+        );
+      }
+    }
+
+    await _saveData();
     notifyListeners();
   }
 }
