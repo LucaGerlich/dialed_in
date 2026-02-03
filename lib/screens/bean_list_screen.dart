@@ -16,6 +16,8 @@ class BeanListScreen extends StatefulWidget {
 class _BeanListScreenState extends State<BeanListScreen> {
   String _selectedFilter = 'All';
   final List<String> _filters = ['All', 'Light', 'Medium', 'Dark'];
+  String _sortBy = 'Default';
+  final List<String> _sortOptions = ['Default', 'Ranking'];
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +26,34 @@ class _BeanListScreenState extends State<BeanListScreen> {
         title: const Text('Bean Vault'),
         leading: const Icon(Icons.coffee), // Aesthetic icon
         actions: [
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.sort),
+            tooltip: 'Sort by',
+            onSelected: (value) {
+              setState(() {
+                _sortBy = value;
+              });
+            },
+            itemBuilder: (context) => _sortOptions.map((option) {
+              return PopupMenuItem<String>(
+                value: option,
+                child: Row(
+                  children: [
+                    if (_sortBy == option)
+                      Icon(
+                        Icons.check,
+                        size: 18,
+                        color: Theme.of(context).colorScheme.primary,
+                      )
+                    else
+                      const SizedBox(width: 18),
+                    const SizedBox(width: 8),
+                    Text(option),
+                  ],
+                ),
+              );
+            }).toList(),
+          ),
           IconButton(
             icon: const Icon(Icons.settings),
             onPressed: () {
@@ -37,10 +67,15 @@ class _BeanListScreenState extends State<BeanListScreen> {
       ),
       body: Consumer<CoffeeProvider>(
         builder: (context, provider, child) {
-          final beans = provider.beans.where((bean) {
+          var beans = provider.beans.where((bean) {
             if (_selectedFilter == 'All') return true;
             return bean.roastLevel == _selectedFilter;
           }).toList();
+
+          // Sort beans based on selected sort option
+          if (_sortBy == 'Ranking') {
+            beans.sort((a, b) => b.ranking.compareTo(a.ranking));
+          }
 
           return Column(
             children: [

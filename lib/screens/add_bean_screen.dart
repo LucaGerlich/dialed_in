@@ -38,6 +38,9 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
   double _arabicaPercentage = 100.0;
   double _robustaPercentage = 0.0;
 
+  // Ranking (0 = unranked, 1-5 = star rating)
+  int _ranking = 0;
+
   @override
   void initState() {
     super.initState();
@@ -59,6 +62,7 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
       _arabicaPercentage = widget.bean!.arabicaPercentage;
       _robustaPercentage = widget.bean!.robustaPercentage;
       _customFlavorValues = Map.from(widget.bean!.customFlavorValues);
+      _ranking = widget.bean!.ranking;
     }
   }
 
@@ -125,6 +129,7 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
         arabicaPercentage: _arabicaPercentage,
         robustaPercentage: _robustaPercentage,
         customFlavorValues: _customFlavorValues,
+        ranking: _ranking,
       );
 
       if (widget.bean != null) {
@@ -179,6 +184,11 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
           children: [
             _buildLabel('BEAN NAME'),
             _buildTextField(_nameController, 'e.g. Ethiopia Yirgacheffe'),
+            const SizedBox(height: 24),
+
+            _buildLabel('RANKING'),
+            const SizedBox(height: 8),
+            _buildStarRating(),
             const SizedBox(height: 24),
 
             _buildLabel('ORIGIN'),
@@ -542,6 +552,37 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildStarRating() {
+    return Row(
+      children: List.generate(5, (index) {
+        final starIndex = index + 1;
+        final isSelected = _ranking >= starIndex;
+        return GestureDetector(
+          onTap: () {
+            setState(() {
+              // Tapping the same star again resets to unranked
+              if (_ranking == starIndex) {
+                _ranking = 0;
+              } else {
+                _ranking = starIndex;
+              }
+            });
+          },
+          child: Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: Icon(
+              isSelected ? Icons.star : Icons.star_border,
+              size: 36,
+              color: isSelected
+                  ? Theme.of(context).colorScheme.primary
+                  : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
+            ),
+          ),
+        );
+      }),
     );
   }
 

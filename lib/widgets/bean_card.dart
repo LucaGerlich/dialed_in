@@ -47,25 +47,34 @@ class BeanCard extends StatelessWidget {
                       ).colorScheme.onSurface.withValues(alpha: 0.2),
                     ),
                   ),
-                  Positioned(
-                    top: 12,
-                    right: 12,
-                    child: Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: Colors.black.withValues(alpha: 0.5),
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: Theme.of(context).colorScheme.primary,
+                  if (bean.ranking > 0)
+                    Positioned(
+                      top: 12,
+                      right: 12,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withValues(alpha: 0.6),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: List.generate(bean.ranking, (index) {
+                            return Icon(
+                              Icons.star,
+                              size: 14,
+                              color: Theme.of(context).colorScheme.primary,
+                            );
+                          }),
                         ),
                       ),
-                      child: Icon(
-                        Icons.star,
-                        size: 16,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
                     ),
-                  ),
                 ],
               ),
             ),

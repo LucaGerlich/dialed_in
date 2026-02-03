@@ -215,6 +215,9 @@ class CoffeeProvider with ChangeNotifier {
         bitterness: bean.bitterness,
         aftertaste: bean.aftertaste,
         customFlavorValues: bean.customFlavorValues,
+        arabicaPercentage: bean.arabicaPercentage,
+        robustaPercentage: bean.robustaPercentage,
+        ranking: bean.ranking,
       );
       
       _saveData();

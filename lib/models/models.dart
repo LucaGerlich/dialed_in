@@ -163,6 +163,9 @@ class Bean {
   final double arabicaPercentage;
   final double robustaPercentage;
 
+  // User ranking (0 = unranked, 1-5 = star rating)
+  final int ranking;
+
   Bean({
     String? id,
     required this.name,
@@ -181,6 +184,7 @@ class Bean {
     this.aftertaste = 5.0,
     this.arabicaPercentage = 100.0,
     this.robustaPercentage = 0.0,
+    this.ranking = 0,
     Map<String, double>? customFlavorValues,
   }) : id = id ?? const Uuid().v4(),
        shots = shots ?? [],
@@ -206,6 +210,7 @@ class Bean {
       'arabicaPercentage': arabicaPercentage,
       'robustaPercentage': robustaPercentage,
       'customFlavorValues': customFlavorValues,
+      'ranking': ranking,
     };
   }
 
@@ -238,6 +243,7 @@ class Bean {
             (key, value) => MapEntry(key, (value as num).toDouble()),
           ) ??
           {},
+      ranking: json['ranking'] ?? 0,
     );
   }
 }
