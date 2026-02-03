@@ -13,9 +13,7 @@ class GearSettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Gear Settings'),
-      ),
+      appBar: AppBar(title: const Text('Gear Settings')),
       body: Consumer<CoffeeProvider>(
         builder: (context, provider, child) {
           return ListView(
@@ -25,31 +23,36 @@ class GearSettingsScreen extends StatelessWidget {
               _buildThemeDropdown(context, provider),
               const SizedBox(height: 32),
               _buildSectionHeader(context, 'Coffee Machines'),
-              ...provider.machines.map((machine) => _buildGearItem(
-                    context,
-                    machine.name,
-                    () => provider.deleteMachine(machine.id),
-                  )),
+              ...provider.machines.map(
+                (machine) => _buildGearItem(
+                  context,
+                  machine.name,
+                  () => provider.deleteMachine(machine.id),
+                ),
+              ),
               _buildAddButton(context, 'Add Machine', (data) {
-                provider.addMachine(CoffeeMachine(
-                  name: data['name'],
-                  defaultPressure: data['pressure'],
-                  defaultTemperature: data['temp'],
-                  defaultPreInfusionTime: data['preInfusion'],
-                ));
+                provider.addMachine(
+                  CoffeeMachine(
+                    name: data['name'],
+                    defaultPressure: data['pressure'],
+                    defaultTemperature: data['temp'],
+                    defaultPreInfusionTime: data['preInfusion'],
+                  ),
+                );
               }, isMachine: true),
               const SizedBox(height: 32),
               _buildSectionHeader(context, 'Grinders'),
-              ...provider.grinders.map((grinder) => _buildGearItem(
-                    context,
-                    grinder.name,
-                    () => provider.deleteGrinder(grinder.id),
-                  )),
+              ...provider.grinders.map(
+                (grinder) => _buildGearItem(
+                  context,
+                  grinder.name,
+                  () => provider.deleteGrinder(grinder.id),
+                ),
+              ),
               _buildAddButton(context, 'Add Grinder', (data) {
-                provider.addGrinder(Grinder(
-                  name: data['name'],
-                  defaultRpm: data['rpm'],
-                ));
+                provider.addGrinder(
+                  Grinder(name: data['name'], defaultRpm: data['rpm']),
+                );
               }, isMachine: false),
               const SizedBox(height: 32),
               _buildSectionHeader(context, 'Grind Settings'),
@@ -66,6 +69,7 @@ class GearSettingsScreen extends StatelessWidget {
               const SizedBox(height: 32),
               _buildSectionHeader(context, 'About Dialed In'),
               _buildAboutSection(context),
+              const SizedBox(height: 32),
             ],
           );
         },
@@ -79,7 +83,9 @@ class GearSettingsScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1)),
+        border: Border.all(
+          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -94,7 +100,11 @@ class GearSettingsScreen extends StatelessWidget {
             },
             child: Row(
               children: [
-                Icon(Icons.help_outline, size: 20, color: Theme.of(context).colorScheme.primary),
+                Icon(
+                  Icons.help_outline,
+                  size: 20,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(
@@ -115,7 +125,9 @@ class GearSettingsScreen extends StatelessWidget {
                         style: TextStyle(
                           fontFamily: 'RobotoMono',
                           fontSize: 12,
-                          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.onSurface.withValues(alpha: 0.6),
                         ),
                       ),
                     ],
@@ -124,7 +136,9 @@ class GearSettingsScreen extends StatelessWidget {
                 Icon(
                   Icons.arrow_forward_ios,
                   size: 16,
-                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.onSurface.withValues(alpha: 0.4),
                 ),
               ],
             ),
@@ -140,7 +154,9 @@ class GearSettingsScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1)),
+        border: Border.all(
+          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
+        ),
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<ThemeMode>(
@@ -148,8 +164,14 @@ class GearSettingsScreen extends StatelessWidget {
           isExpanded: true,
           dropdownColor: Theme.of(context).colorScheme.surface,
           items: const [
-            DropdownMenuItem(value: ThemeMode.system, child: Text('System Theme')),
-            DropdownMenuItem(value: ThemeMode.light, child: Text('Light Theme')),
+            DropdownMenuItem(
+              value: ThemeMode.system,
+              child: Text('System Theme'),
+            ),
+            DropdownMenuItem(
+              value: ThemeMode.light,
+              child: Text('Light Theme'),
+            ),
             DropdownMenuItem(value: ThemeMode.dark, child: Text('Dark Theme')),
           ],
           onChanged: (mode) {
@@ -175,14 +197,20 @@ class GearSettingsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildGearItem(BuildContext context, String name, VoidCallback onDelete) {
+  Widget _buildGearItem(
+    BuildContext context,
+    String name,
+    VoidCallback onDelete,
+  ) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1)),
+        border: Border.all(
+          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
+        ),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -190,8 +218,8 @@ class GearSettingsScreen extends StatelessWidget {
           Text(
             name,
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurface,
-                ),
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
           ),
           IconButton(
             icon: const Icon(Icons.delete, color: Colors.red),
@@ -202,9 +230,15 @@ class GearSettingsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildAddButton(BuildContext context, String label, Function(Map<String, dynamic>) onAdd, {bool isMachine = false}) {
+  Widget _buildAddButton(
+    BuildContext context,
+    String label,
+    Function(Map<String, dynamic>) onAdd, {
+    bool isMachine = false,
+  }) {
     return OutlinedButton.icon(
-      onPressed: () => _showAddDialog(context, label, onAdd, isMachine: isMachine),
+      onPressed: () =>
+          _showAddDialog(context, label, onAdd, isMachine: isMachine),
       icon: const Icon(Icons.add),
       label: Text(label),
       style: OutlinedButton.styleFrom(
@@ -215,7 +249,12 @@ class GearSettingsScreen extends StatelessWidget {
     );
   }
 
-  void _showAddDialog(BuildContext context, String title, Function(Map<String, dynamic>) onAdd, {required bool isMachine}) {
+  void _showAddDialog(
+    BuildContext context,
+    String title,
+    Function(Map<String, dynamic>) onAdd, {
+    required bool isMachine,
+  }) {
     final nameController = TextEditingController();
     final pressureController = TextEditingController();
     final tempController = TextEditingController();
@@ -226,19 +265,28 @@ class GearSettingsScreen extends StatelessWidget {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: Theme.of(context).colorScheme.surface,
-        title: Text(title, style: TextStyle(color: Theme.of(context).colorScheme.onSurface)),
+        title: Text(
+          title,
+          style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+        ),
         content: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
                 controller: nameController,
-                style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurface,
+                ),
                 decoration: InputDecoration(
                   labelText: 'Name',
                   labelStyle: const TextStyle(color: Colors.grey),
                   enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.2)),
+                    borderSide: BorderSide(
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.onSurface.withValues(alpha: 0.2),
+                    ),
                   ),
                 ),
               ),
@@ -247,12 +295,18 @@ class GearSettingsScreen extends StatelessWidget {
                 TextField(
                   controller: pressureController,
                   keyboardType: TextInputType.number,
-                  style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
                   decoration: InputDecoration(
                     labelText: 'Default Pressure (bar)',
                     labelStyle: const TextStyle(color: Colors.grey),
                     enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.2)),
+                      borderSide: BorderSide(
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.onSurface.withValues(alpha: 0.2),
+                      ),
                     ),
                   ),
                 ),
@@ -260,12 +314,18 @@ class GearSettingsScreen extends StatelessWidget {
                 TextField(
                   controller: tempController,
                   keyboardType: TextInputType.number,
-                  style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
                   decoration: InputDecoration(
                     labelText: 'Default Temp (°C)',
                     labelStyle: const TextStyle(color: Colors.grey),
                     enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.2)),
+                      borderSide: BorderSide(
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.onSurface.withValues(alpha: 0.2),
+                      ),
                     ),
                   ),
                 ),
@@ -273,12 +333,18 @@ class GearSettingsScreen extends StatelessWidget {
                 TextField(
                   controller: preInfusionController,
                   keyboardType: TextInputType.number,
-                  style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
                   decoration: InputDecoration(
                     labelText: 'Default Pre-Infusion (s)',
                     labelStyle: const TextStyle(color: Colors.grey),
                     enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.2)),
+                      borderSide: BorderSide(
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.onSurface.withValues(alpha: 0.2),
+                      ),
                     ),
                   ),
                 ),
@@ -286,12 +352,18 @@ class GearSettingsScreen extends StatelessWidget {
                 TextField(
                   controller: rpmController,
                   keyboardType: TextInputType.number,
-                  style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
                   decoration: InputDecoration(
                     labelText: 'Default RPM',
                     labelStyle: const TextStyle(color: Colors.grey),
                     enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.2)),
+                      borderSide: BorderSide(
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.onSurface.withValues(alpha: 0.2),
+                      ),
                     ),
                   ),
                 ),
@@ -307,16 +379,20 @@ class GearSettingsScreen extends StatelessWidget {
           TextButton(
             onPressed: () {
               if (nameController.text.isNotEmpty) {
-                final data = <String, dynamic>{
-                  'name': nameController.text,
-                };
+                final data = <String, dynamic>{'name': nameController.text};
 
                 if (isMachine) {
-                  if (pressureController.text.isNotEmpty) data['pressure'] = double.tryParse(pressureController.text);
-                  if (tempController.text.isNotEmpty) data['temp'] = double.tryParse(tempController.text);
-                  if (preInfusionController.text.isNotEmpty) data['preInfusion'] = int.tryParse(preInfusionController.text);
+                  if (pressureController.text.isNotEmpty)
+                    data['pressure'] = double.tryParse(pressureController.text);
+                  if (tempController.text.isNotEmpty)
+                    data['temp'] = double.tryParse(tempController.text);
+                  if (preInfusionController.text.isNotEmpty)
+                    data['preInfusion'] = int.tryParse(
+                      preInfusionController.text,
+                    );
                 } else {
-                  if (rpmController.text.isNotEmpty) data['rpm'] = double.tryParse(rpmController.text);
+                  if (rpmController.text.isNotEmpty)
+                    data['rpm'] = double.tryParse(rpmController.text);
                 }
 
                 onAdd(data);
@@ -336,29 +412,64 @@ class GearSettingsScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1)),
+        border: Border.all(
+          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
+        ),
       ),
       child: Column(
         children: [
           Row(
             children: [
               Expanded(
-                  child: _buildSettingInput(context, 'Min', provider.grindMin.toString(), (val) {
-                final min = double.tryParse(val);
-                if (min != null) provider.updateGrindSettings(min, provider.grindMax, provider.grindStep);
-              })),
+                child: _buildSettingInput(
+                  context,
+                  'Min',
+                  provider.grindMin.toString(),
+                  (val) {
+                    final min = double.tryParse(val);
+                    if (min != null)
+                      provider.updateGrindSettings(
+                        min,
+                        provider.grindMax,
+                        provider.grindStep,
+                      );
+                  },
+                ),
+              ),
               const SizedBox(width: 16),
               Expanded(
-                  child: _buildSettingInput(context, 'Max', provider.grindMax.toString(), (val) {
-                final max = double.tryParse(val);
-                if (max != null) provider.updateGrindSettings(provider.grindMin, max, provider.grindStep);
-              })),
+                child: _buildSettingInput(
+                  context,
+                  'Max',
+                  provider.grindMax.toString(),
+                  (val) {
+                    final max = double.tryParse(val);
+                    if (max != null)
+                      provider.updateGrindSettings(
+                        provider.grindMin,
+                        max,
+                        provider.grindStep,
+                      );
+                  },
+                ),
+              ),
               const SizedBox(width: 16),
               Expanded(
-                  child: _buildSettingInput(context, 'Step', provider.grindStep.toString(), (val) {
-                final step = double.tryParse(val);
-                if (step != null) provider.updateGrindSettings(provider.grindMin, provider.grindMax, step);
-              })),
+                child: _buildSettingInput(
+                  context,
+                  'Step',
+                  provider.grindStep.toString(),
+                  (val) {
+                    final step = double.tryParse(val);
+                    if (step != null)
+                      provider.updateGrindSettings(
+                        provider.grindMin,
+                        provider.grindMax,
+                        step,
+                      );
+                  },
+                ),
+              ),
             ],
           ),
         ],
@@ -366,8 +477,17 @@ class GearSettingsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildFlavorProfileSettings(BuildContext context, CoffeeProvider provider) {
-    final defaultAttributes = ['Acidity', 'Body', 'Sweetness', 'Bitterness', 'Aftertaste'];
+  Widget _buildFlavorProfileSettings(
+    BuildContext context,
+    CoffeeProvider provider,
+  ) {
+    final defaultAttributes = [
+      'Acidity',
+      'Body',
+      'Sweetness',
+      'Bitterness',
+      'Aftertaste',
+    ];
     final customAttributes = provider.customFlavorAttributes;
     final canAddMore = customAttributes.length < 3;
 
@@ -376,7 +496,9 @@ class GearSettingsScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1)),
+        border: Border.all(
+          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -384,9 +506,11 @@ class GearSettingsScreen extends StatelessWidget {
           Text(
             'Default attributes are always shown. Add up to 3 custom attributes.',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
-                  height: 1.5,
-                ),
+              color: Theme.of(
+                context,
+              ).colorScheme.onSurface.withValues(alpha: 0.7),
+              height: 1.5,
+            ),
           ),
           const SizedBox(height: 16),
           Text(
@@ -395,28 +519,36 @@ class GearSettingsScreen extends StatelessWidget {
               fontFamily: 'RobotoMono',
               fontSize: 12,
               fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+              color: Theme.of(
+                context,
+              ).colorScheme.onSurface.withValues(alpha: 0.6),
             ),
           ),
           const SizedBox(height: 8),
           Wrap(
             spacing: 8,
             runSpacing: 8,
-            children: defaultAttributes.map((attr) => Chip(
-              label: Text(
-                attr,
-                style: TextStyle(
-                  fontFamily: 'RobotoMono',
-                  fontSize: 12,
-                  color: Theme.of(context).colorScheme.onSurface,
-                ),
-              ),
-              backgroundColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-                side: BorderSide.none,
-              ),
-            )).toList(),
+            children: defaultAttributes
+                .map(
+                  (attr) => Chip(
+                    label: Text(
+                      attr,
+                      style: TextStyle(
+                        fontFamily: 'RobotoMono',
+                        fontSize: 12,
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                    ),
+                    backgroundColor: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withValues(alpha: 0.1),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                      side: BorderSide.none,
+                    ),
+                  ),
+                )
+                .toList(),
           ),
           const SizedBox(height: 16),
           Text(
@@ -425,7 +557,9 @@ class GearSettingsScreen extends StatelessWidget {
               fontFamily: 'RobotoMono',
               fontSize: 12,
               fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+              color: Theme.of(
+                context,
+              ).colorScheme.onSurface.withValues(alpha: 0.6),
             ),
           ),
           const SizedBox(height: 8),
@@ -433,27 +567,32 @@ class GearSettingsScreen extends StatelessWidget {
             Wrap(
               spacing: 8,
               runSpacing: 8,
-              children: customAttributes.map((attr) => Chip(
-                label: Text(
-                  attr,
-                  style: TextStyle(
-                    fontFamily: 'RobotoMono',
-                    fontSize: 12,
-                    color: Theme.of(context).colorScheme.onPrimary,
-                  ),
-                ),
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                deleteIcon: Icon(
-                  Icons.close,
-                  size: 16,
-                  color: Theme.of(context).colorScheme.onPrimary,
-                ),
-                onDeleted: () => provider.removeCustomFlavorAttribute(attr),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                  side: BorderSide.none,
-                ),
-              )).toList(),
+              children: customAttributes
+                  .map(
+                    (attr) => Chip(
+                      label: Text(
+                        attr,
+                        style: TextStyle(
+                          fontFamily: 'RobotoMono',
+                          fontSize: 12,
+                          color: Theme.of(context).colorScheme.onPrimary,
+                        ),
+                      ),
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      deleteIcon: Icon(
+                        Icons.close,
+                        size: 16,
+                        color: Theme.of(context).colorScheme.onPrimary,
+                      ),
+                      onDeleted: () =>
+                          provider.removeCustomFlavorAttribute(attr),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                        side: BorderSide.none,
+                      ),
+                    ),
+                  )
+                  .toList(),
             ),
             const SizedBox(height: 12),
           ],
@@ -465,7 +604,10 @@ class GearSettingsScreen extends StatelessWidget {
               style: OutlinedButton.styleFrom(
                 foregroundColor: Theme.of(context).colorScheme.primary,
                 side: BorderSide(color: Theme.of(context).colorScheme.primary),
-                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 12,
+                  horizontal: 16,
+                ),
               ),
             ),
         ],
@@ -473,14 +615,20 @@ class GearSettingsScreen extends StatelessWidget {
     );
   }
 
-  void _showAddCustomAttributeDialog(BuildContext context, CoffeeProvider provider) {
+  void _showAddCustomAttributeDialog(
+    BuildContext context,
+    CoffeeProvider provider,
+  ) {
     final controller = TextEditingController();
 
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: Theme.of(context).colorScheme.surface,
-        title: Text('Add Custom Attribute', style: TextStyle(color: Theme.of(context).colorScheme.onSurface)),
+        title: Text(
+          'Add Custom Attribute',
+          style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+        ),
         content: TextField(
           controller: controller,
           autofocus: true,
@@ -489,12 +637,22 @@ class GearSettingsScreen extends StatelessWidget {
             labelText: 'Attribute Name',
             hintText: 'e.g. Fruity, Nutty, Floral',
             labelStyle: const TextStyle(color: Colors.grey),
-            hintStyle: TextStyle(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4)),
+            hintStyle: TextStyle(
+              color: Theme.of(
+                context,
+              ).colorScheme.onSurface.withValues(alpha: 0.4),
+            ),
             enabledBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.2)),
+              borderSide: BorderSide(
+                color: Theme.of(
+                  context,
+                ).colorScheme.onSurface.withValues(alpha: 0.2),
+              ),
             ),
             focusedBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),
+              borderSide: BorderSide(
+                color: Theme.of(context).colorScheme.primary,
+              ),
             ),
           ),
           textCapitalization: TextCapitalization.words,
@@ -531,11 +689,23 @@ class GearSettingsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSettingInput(BuildContext context, String label, String value, Function(String) onChanged) {
+  Widget _buildSettingInput(
+    BuildContext context,
+    String label,
+    String value,
+    Function(String) onChanged,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: TextStyle(color: Colors.grey[600], fontSize: 12, fontWeight: FontWeight.bold)),
+        Text(
+          label,
+          style: TextStyle(
+            color: Colors.grey[600],
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         const SizedBox(height: 8),
         TextFormField(
           initialValue: value,
@@ -543,9 +713,17 @@ class GearSettingsScreen extends StatelessWidget {
           style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
           decoration: InputDecoration(
             filled: true,
-            fillColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.05),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+            fillColor: Theme.of(
+              context,
+            ).colorScheme.onSurface.withValues(alpha: 0.05),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide.none,
+            ),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 12,
+              vertical: 12,
+            ),
             isDense: true,
           ),
           onChanged: onChanged,
@@ -554,13 +732,18 @@ class GearSettingsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildDataManagementSection(BuildContext context, CoffeeProvider provider) {
+  Widget _buildDataManagementSection(
+    BuildContext context,
+    CoffeeProvider provider,
+  ) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1)),
+        border: Border.all(
+          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -568,9 +751,9 @@ class GearSettingsScreen extends StatelessWidget {
           Text(
             'Export and import your brew logs as JSON for backup or external analysis.',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurface,
-                  height: 1.5,
-                ),
+              color: Theme.of(context).colorScheme.onSurface,
+              height: 1.5,
+            ),
           ),
           const SizedBox(height: 16),
           Row(
@@ -582,7 +765,9 @@ class GearSettingsScreen extends StatelessWidget {
                   label: const Text('Export'),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: Theme.of(context).colorScheme.primary,
-                    side: BorderSide(color: Theme.of(context).colorScheme.primary),
+                    side: BorderSide(
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
                     padding: const EdgeInsets.symmetric(vertical: 12),
                   ),
                 ),
@@ -595,7 +780,9 @@ class GearSettingsScreen extends StatelessWidget {
                   label: const Text('Import'),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: Theme.of(context).colorScheme.primary,
-                    side: BorderSide(color: Theme.of(context).colorScheme.primary),
+                    side: BorderSide(
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
                     padding: const EdgeInsets.symmetric(vertical: 12),
                   ),
                 ),
@@ -607,16 +794,18 @@ class GearSettingsScreen extends StatelessWidget {
     );
   }
 
-  Future<void> _exportData(BuildContext context, CoffeeProvider provider) async {
+  Future<void> _exportData(
+    BuildContext context,
+    CoffeeProvider provider,
+  ) async {
     try {
       final filePath = await provider.exportDataToFile();
-      
+
       if (context.mounted) {
         // ignore: deprecated_member_use
-        await Share.shareXFiles(
-          [XFile(filePath)],
-          text: 'Dialed In - Coffee Data Export',
-        );
+        await Share.shareXFiles([
+          XFile(filePath),
+        ], text: 'Dialed In - Coffee Data Export');
       }
     } catch (e) {
       if (context.mounted) {
@@ -630,7 +819,10 @@ class GearSettingsScreen extends StatelessWidget {
     }
   }
 
-  Future<void> _importData(BuildContext context, CoffeeProvider provider) async {
+  Future<void> _importData(
+    BuildContext context,
+    CoffeeProvider provider,
+  ) async {
     try {
       final result = await FilePicker.platform.pickFiles(
         type: FileType.custom,
@@ -660,7 +852,10 @@ class GearSettingsScreen extends StatelessWidget {
           context: context,
           builder: (ctx) => AlertDialog(
             backgroundColor: Theme.of(context).colorScheme.surface,
-            title: Text('Import Data', style: TextStyle(color: Theme.of(context).colorScheme.onSurface)),
+            title: Text(
+              'Import Data',
+              style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+            ),
             content: Text(
               'Do you want to replace all existing data or merge with current data?',
               style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
@@ -683,12 +878,19 @@ class GearSettingsScreen extends StatelessWidget {
         );
 
         if (shouldReplace != null && context.mounted) {
-          await provider.importDataFromJson(jsonContent, replaceExisting: shouldReplace);
-          
+          await provider.importDataFromJson(
+            jsonContent,
+            replaceExisting: shouldReplace,
+          );
+
           if (context.mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(shouldReplace ? 'Data imported successfully!' : 'Data merged successfully!'),
+                content: Text(
+                  shouldReplace
+                      ? 'Data imported successfully!'
+                      : 'Data merged successfully!',
+                ),
                 backgroundColor: Colors.green,
               ),
             );
@@ -713,7 +915,9 @@ class GearSettingsScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1)),
+        border: Border.all(
+          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -721,14 +925,18 @@ class GearSettingsScreen extends StatelessWidget {
           Text(
             "Dialed In is a companion for specialty coffee enthusiasts. Track your beans, record every shot, and master the art of the perfect extraction.",
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurface,
-                  height: 1.5,
-                ),
+              color: Theme.of(context).colorScheme.onSurface,
+              height: 1.5,
+            ),
           ),
           const SizedBox(height: 16),
           Row(
             children: [
-              Icon(Icons.code, size: 16, color: Theme.of(context).colorScheme.primary),
+              Icon(
+                Icons.code,
+                size: 16,
+                color: Theme.of(context).colorScheme.primary,
+              ),
               const SizedBox(width: 8),
               Text(
                 'Built by Luca Gerlich',
@@ -743,10 +951,16 @@ class GearSettingsScreen extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           InkWell(
-            onTap: () => launchUrl(Uri.parse('https://github.com/LucaGerlich/dialed_in')),
+            onTap: () => launchUrl(
+              Uri.parse('https://github.com/LucaGerlich/dialed_in'),
+            ),
             child: Row(
               children: [
-                Icon(Icons.link, size: 16, color: Theme.of(context).colorScheme.primary),
+                Icon(
+                  Icons.link,
+                  size: 16,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
                 const SizedBox(width: 8),
                 Text(
                   'GitHub Project',
@@ -764,8 +978,10 @@ class GearSettingsScreen extends StatelessWidget {
           Text(
             'Version 1.1.0',
             style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
-                ),
+              color: Theme.of(
+                context,
+              ).colorScheme.onSurface.withValues(alpha: 0.5),
+            ),
           ),
         ],
       ),
