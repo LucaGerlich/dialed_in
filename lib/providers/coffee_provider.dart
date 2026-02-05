@@ -6,6 +6,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/models.dart';
 
 class CoffeeProvider with ChangeNotifier {
+  // Constants for migration
+  static const double _legacyDefaultGrindStep = 0.5;
+  static const double _currentDefaultGrindStep = 0.01;
+  
   List<Bean> _beans = [];
   List<CoffeeMachine> _machines = [];
   List<Grinder> _grinders = [];
@@ -13,7 +17,7 @@ class CoffeeProvider with ChangeNotifier {
   // Grind Settings
   double _grindMin = 0.0;
   double _grindMax = 30.0;
-  double _grindStep = 0.01;
+  double _grindStep = _currentDefaultGrindStep;
   bool _useClicksMode = false; // Track grind as clicks/notches instead of numbered settings
   String _grindLabel = 'Grind Size'; // Label for the grind dial (e.g., "Clicks" or "Grind Size")
 
@@ -68,12 +72,12 @@ class CoffeeProvider with ChangeNotifier {
     _grindMin = prefs.getDouble('grindMin') ?? 0.0;
     _grindMax = prefs.getDouble('grindMax') ?? 30.0;
     
-    // Migration: Update old default step (0.5) to new default (0.01)
+    // Migration: Update old default step to new default for better precision
     final savedStep = prefs.getDouble('grindStep');
-    if (savedStep == null || savedStep == 0.5) {
-      _grindStep = 0.01;
+    if (savedStep == null || savedStep == _legacyDefaultGrindStep) {
+      _grindStep = _currentDefaultGrindStep;
       // Save the new default immediately
-      await prefs.setDouble('grindStep', 0.01);
+      await prefs.setDouble('grindStep', _currentDefaultGrindStep);
     } else {
       _grindStep = savedStep;
     }

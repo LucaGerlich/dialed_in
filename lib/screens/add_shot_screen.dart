@@ -49,9 +49,10 @@ class _AddShotScreenState extends State<AddShotScreen> {
       final provider = Provider.of<CoffeeProvider>(context, listen: false);
       final bean = provider.beans.firstWhere((b) => b.id == widget.beanId);
       
-      // Use grind size from the most recent shot, or fall back to preferred size
+      // Use grind size from the most recent shot (shots are sorted newest first)
+      // or fall back to preferred size
       final initialGrindSize = bean.shots.isNotEmpty 
-          ? bean.shots.last.grindSize 
+          ? bean.shots.first.grindSize 
           : bean.preferredGrindSize;
       
       setState(() {
