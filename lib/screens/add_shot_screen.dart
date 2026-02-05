@@ -243,7 +243,7 @@ class _AddShotScreenState extends State<AddShotScreen> {
       String message;
       if (isPerfectShot) {
         message = '🎯 Perfect shot! You nailed it!';
-      } else if (shotCount % 10 == 0) {
+      } else if (shotCount >= 10 && shotCount % 10 == 0) {
         message = '🔥 ${shotCount} shots logged! You\'re on fire!';
       } else {
         final messages = [
@@ -252,7 +252,7 @@ class _AddShotScreenState extends State<AddShotScreen> {
           'Shot logged! Keep brewing! 💪',
           'Great work! ✨',
         ];
-        message = messages[shotCount % messages.length];
+        message = messages[(shotCount - 1) % messages.length];
       }
       
       ScaffoldMessenger.of(context).showSnackBar(
