@@ -16,6 +16,18 @@ class AddShotScreen extends StatefulWidget {
 }
 
 class _AddShotScreenState extends State<AddShotScreen> {
+  // Encouragement messages for shot logging
+  static const _encouragementMessages = [
+    'Nice pull! 🎯',
+    'Another one dialed in! ☕',
+    'Shot logged! Keep brewing! 💪',
+    'Great work! ✨',
+  ];
+  
+  // Perfect shot threshold: flavor coordinates within ±0.2 of center
+  // (center = 0,0 meaning balanced between sour/bitter and weak/strong)
+  static const _perfectShotThreshold = 0.2;
+  
   final _doseInController = TextEditingController(text: '18.0');
   final _doseOutController = TextEditingController(text: '36.0');
   final _durationController = TextEditingController(text: '00:00.0');
@@ -231,6 +243,37 @@ class _AddShotScreenState extends State<AddShotScreen> {
         context,
         listen: false,
       ).addShot(widget.beanId, shot, updatePreferredGrind: _updatePreferred);
+      
+      // Show encouraging message based on flavor profile
+      // Note: shotCount includes the newly added shot since addShot was called above
+      final isPerfectShot = _flavourX.abs() < _perfectShotThreshold && 
+                           _flavourY.abs() < _perfectShotThreshold;
+      final shotCount = Provider.of<CoffeeProvider>(context, listen: false)
+          .beans
+          .firstWhere((b) => b.id == widget.beanId)
+          .shots
+          .length;
+      
+      String message;
+      if (isPerfectShot) {
+        message = '🎯 Perfect shot! You nailed it!';
+      } else if (shotCount >= 10 && shotCount % 10 == 0) {
+        message = '🔥 ${shotCount} shots logged! You\'re on fire!';
+      } else {
+        message = _encouragementMessages[(shotCount - 1) % _encouragementMessages.length];
+      }
+      
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message),
+          backgroundColor: isPerfectShot 
+              ? Colors.green 
+              : Theme.of(context).colorScheme.primary,
+          behavior: SnackBarBehavior.floating,
+          duration: const Duration(seconds: 2),
+        ),
+      );
+      
       Navigator.pop(context);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -605,14 +648,29 @@ class _AddShotScreenState extends State<AddShotScreen> {
 
                         // Flavour Graph
                         ExpansionTile(
-                          title: Text(
-                            'FLAVOUR PROFILE',
-                            style: TextStyle(
-                              fontFamily: 'RobotoMono',
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
-                              color: Theme.of(context).colorScheme.onSurface,
-                            ),
+                          title: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'FLAVOUR PROFILE',
+                                style: TextStyle(
+                                  fontFamily: 'RobotoMono',
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14,
+                                  color: Theme.of(context).colorScheme.onSurface,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                'Tap the grid to map your shot\'s taste',
+                                style: TextStyle(
+                                  fontFamily: 'RobotoMono',
+                                  fontSize: 11,
+                                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
+                                  fontStyle: FontStyle.italic,
+                                ),
+                              ),
+                            ],
                           ),
                           children: [
                             const SizedBox(height: 12),

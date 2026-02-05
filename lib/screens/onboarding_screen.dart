@@ -28,7 +28,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     ),
     OnboardingPage(
       icon: Icons.inventory_2_outlined,
-      title: 'Bean Vault',
+      title: 'My Coffee Collection',
       description:
           'Store and organize your coffee bean collection with detailed information.',
       details: [
@@ -71,7 +71,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       description:
           'You\'re ready to start your coffee journey!',
       details: [
-        '1. Tap + on Bean Vault to add your first bean',
+        '1. Tap + on My Coffee Collection to add your first bean',
         '2. Select a bean to view details',
         '3. Tap + on bean details to log a shot',
         '4. Use the dial to set your grind size',
