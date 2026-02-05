@@ -1,0 +1,548 @@
+{
+  "@@locale": "en",
+  
+  "appTitle": "Dialed In",
+  "@appTitle": {
+    "description": "The application title"
+  },
+  
+  "beanVault": "Bean Vault",
+  "@beanVault": {
+    "description": "Title for the bean list screen"
+  },
+  
+  "gearSettings": "Gear Settings",
+  "@gearSettings": {
+    "description": "Title for gear settings screen"
+  },
+  
+  "sortBy": "Sort by",
+  "@sortBy": {
+    "description": "Tooltip for sort menu"
+  },
+  
+  "noBeansFound": "No beans found",
+  "@noBeansFound": {
+    "description": "Empty state message when no beans exist"
+  },
+  
+  "filterAll": "All",
+  "@filterAll": {
+    "description": "Filter option to show all beans"
+  },
+  
+  "filterLight": "Light",
+  "@filterLight": {
+    "description": "Filter option for light roast"
+  },
+  
+  "filterMedium": "Medium",
+  "@filterMedium": {
+    "description": "Filter option for medium roast"
+  },
+  
+  "filterDark": "Dark",
+  "@filterDark": {
+    "description": "Filter option for dark roast"
+  },
+  
+  "sortDefault": "Default",
+  "@sortDefault": {
+    "description": "Sort option for default order"
+  },
+  
+  "sortRanking": "Ranking",
+  "@sortRanking": {
+    "description": "Sort option by ranking"
+  },
+  
+  "origin": "ORIGIN",
+  "@origin": {
+    "description": "Label for bean origin"
+  },
+  
+  "roastDate": "ROAST DATE",
+  "@roastDate": {
+    "description": "Label for roast date"
+  },
+  
+  "resting": "RESTING",
+  "@resting": {
+    "description": "Label for bean resting period"
+  },
+  
+  "deleteBeanTitle": "Delete Bean?",
+  "@deleteBeanTitle": {
+    "description": "Title for delete bean confirmation dialog"
+  },
+  
+  "deleteBeanMessage": "This will delete the bean and all its shots.",
+  "@deleteBeanMessage": {
+    "description": "Message for delete bean confirmation dialog"
+  },
+  
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Cancel button label"
+  },
+  
+  "delete": "Delete",
+  "@delete": {
+    "description": "Delete button label"
+  },
+  
+  "editBean": "Edit Bean",
+  "@editBean": {
+    "description": "Title for edit bean screen"
+  },
+  
+  "addBean": "Add Bean",
+  "@addBean": {
+    "description": "Title for add bean screen"
+  },
+  
+  "beanName": "BEAN NAME",
+  "@beanName": {
+    "description": "Label for bean name field"
+  },
+  
+  "ranking": "RANKING",
+  "@ranking": {
+    "description": "Label for bean ranking field"
+  },
+  
+  "roastLevel": "ROAST LEVEL",
+  "@roastLevel": {
+    "description": "Label for roast level field"
+  },
+  
+  "process": "PROCESS",
+  "@process": {
+    "description": "Label for bean process field"
+  },
+  
+  "beanComposition": "BEAN COMPOSITION",
+  "@beanComposition": {
+    "description": "Label for bean composition field"
+  },
+  
+  "notes": "NOTES",
+  "@notes": {
+    "description": "Label for notes field"
+  },
+  
+  "flavorProfile": "FLAVOR PROFILE",
+  "@flavorProfile": {
+    "description": "Label for flavor profile section"
+  },
+  
+  "flavorTags": "FLAVOR TAGS",
+  "@flavorTags": {
+    "description": "Label for flavor tags field"
+  },
+  
+  "beanNameHint": "e.g. Ethiopia Yirgacheffe",
+  "@beanNameHint": {
+    "description": "Hint text for bean name field"
+  },
+  
+  "originHint": "e.g. Ethiopia",
+  "@originHint": {
+    "description": "Hint text for origin field"
+  },
+  
+  "selectDate": "Select Date",
+  "@selectDate": {
+    "description": "Hint text for date picker"
+  },
+  
+  "processHint": "e.g. Washed, Natural",
+  "@processHint": {
+    "description": "Hint text for process field"
+  },
+  
+  "notesHint": "Tasting notes, etc.",
+  "@notesHint": {
+    "description": "Hint text for notes field"
+  },
+  
+  "flavorTagHint": "Add a tag (e.g. Blueberry)",
+  "@flavorTagHint": {
+    "description": "Hint text for flavor tag input"
+  },
+  
+  "arabica": "Arabica",
+  "@arabica": {
+    "description": "Arabica bean type"
+  },
+  
+  "robusta": "Robusta",
+  "@robusta": {
+    "description": "Robusta bean type"
+  },
+  
+  "acidity": "Acidity",
+  "@acidity": {
+    "description": "Flavor profile attribute"
+  },
+  
+  "body": "Body",
+  "@body": {
+    "description": "Flavor profile attribute"
+  },
+  
+  "sweetness": "Sweetness",
+  "@sweetness": {
+    "description": "Flavor profile attribute"
+  },
+  
+  "bitterness": "Bitterness",
+  "@bitterness": {
+    "description": "Flavor profile attribute"
+  },
+  
+  "aftertaste": "Aftertaste",
+  "@aftertaste": {
+    "description": "Flavor profile attribute"
+  },
+  
+  "addBeanButton": "ADD BEAN",
+  "@addBeanButton": {
+    "description": "Button to add a new bean"
+  },
+  
+  "updateBeanButton": "UPDATE BEAN",
+  "@updateBeanButton": {
+    "description": "Button to update an existing bean"
+  },
+  
+  "addShot": "Add Shot",
+  "@addShot": {
+    "description": "Title for add shot screen"
+  },
+  
+  "done": "Done",
+  "@done": {
+    "description": "Done button label"
+  },
+  
+  "fillAllFields": "Please fill in all fields",
+  "@fillAllFields": {
+    "description": "Validation message for incomplete forms"
+  },
+  
+  "bean": "BEAN",
+  "@bean": {
+    "description": "Label for bean section"
+  },
+  
+  "brewRatio": "BREW RATIO",
+  "@brewRatio": {
+    "description": "Label for brew ratio section"
+  },
+  
+  "extractionParameters": "EXTRACTION PARAMETERS",
+  "@extractionParameters": {
+    "description": "Label for extraction parameters section"
+  },
+  
+  "gear": "GEAR",
+  "@gear": {
+    "description": "Label for gear section"
+  },
+  
+  "tasteProfile": "TASTE PROFILE",
+  "@tasteProfile": {
+    "description": "Label for taste profile section"
+  },
+  
+  "grindSize": "GRIND SIZE",
+  "@grindSize": {
+    "description": "Label for grind size"
+  },
+  
+  "time": "TIME",
+  "@time": {
+    "description": "Label for brew time"
+  },
+  
+  "doseIn": "DOSE IN",
+  "@doseIn": {
+    "description": "Label for coffee dose input"
+  },
+  
+  "doseOut": "DOSE OUT",
+  "@doseOut": {
+    "description": "Label for coffee dose output"
+  },
+  
+  "pressure": "PRESSURE",
+  "@pressure": {
+    "description": "Label for brew pressure"
+  },
+  
+  "temp": "TEMP",
+  "@temp": {
+    "description": "Label for brew temperature"
+  },
+  
+  "preInfusion": "PRE-INFUSION",
+  "@preInfusion": {
+    "description": "Label for pre-infusion time"
+  },
+  
+  "rpm": "RPM",
+  "@rpm": {
+    "description": "Label for grinder RPM"
+  },
+  
+  "machine": "MACHINE",
+  "@machine": {
+    "description": "Label for coffee machine"
+  },
+  
+  "grinder": "GRINDER",
+  "@grinder": {
+    "description": "Label for grinder"
+  },
+  
+  "water": "WATER",
+  "@water": {
+    "description": "Label for water type"
+  },
+  
+  "strong": "STRONG",
+  "@strong": {
+    "description": "Taste profile descriptor"
+  },
+  
+  "weak": "WEAK",
+  "@weak": {
+    "description": "Taste profile descriptor"
+  },
+  
+  "sour": "SOUR",
+  "@sour": {
+    "description": "Taste profile descriptor"
+  },
+  
+  "bitter": "BITTER",
+  "@bitter": {
+    "description": "Taste profile descriptor"
+  },
+  
+  "deleteShotTitle": "Delete Shot?",
+  "@deleteShotTitle": {
+    "description": "Title for delete shot confirmation dialog"
+  },
+  
+  "deleteShotMessage": "Are you sure you want to delete this shot record?",
+  "@deleteShotMessage": {
+    "description": "Message for delete shot confirmation dialog"
+  },
+  
+  "roasted": "ROASTED:",
+  "@roasted": {
+    "description": "Label prefix for roast date"
+  },
+  
+  "appSettings": "App Settings",
+  "@appSettings": {
+    "description": "Section header for app settings"
+  },
+  
+  "language": "Language",
+  "@language": {
+    "description": "Label for language setting"
+  },
+  
+  "systemDefault": "System Default",
+  "@systemDefault": {
+    "description": "Option to use system language"
+  },
+  
+  "english": "English",
+  "@english": {
+    "description": "English language option"
+  },
+  
+  "spanish": "Spanish",
+  "@spanish": {
+    "description": "Spanish language option"
+  },
+  
+  "german": "German",
+  "@german": {
+    "description": "German language option"
+  },
+  
+  "coffeeMachines": "Coffee Machines",
+  "@coffeeMachines": {
+    "description": "Section header for coffee machines"
+  },
+  
+  "grinders": "Grinders",
+  "@grinders": {
+    "description": "Section header for grinders"
+  },
+  
+  "grindSettings": "Grind Settings",
+  "@grindSettings": {
+    "description": "Section header for grind settings"
+  },
+  
+  "dataManagement": "Data Management",
+  "@dataManagement": {
+    "description": "Section header for data management"
+  },
+  
+  "help": "Help",
+  "@help": {
+    "description": "Section header for help"
+  },
+  
+  "aboutDialedIn": "About Dialed In",
+  "@aboutDialedIn": {
+    "description": "Section header for about"
+  },
+  
+  "systemTheme": "System Theme",
+  "@systemTheme": {
+    "description": "Option to use system theme"
+  },
+  
+  "lightTheme": "Light Theme",
+  "@lightTheme": {
+    "description": "Light theme option"
+  },
+  
+  "darkTheme": "Dark Theme",
+  "@darkTheme": {
+    "description": "Dark theme option"
+  },
+  
+  "add": "Add",
+  "@add": {
+    "description": "Add button label"
+  },
+  
+  "merge": "Merge",
+  "@merge": {
+    "description": "Merge button label for data import"
+  },
+  
+  "replace": "Replace",
+  "@replace": {
+    "description": "Replace button label for data import"
+  },
+  
+  "addCustomAttribute": "Add Custom Attribute",
+  "@addCustomAttribute": {
+    "description": "Button to add custom flavor attribute"
+  },
+  
+  "export": "Export",
+  "@export": {
+    "description": "Export data button"
+  },
+  
+  "import": "Import",
+  "@import": {
+    "description": "Import data button"
+  },
+  
+  "addMachine": "Add Machine",
+  "@addMachine": {
+    "description": "Button to add a coffee machine"
+  },
+  
+  "addGrinder": "Add Grinder",
+  "@addGrinder": {
+    "description": "Button to add a grinder"
+  },
+  
+  "viewAppTutorial": "View App Tutorial",
+  "@viewAppTutorial": {
+    "description": "Button to view app tutorial"
+  },
+  
+  "learnHowToUse": "Learn how to use Dialed In",
+  "@learnHowToUse": {
+    "description": "Description for tutorial button"
+  },
+  
+  "errorExportingData": "Error exporting data:",
+  "@errorExportingData": {
+    "description": "Error message when data export fails"
+  },
+  
+  "errorImportingData": "Error importing data:",
+  "@errorImportingData": {
+    "description": "Error message when data import fails"
+  },
+  
+  "saveImage": "Save Image",
+  "@saveImage": {
+    "description": "Button to save shot image"
+  },
+  
+  "share": "Share",
+  "@share": {
+    "description": "Share button label"
+  },
+  
+  "savedToPhotos": "Saved to Photos!",
+  "@savedToPhotos": {
+    "description": "Success message when image is saved"
+  },
+  
+  "copiedToClipboard": "Copied to Clipboard! Open Instagram Story and Paste.",
+  "@copiedToClipboard": {
+    "description": "Success message when copied to clipboard"
+  },
+  
+  "welcomeToDialedIn": "Welcome to Dialed In",
+  "@welcomeToDialedIn": {
+    "description": "Onboarding welcome title"
+  },
+  
+  "onboardingBeanVault": "Bean Vault",
+  "@onboardingBeanVault": {
+    "description": "Onboarding section title"
+  },
+  
+  "onboardingShotTracking": "Shot Tracking",
+  "@onboardingShotTracking": {
+    "description": "Onboarding section title"
+  },
+  
+  "onboardingGearSettings": "Gear Settings",
+  "@onboardingGearSettings": {
+    "description": "Onboarding section title"
+  },
+  
+  "getStarted": "Get Started",
+  "@getStarted": {
+    "description": "Button to complete onboarding"
+  },
+  
+  "noNotes": "No notes",
+  "@noNotes": {
+    "description": "Placeholder when no notes are present"
+  },
+  
+  "percentArabica": "% Arabica",
+  "@percentArabica": {
+    "description": "Label for arabica percentage"
+  },
+  
+  "percentRobusta": "% Robusta",
+  "@percentRobusta": {
+    "description": "Label for robusta percentage"
+  },
+  
+  "hundredPercentRobusta": "100% Robusta",
+  "@hundredPercentRobusta": {
+    "description": "Label when bean is pure robusta"
+  }
+}

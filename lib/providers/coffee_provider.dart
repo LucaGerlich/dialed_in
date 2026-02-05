@@ -18,6 +18,9 @@ class CoffeeProvider with ChangeNotifier {
   // Theme Settings
   ThemeMode _themeMode = ThemeMode.system;
 
+  // Locale Settings
+  Locale? _locale; // null means system default
+
   // Custom Flavor Profile Attributes (up to 3 additional)
   List<String> _customFlavorAttributes = [];
 
@@ -33,6 +36,7 @@ class CoffeeProvider with ChangeNotifier {
   double get grindMax => _grindMax;
   double get grindStep => _grindStep;
   ThemeMode get themeMode => _themeMode;
+  Locale? get locale => _locale;
   bool get hasCompletedOnboarding => _hasCompletedOnboarding;
   bool get isLoading => _isLoading;
   List<String> get customFlavorAttributes => _customFlavorAttributes;
@@ -73,6 +77,12 @@ class CoffeeProvider with ChangeNotifier {
       );
     }
     
+    // Load locale settings
+    final String? localeCode = prefs.getString('locale');
+    if (localeCode != null && localeCode.isNotEmpty) {
+      _locale = Locale(localeCode);
+    }
+    
     _hasCompletedOnboarding = prefs.getBool('hasCompletedOnboarding') ?? false;
     
     // Load custom flavor attributes
@@ -103,6 +113,13 @@ class CoffeeProvider with ChangeNotifier {
     await prefs.setDouble('grindStep', _grindStep);
     await prefs.setString('themeMode', _themeMode.toString());
     await prefs.setString('customFlavorAttributes', jsonEncode(_customFlavorAttributes));
+    
+    // Save locale
+    if (_locale != null) {
+      await prefs.setString('locale', _locale!.languageCode);
+    } else {
+      await prefs.remove('locale');
+    }
   }
   
   void updateGrindSettings(double min, double max, double step) {
@@ -115,6 +132,12 @@ class CoffeeProvider with ChangeNotifier {
 
   void setThemeMode(ThemeMode mode) {
     _themeMode = mode;
+    _saveData();
+    notifyListeners();
+  }
+
+  void setLocale(Locale? locale) {
+    _locale = locale;
     _saveData();
     notifyListeners();
   }
