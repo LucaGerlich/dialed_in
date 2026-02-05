@@ -14,7 +14,7 @@ class GearSettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    
+
     return Scaffold(
       appBar: AppBar(title: Text(l10n.gearSettings)),
       body: Consumer<CoffeeProvider>(
@@ -23,8 +23,10 @@ class GearSettingsScreen extends StatelessWidget {
             padding: const EdgeInsets.all(16),
             children: [
               _buildSectionHeader(context, l10n.appSettings),
+              _buildSectionSubHeader(context, "Theme"),
               _buildThemeDropdown(context, provider),
               const SizedBox(height: 16),
+              _buildSectionSubHeader(context, l10n.language),
               _buildLanguageDropdown(context, provider),
               const SizedBox(height: 32),
               _buildSectionHeader(context, l10n.coffeeMachines),
@@ -84,7 +86,7 @@ class GearSettingsScreen extends StatelessWidget {
 
   Widget _buildHelpSection(BuildContext context, CoffeeProvider provider) {
     final l10n = AppLocalizations.of(context)!;
-    
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -157,7 +159,7 @@ class GearSettingsScreen extends StatelessWidget {
 
   Widget _buildThemeDropdown(BuildContext context, CoffeeProvider provider) {
     final l10n = AppLocalizations.of(context)!;
-    
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
@@ -182,7 +184,7 @@ class GearSettingsScreen extends StatelessWidget {
               child: Text(l10n.lightTheme),
             ),
             DropdownMenuItem(
-              value: ThemeMode.dark, 
+              value: ThemeMode.dark,
               child: Text(l10n.darkTheme),
             ),
           ],
@@ -196,7 +198,7 @@ class GearSettingsScreen extends StatelessWidget {
 
   Widget _buildLanguageDropdown(BuildContext context, CoffeeProvider provider) {
     final l10n = AppLocalizations.of(context)!;
-    
+
     // Map of locale codes to display names
     final localeOptions = {
       null: l10n.systemDefault,
@@ -242,6 +244,21 @@ class GearSettingsScreen extends StatelessWidget {
           fontFamily: 'RobotoMono',
           fontSize: 20,
           fontWeight: FontWeight.bold,
+          color: Theme.of(context).colorScheme.primary,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSectionSubHeader(BuildContext context, String title) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Text(
+        title,
+        style: TextStyle(
+          fontFamily: 'RobotoMono',
+          fontSize: 16,
+          fontWeight: FontWeight.normal,
           color: Theme.of(context).colorScheme.primary,
         ),
       ),
@@ -531,17 +548,18 @@ class GearSettingsScreen extends StatelessWidget {
             style: TextStyle(
               fontFamily: 'RobotoMono',
               fontSize: 12,
-              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+              color: Theme.of(
+                context,
+              ).colorScheme.onSurface.withValues(alpha: 0.6),
             ),
           ),
           const SizedBox(height: 8),
           SwitchListTile(
             title: Text(
-              provider.useClicksMode ? 'Clicks/Notches Mode' : 'Numbered Settings Mode',
-              style: const TextStyle(
-                fontFamily: 'RobotoMono',
-                fontSize: 14,
-              ),
+              provider.useClicksMode
+                  ? 'Clicks/Notches Mode'
+                  : 'Numbered Settings Mode',
+              style: const TextStyle(fontFamily: 'RobotoMono', fontSize: 14),
             ),
             subtitle: Text(
               provider.useClicksMode
@@ -550,7 +568,9 @@ class GearSettingsScreen extends StatelessWidget {
               style: TextStyle(
                 fontFamily: 'RobotoMono',
                 fontSize: 11,
-                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
+                color: Theme.of(
+                  context,
+                ).colorScheme.onSurface.withValues(alpha: 0.5),
               ),
             ),
             value: provider.useClicksMode,
@@ -570,7 +590,9 @@ class GearSettingsScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+                color: Theme.of(
+                  context,
+                ).colorScheme.primary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Row(
@@ -587,7 +609,9 @@ class GearSettingsScreen extends StatelessWidget {
                       style: TextStyle(
                         fontFamily: 'RobotoMono',
                         fontSize: 11,
-                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.onSurface.withValues(alpha: 0.7),
                       ),
                     ),
                   ),
