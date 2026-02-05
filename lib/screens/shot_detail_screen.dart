@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../models/models.dart';
 import '../providers/coffee_provider.dart';
 import 'share_shot_dialog.dart';
@@ -17,6 +18,7 @@ class ShotDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Consumer<CoffeeProvider>(
       builder: (context, provider, child) {
         // Resolve machine and grinder names
@@ -67,7 +69,7 @@ class ShotDetailScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('BEAN', style: TextStyle(fontFamily: 'RobotoMono', color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6), fontSize: 12)),
+                      Text(l10n.bean, style: TextStyle(fontFamily: 'RobotoMono', color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6), fontSize: 12)),
                       Text(
                         bean.name,
                         style: TextStyle(fontFamily: 'RobotoMono',
@@ -96,11 +98,11 @@ class ShotDetailScreen extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              'ROASTED: ${DateFormat('MMM d').format(bean.roastDate!)}',
+                              '${l10n.roasted} ${DateFormat('MMM d').format(bean.roastDate!)}',
                               style: TextStyle(fontFamily: 'RobotoMono', color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6), fontSize: 12),
                             ),
                             Text(
-                              'RESTING: ${shot.timestamp.difference(bean.roastDate!).inDays} DAYS',
+                              '${l10n.resting}: ${shot.timestamp.difference(bean.roastDate!).inDays} DAYS',
                               style: TextStyle(fontFamily: 'RobotoMono',
                                 color: Theme.of(context).colorScheme.primary,
                                 fontSize: 12,
@@ -124,10 +126,10 @@ class ShotDetailScreen extends StatelessWidget {
                   mainAxisSpacing: 12,
                   crossAxisSpacing: 12,
                   children: [
-                    _buildStatCard(context, 'GRIND SIZE', shot.grindSize.toStringAsFixed(1), Icons.settings),
-                    _buildStatCard(context, 'TIME', '${shot.duration}s', Icons.timer),
-                    _buildStatCard(context, 'DOSE IN', '${shot.doseIn}g', Icons.arrow_downward),
-                    _buildStatCard(context, 'DOSE OUT', '${shot.doseOut}g', Icons.water_drop),
+                    _buildStatCard(context, l10n.grindSize, shot.grindSize.toStringAsFixed(1), Icons.settings),
+                    _buildStatCard(context, l10n.time, '${shot.duration}s', Icons.timer),
+                    _buildStatCard(context, l10n.doseIn, '${shot.doseIn}g', Icons.arrow_downward),
+                    _buildStatCard(context, l10n.doseOut, '${shot.doseOut}g', Icons.water_drop),
                   ],
                 ),
                 const SizedBox(height: 12),
@@ -147,7 +149,7 @@ class ShotDetailScreen extends StatelessWidget {
                         children: [
                           Icon(Icons.aspect_ratio, color: Theme.of(context).colorScheme.primary, size: 20),
                           const SizedBox(width: 12),
-                          Text('BREW RATIO', style: TextStyle(fontFamily: 'RobotoMono', color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6), fontSize: 12)),
+                          Text(l10n.brewRatio, style: TextStyle(fontFamily: 'RobotoMono', color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6), fontSize: 12)),
                         ],
                       ),
                       Text(
@@ -166,7 +168,7 @@ class ShotDetailScreen extends StatelessWidget {
                 // Advanced Stats (if any exist)
                 if (_hasAdvancedStats(shot)) ...[
                   Text(
-                    'EXTRACTION PARAMETERS',
+                    l10n.extractionParameters,
                     style: TextStyle(fontFamily: 'RobotoMono', color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6), fontSize: 12, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 8),
@@ -175,13 +177,13 @@ class ShotDetailScreen extends StatelessWidget {
                     child: Column(
                       children: [
                         if (shot.pressure != null)
-                          _buildRowItem(context, 'PRESSURE', '${shot.pressure!.toStringAsFixed(1)} bar'),
+                          _buildRowItem(context, l10n.pressure, '${shot.pressure!.toStringAsFixed(1)} bar'),
                         if (shot.temperature != null)
-                          _buildRowItem(context, 'TEMP', '${shot.temperature!.toStringAsFixed(1)}°C'),
+                          _buildRowItem(context, l10n.temp, '${shot.temperature!.toStringAsFixed(1)}°C'),
                         if (shot.preInfusionTime != null && shot.preInfusionTime! > 0)
-                          _buildRowItem(context, 'PRE-INFUSION', '${shot.preInfusionTime}s'),
+                          _buildRowItem(context, l10n.preInfusion, '${shot.preInfusionTime}s'),
                         if (shot.grinderRpm != null && shot.grinderRpm! > 0)
-                          _buildRowItem(context, 'RPM', shot.grinderRpm!.toStringAsFixed(0)),
+                          _buildRowItem(context, l10n.rpm, shot.grinderRpm!.toStringAsFixed(0)),
                       ],
                     ),
                   ),
@@ -191,7 +193,7 @@ class ShotDetailScreen extends StatelessWidget {
                 // Gear
                 if (machine.name != 'Unknown' || grinder.name != 'Unknown' || shot.water != null) ...[
                   Text(
-                    'GEAR',
+                    l10n.gear,
                     style: TextStyle(fontFamily: 'RobotoMono', color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6), fontSize: 12, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 8),
@@ -200,11 +202,11 @@ class ShotDetailScreen extends StatelessWidget {
                     child: Column(
                       children: [
                         if (machine.name != 'Unknown')
-                          _buildRowItem(context, 'MACHINE', machine.name),
+                          _buildRowItem(context, l10n.machine, machine.name),
                         if (grinder.name != 'Unknown')
-                          _buildRowItem(context, 'GRINDER', grinder.name),
+                          _buildRowItem(context, l10n.grinder, grinder.name),
                         if (shot.water != null)
-                          _buildRowItem(context, 'WATER', shot.water!),
+                          _buildRowItem(context, l10n.water, shot.water!),
                       ],
                     ),
                   ),
@@ -214,7 +216,7 @@ class ShotDetailScreen extends StatelessWidget {
                 // Taste Profile
                 if (shot.flavourX != null && shot.flavourY != null) ...[
                    Text(
-                    'TASTE PROFILE',
+                    l10n.tasteProfile,
                     style: TextStyle(fontFamily: 'RobotoMono', color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6), fontSize: 12, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 8),
@@ -229,10 +231,10 @@ class ShotDetailScreen extends StatelessWidget {
                       child: Stack(
                         children: [
                           // Labels
-                          Align(alignment: Alignment.topCenter, child: Padding(padding: const EdgeInsets.all(8.0), child: Text('STRONG', style: TextStyle(fontSize: 10, color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6))))),
-                          Align(alignment: Alignment.bottomCenter, child: Padding(padding: const EdgeInsets.all(8.0), child: Text('WEAK', style: TextStyle(fontSize: 10, color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6))))),
-                          Align(alignment: Alignment.centerLeft, child: Padding(padding: const EdgeInsets.all(8.0), child: RotatedBox(quarterTurns: -1, child: Text('SOUR', style: TextStyle(fontSize: 10, color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6)))))),
-                          Align(alignment: Alignment.centerRight, child: Padding(padding: const EdgeInsets.all(8.0), child: RotatedBox(quarterTurns: 1, child: Text('BITTER', style: TextStyle(fontSize: 10, color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6)))))),
+                          Align(alignment: Alignment.topCenter, child: Padding(padding: const EdgeInsets.all(8.0), child: Text(l10n.strong, style: TextStyle(fontSize: 10, color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6))))),
+                          Align(alignment: Alignment.bottomCenter, child: Padding(padding: const EdgeInsets.all(8.0), child: Text(l10n.weak, style: TextStyle(fontSize: 10, color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6))))),
+                          Align(alignment: Alignment.centerLeft, child: Padding(padding: const EdgeInsets.all(8.0), child: RotatedBox(quarterTurns: -1, child: Text(l10n.sour, style: TextStyle(fontSize: 10, color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6)))))),
+                          Align(alignment: Alignment.centerRight, child: Padding(padding: const EdgeInsets.all(8.0), child: RotatedBox(quarterTurns: 1, child: Text(l10n.bitter, style: TextStyle(fontSize: 10, color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6)))))),
                           
                           // Grid Lines
                           Center(child: Container(width: double.infinity, height: 1, color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1))),
@@ -344,12 +346,12 @@ class ShotDetailScreen extends StatelessWidget {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Delete Shot?'),
-        content: const Text('Are you sure you want to delete this shot record?'),
+        title: Text(l10n.deleteShotTitle),
+        content: Text(l10n.deleteShotMessage),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel'),
+            child: Text(l10n.cancel),
           ),
           TextButton(
             onPressed: () {
@@ -378,7 +380,7 @@ class ShotDetailScreen extends StatelessWidget {
               Navigator.pop(ctx); // Close dialog
               Navigator.pop(context); // Close ShotDetailScreen
             },
-            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+            child: Text(l10n.delete, style: const TextStyle(color: Colors.red)),
           ),
         ],
       ),

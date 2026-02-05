@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../models/models.dart';
 import '../providers/coffee_provider.dart';
 
@@ -173,29 +174,30 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.bean != null ? 'Edit Bean' : 'Add Bean'),
+        title: Text(widget.bean != null ? l10n.editBean : l10n.addBean),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildLabel('BEAN NAME'),
-            _buildTextField(_nameController, 'e.g. Ethiopia Yirgacheffe'),
+            _buildLabel(l10n.beanName),
+            _buildTextField(_nameController, l10n.beanNameHint),
             const SizedBox(height: 24),
 
-            _buildLabel('RANKING'),
+            _buildLabel(l10n.ranking),
             const SizedBox(height: 8),
             _buildStarRating(),
             const SizedBox(height: 24),
 
-            _buildLabel('ORIGIN'),
-            _buildTextField(_originController, 'e.g. Ethiopia'),
+            _buildLabel(l10n.origin),
+            _buildTextField(_originController, l10n.originHint),
             const SizedBox(height: 24),
 
-            _buildLabel('ROAST DATE'),
+            _buildLabel(l10n.roastDate),
             GestureDetector(
               onTap: () => _selectDate(context),
               child: Container(
@@ -217,7 +219,7 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
                   children: [
                     Text(
                       _roastDate == null
-                          ? 'Select Date'
+                          ? l10n.selectDate
                           : '${_roastDate!.day}/${_roastDate!.month}/${_roastDate!.year}',
                       style: TextStyle(
                         color: _roastDate == null
@@ -239,7 +241,7 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
             ),
             const SizedBox(height: 24),
 
-            _buildLabel('ROAST LEVEL'),
+            _buildLabel(l10n.roastLevel),
             const SizedBox(height: 8),
             Row(
               children: _roastLevels.map((level) {
@@ -279,11 +281,11 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
             ),
             const SizedBox(height: 24),
 
-            _buildLabel('PROCESS'),
-            _buildTextField(_processController, 'e.g. Washed, Natural'),
+            _buildLabel(l10n.process),
+            _buildTextField(_processController, l10n.processHint),
             const SizedBox(height: 24),
 
-            _buildLabel('BEAN COMPOSITION'),
+            _buildLabel(l10n.beanComposition),
             const SizedBox(height: 8),
             Row(
               children: [
@@ -292,7 +294,7 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Arabica',
+                        l10n.arabica,
                         style: TextStyle(
                           color: Theme.of(
                             context,
@@ -363,7 +365,7 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Robusta',
+                        l10n.robusta,
                         style: TextStyle(
                           color: Theme.of(
                             context,
@@ -428,33 +430,33 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
             ),
             const SizedBox(height: 24),
 
-            _buildLabel('NOTES'),
+            _buildLabel(l10n.notes),
             _buildTextField(
               _notesController,
-              'Tasting notes, etc.',
+              l10n.notesHint,
               maxLines: 3,
             ),
             const SizedBox(height: 24),
 
-            _buildLabel('FLAVOR PROFILE'),
+            _buildLabel(l10n.flavorProfile),
             _buildSlider(
-              'Acidity',
+              l10n.acidity,
               _acidity,
               (val) => setState(() => _acidity = val),
             ),
-            _buildSlider('Body', _body, (val) => setState(() => _body = val)),
+            _buildSlider(l10n.body, _body, (val) => setState(() => _body = val)),
             _buildSlider(
-              'Sweetness',
+              l10n.sweetness,
               _sweetness,
               (val) => setState(() => _sweetness = val),
             ),
             _buildSlider(
-              'Bitterness',
+              l10n.bitterness,
               _bitterness,
               (val) => setState(() => _bitterness = val),
             ),
             _buildSlider(
-              'Aftertaste',
+              l10n.aftertaste,
               _aftertaste,
               (val) => setState(() => _aftertaste = val),
             ),
@@ -477,13 +479,13 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
             ),
             const SizedBox(height: 24),
 
-            _buildLabel('FLAVOR TAGS'),
+            _buildLabel(l10n.flavorTags),
             Row(
               children: [
                 Expanded(
                   child: _buildTextField(
                     _tagController,
-                    'Add a tag (e.g. Blueberry)',
+                    l10n.flavorTagHint,
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -540,7 +542,7 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
                   ),
                 ),
                 child: Text(
-                  widget.bean != null ? 'UPDATE BEAN' : 'ADD BEAN',
+                  widget.bean != null ? l10n.updateBeanButton : l10n.addBeanButton,
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,

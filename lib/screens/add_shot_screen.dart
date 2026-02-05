@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../models/models.dart';
 import '../providers/coffee_provider.dart';
 import '../widgets/analog_dial.dart';
@@ -104,11 +105,11 @@ class _AddShotScreenState extends State<AddShotScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   CupertinoButton(
-                    child: const Text('Cancel'),
+                    child: Text(l10n.cancel),
                     onPressed: () => Navigator.pop(context),
                   ),
                   CupertinoButton(
-                    child: const Text('Done'),
+                    child: Text(l10n.done),
                     onPressed: () {
                       setState(() {
                         _durationMs =
@@ -234,17 +235,18 @@ class _AddShotScreenState extends State<AddShotScreen> {
       Navigator.pop(context);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill in all fields')),
+        SnackBar(content: Text(l10n.fillAllFields)),
       );
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final provider = Provider.of<CoffeeProvider>(context);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Add Shot')),
+      appBar: AppBar(title: Text(l10n.addShot)),
       body: Stack(
         children: [
           // Expanded Dial Area (Background)
@@ -257,7 +259,7 @@ class _AddShotScreenState extends State<AddShotScreen> {
                 min: provider.grindMin,
                 max: provider.grindMax,
                 step: provider.grindStep,
-                label: 'Grind Size',
+                label: l10n.grindSize,
                 onChanged: (val) {
                   setState(() {
                     _grindSize = val;
@@ -389,13 +391,13 @@ class _AddShotScreenState extends State<AddShotScreen> {
                                 children: [
                                   _buildCompactInput(
                                     context,
-                                    'IN',
+                                    l10n.doseIn.split(' ').last, // "IN"
                                     _doseInController,
                                   ),
                                   const SizedBox(height: 8),
                                   _buildCompactInput(
                                     context,
-                                    'OUT',
+                                    l10n.doseOut.split(' ').last, // "OUT"
                                     _doseOutController,
                                   ),
                                 ],
@@ -409,7 +411,7 @@ class _AddShotScreenState extends State<AddShotScreen> {
                         if (provider.machines.isNotEmpty ||
                             provider.grinders.isNotEmpty) ...[
                           Text(
-                            'GEAR',
+                            l10n.gear,
                             style: TextStyle(
                               fontFamily: 'RobotoMono',
                               fontWeight: FontWeight.bold,
@@ -426,7 +428,7 @@ class _AddShotScreenState extends State<AddShotScreen> {
                                   child: InputDecorator(
                                     decoration: _inputDecoration(
                                       context,
-                                      'Machine',
+                                      l10n.machine,
                                     ),
                                     child: DropdownButtonHideUnderline(
                                       child: DropdownButton<String>(
@@ -491,7 +493,7 @@ class _AddShotScreenState extends State<AddShotScreen> {
                                   child: InputDecorator(
                                     decoration: _inputDecoration(
                                       context,
-                                      'Grinder',
+                                      l10n.grinder,
                                     ),
                                     child: DropdownButtonHideUnderline(
                                       child: DropdownButton<String>(
@@ -542,7 +544,7 @@ class _AddShotScreenState extends State<AddShotScreen> {
                         // Advanced Params
                         ExpansionTile(
                           title: Text(
-                            'ADVANCED PARAMETERS',
+                            l10n.extractionParameters,
                             style: TextStyle(
                               fontFamily: 'RobotoMono',
                               fontWeight: FontWeight.bold,
@@ -557,7 +559,7 @@ class _AddShotScreenState extends State<AddShotScreen> {
                                 Expanded(
                                   child: _buildCompactInput(
                                     context,
-                                    'RPM',
+                                    l10n.rpm,
                                     _rpmController,
                                   ),
                                 ),
@@ -565,7 +567,7 @@ class _AddShotScreenState extends State<AddShotScreen> {
                                 Expanded(
                                   child: _buildCompactInput(
                                     context,
-                                    'BAR',
+                                    l10n.pressure,
                                     _pressureController,
                                   ),
                                 ),
@@ -577,7 +579,7 @@ class _AddShotScreenState extends State<AddShotScreen> {
                                 Expanded(
                                   child: _buildCompactInput(
                                     context,
-                                    '°C',
+                                    l10n.temp,
                                     _tempController,
                                   ),
                                 ),
@@ -585,7 +587,7 @@ class _AddShotScreenState extends State<AddShotScreen> {
                                 Expanded(
                                   child: _buildCompactInput(
                                     context,
-                                    'PRE-INF (s)',
+                                    l10n.preInfusion,
                                     _preInfusionController,
                                   ),
                                 ),
@@ -594,7 +596,7 @@ class _AddShotScreenState extends State<AddShotScreen> {
                             const SizedBox(height: 8),
                             _buildCompactInput(
                               context,
-                              'WATER',
+                              l10n.water,
                               _waterController,
                               keyboardType: TextInputType.text,
                             ),
@@ -606,7 +608,7 @@ class _AddShotScreenState extends State<AddShotScreen> {
                         // Flavour Graph
                         ExpansionTile(
                           title: Text(
-                            'FLAVOUR PROFILE',
+                            l10n.tasteProfile,
                             style: TextStyle(
                               fontFamily: 'RobotoMono',
                               fontWeight: FontWeight.bold,
@@ -670,6 +672,10 @@ class _AddShotScreenState extends State<AddShotScreen> {
                                       _flavourY,
                                       Theme.of(context).colorScheme.primary,
                                       Theme.of(context).colorScheme.onSurface,
+                                      l10n.sour,
+                                      l10n.bitter,
+                                      l10n.strong,
+                                      l10n.weak,
                                     ),
                                   ),
                                 ),
@@ -934,8 +940,21 @@ class _FlavourGraphPainter extends CustomPainter {
   final double y;
   final Color accentColor;
   final Color onSurface;
+  final String sourLabel;
+  final String bitterLabel;
+  final String strongLabel;
+  final String weakLabel;
 
-  _FlavourGraphPainter(this.x, this.y, this.accentColor, this.onSurface);
+  _FlavourGraphPainter(
+    this.x,
+    this.y,
+    this.accentColor,
+    this.onSurface,
+    this.sourLabel,
+    this.bitterLabel,
+    this.strongLabel,
+    this.weakLabel,
+  );
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -961,17 +980,17 @@ class _FlavourGraphPainter extends CustomPainter {
       fontSize: 10,
       color: onSurface.withValues(alpha: 0.6),
     );
-    _drawText(canvas, 'Sour', Offset(10, size.height / 2), textStyle);
+    _drawText(canvas, sourLabel, Offset(10, size.height / 2), textStyle);
     _drawText(
       canvas,
-      'Bitter',
+      bitterLabel,
       Offset(size.width - 30, size.height / 2),
       textStyle,
     );
-    _drawText(canvas, 'Strong', Offset(size.width / 2, 10), textStyle);
+    _drawText(canvas, strongLabel, Offset(size.width / 2, 10), textStyle);
     _drawText(
       canvas,
-      'Weak',
+      weakLabel,
       Offset(size.width / 2, size.height - 20),
       textStyle,
     );

@@ -6,6 +6,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:gal/gal.dart';
 import 'package:pasteboard/pasteboard.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../models/models.dart';
 import '../widgets/shot_sticker.dart';
 
@@ -85,10 +86,10 @@ class _ShareShotDialogState extends State<ShareShotDialog> {
         
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Saved to Photos!'),
+            SnackBar(
+              content: Text(l10n.savedToPhotos),
               backgroundColor: Colors.green,
-              duration: Duration(seconds: 2),
+              duration: const Duration(seconds: 2),
             ),
           );
         }
@@ -109,10 +110,10 @@ class _ShareShotDialogState extends State<ShareShotDialog> {
         
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Copied to Clipboard! Open Instagram Story and Paste.'),
+            SnackBar(
+              content: Text(l10n.copiedToClipboard),
               backgroundColor: Colors.green,
-              duration: Duration(seconds: 3),
+              duration: const Duration(seconds: 3),
             ),
           );
           Navigator.pop(context);
@@ -135,6 +136,7 @@ class _ShareShotDialogState extends State<ShareShotDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Dialog(
       backgroundColor: Theme.of(context).colorScheme.surface,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -147,8 +149,8 @@ class _ShareShotDialogState extends State<ShareShotDialog> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Share Sticker',
-                  style: TextStyle(fontFamily: 'RobotoMono',
+                  l10n.share,
+                  style: const TextStyle(fontFamily: 'RobotoMono',
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                     color: Theme.of(context).colorScheme.onSurface,
@@ -238,7 +240,7 @@ class _ShareShotDialogState extends State<ShareShotDialog> {
                         icon: _isSaving
                             ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
                             : const Icon(Icons.save_alt),
-                        label: Text('Save Image', style: TextStyle(fontFamily: 'RobotoMono')),
+                        label: Text(l10n.saveImage, style: const TextStyle(fontFamily: 'RobotoMono')),
                         style: OutlinedButton.styleFrom(
                           foregroundColor: Theme.of(context).colorScheme.onSurface,
                           side: BorderSide(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1)),
@@ -254,7 +256,7 @@ class _ShareShotDialogState extends State<ShareShotDialog> {
                         icon: _isSharing
                             ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
                             : const Icon(Icons.share),
-                        label: Text('Share', style: TextStyle(fontFamily: 'RobotoMono')),
+                        label: Text(l10n.share, style: const TextStyle(fontFamily: 'RobotoMono')),
                         style: OutlinedButton.styleFrom(
                           foregroundColor: Theme.of(context).colorScheme.onSurface,
                           side: BorderSide(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1)),

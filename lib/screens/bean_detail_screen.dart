@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../models/models.dart';
 import '../providers/coffee_provider.dart';
 import 'add_shot_screen.dart';
@@ -20,6 +21,7 @@ class BeanDetailScreen extends StatefulWidget {
 class _BeanDetailScreenState extends State<BeanDetailScreen> {
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Consumer<CoffeeProvider>(
       builder: (context, provider, child) {
         final bean = provider.beans.firstWhere((b) => b.id == widget.beanId);
@@ -80,7 +82,7 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'ORIGIN',
+                        l10n.origin,
                         style: TextStyle(
                           fontFamily: 'RobotoMono',
                           color: Theme.of(
@@ -116,7 +118,7 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'ROAST DATE',
+                                  l10n.roastDate,
                                   style: TextStyle(
                                     fontFamily: 'RobotoMono',
                                     color: Theme.of(context)
@@ -144,7 +146,7 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 Text(
-                                  'RESTING',
+                                  l10n.resting,
                                   style: TextStyle(
                                     fontFamily: 'RobotoMono',
                                     color: Theme.of(context)
@@ -171,7 +173,7 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                         const SizedBox(height: 12),
                       ],
                       Text(
-                        'NOTES',
+                        l10n.notes,
                         style: TextStyle(
                           fontFamily: 'RobotoMono',
                           color: Theme.of(
@@ -192,7 +194,7 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                       if (bean.flavourTags.isNotEmpty) ...[
                         const SizedBox(height: 12),
                         Text(
-                          'FLAVORS',
+                          l10n.flavorTags,
                           style: TextStyle(
                             fontFamily: 'RobotoMono',
                             color: Theme.of(
@@ -235,7 +237,7 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                           bean.robustaPercentage > 0) ...[
                         const SizedBox(height: 12),
                         Text(
-                          'COMPOSITION',
+                          l10n.beanComposition,
                           style: TextStyle(
                             fontFamily: 'RobotoMono',
                             color: Theme.of(
@@ -264,7 +266,7 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                                   ),
                                 ),
                                 child: Text(
-                                  'Arabica ${bean.arabicaPercentage.toStringAsFixed(0)}%',
+                                  '${l10n.arabica} ${bean.arabicaPercentage.toStringAsFixed(0)}%',
                                   style: TextStyle(
                                     fontFamily: 'RobotoMono',
                                     color: Theme.of(
@@ -294,7 +296,7 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                                   ),
                                 ),
                                 child: Text(
-                                  'Robusta ${bean.robustaPercentage.toStringAsFixed(0)}%',
+                                  '${l10n.robusta} ${bean.robustaPercentage.toStringAsFixed(0)}%',
                                   style: TextStyle(
                                     fontFamily: 'RobotoMono',
                                     color: Theme.of(
@@ -352,11 +354,11 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                     builder: (context) {
                       // Default flavor attributes
                       final defaultLabels = [
-                        'Acidity',
-                        'Body',
-                        'Sweetness',
-                        'Bitterness',
-                        'Aftertaste',
+                        l10n.acidity,
+                        l10n.body,
+                        l10n.sweetness,
+                        l10n.bitterness,
+                        l10n.aftertaste,
                       ];
                       final defaultValues = [
                         bean.acidity,
@@ -383,7 +385,7 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                       return Column(
                         children: [
                           Text(
-                            'FLAVOR PROFILE',
+                            l10n.flavorProfile,
                             style: TextStyle(
                               fontFamily: 'RobotoMono',
                               color: Theme.of(
@@ -468,7 +470,7 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'GRIND SIZE OVER TIME',
+                          l10n.grindSize,
                           style: TextStyle(
                             fontFamily: 'RobotoMono',
                             color: Theme.of(
@@ -733,12 +735,12 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Delete Bean?'),
-        content: const Text('This will delete the bean and all its shots.'),
+        title: Text(l10n.deleteBeanTitle),
+        content: Text(l10n.deleteBeanMessage),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel'),
+            child: Text(l10n.cancel),
           ),
           TextButton(
             onPressed: () {
@@ -746,7 +748,7 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
               Navigator.pop(ctx);
               Navigator.pop(context);
             },
-            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+            child: Text(l10n.delete, style: const TextStyle(color: Colors.red)),
           ),
         ],
       ),
