@@ -114,7 +114,7 @@ class _AnalogDialState extends State<AnalogDial> {
         // The Readout (Right side)
         SizedBox(
           //padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-          width: 150,
+          width: 170,
           // decoration: BoxDecoration(
           //   color: Theme.of(context).colorScheme.surface, // Theme surface
           //   borderRadius: BorderRadius.circular(40),
