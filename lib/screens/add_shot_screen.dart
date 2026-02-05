@@ -279,7 +279,7 @@ class _AddShotScreenState extends State<AddShotScreen> {
                 min: provider.grindMin,
                 max: provider.grindMax,
                 step: provider.grindStep,
-                label: 'Grind Size',
+                label: provider.grindLabel,
                 onChanged: (val) {
                   setState(() {
                     _grindSize = val;

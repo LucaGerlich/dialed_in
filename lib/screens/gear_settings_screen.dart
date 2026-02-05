@@ -417,6 +417,7 @@ class GearSettingsScreen extends StatelessWidget {
         ),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
@@ -472,6 +473,77 @@ class GearSettingsScreen extends StatelessWidget {
               ),
             ],
           ),
+          const SizedBox(height: 16),
+          // Grinder Tracking Mode Section
+          Text(
+            'Grinder Tracking Mode',
+            style: TextStyle(
+              fontFamily: 'RobotoMono',
+              fontSize: 12,
+              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+            ),
+          ),
+          const SizedBox(height: 8),
+          SwitchListTile(
+            title: Text(
+              provider.useClicksMode ? 'Clicks/Notches Mode' : 'Numbered Settings Mode',
+              style: const TextStyle(
+                fontFamily: 'RobotoMono',
+                fontSize: 14,
+              ),
+            ),
+            subtitle: Text(
+              provider.useClicksMode
+                  ? 'Track grind by clicks from a reference point (for grinders without numbers)'
+                  : 'Track grind by numbered settings on your grinder',
+              style: TextStyle(
+                fontFamily: 'RobotoMono',
+                fontSize: 11,
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
+              ),
+            ),
+            value: provider.useClicksMode,
+            onChanged: (bool value) {
+              provider.updateGrindSettings(
+                provider.grindMin,
+                provider.grindMax,
+                provider.grindStep,
+                useClicksMode: value,
+                grindLabel: value ? 'Clicks' : 'Grind Size',
+              );
+            },
+            contentPadding: EdgeInsets.zero,
+          ),
+          if (provider.useClicksMode) ...[
+            const SizedBox(height: 8),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.info_outline,
+                    size: 16,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Tip: Set your grinder to the tightest setting (fully closed) as 0, then count clicks/turns as you open it.',
+                      style: TextStyle(
+                        fontFamily: 'RobotoMono',
+                        fontSize: 11,
+                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ],
       ),
     );

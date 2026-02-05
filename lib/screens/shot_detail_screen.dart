@@ -124,7 +124,7 @@ class ShotDetailScreen extends StatelessWidget {
                   mainAxisSpacing: 12,
                   crossAxisSpacing: 12,
                   children: [
-                    _buildStatCard(context, 'GRIND SIZE', shot.grindSize.toStringAsFixed(1), Icons.settings),
+                    _buildStatCard(context, provider.grindLabel.toUpperCase(), shot.grindSize.toStringAsFixed(2), Icons.settings),
                     _buildStatCard(context, 'TIME', '${shot.duration}s', Icons.timer),
                     _buildStatCard(context, 'DOSE IN', '${shot.doseIn}g', Icons.arrow_downward),
                     _buildStatCard(context, 'DOSE OUT', '${shot.doseOut}g', Icons.water_drop),

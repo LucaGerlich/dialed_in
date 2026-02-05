@@ -71,7 +71,7 @@ class ShotSticker extends StatelessWidget {
                 child: _buildStatItem(
                   context: context,
                   label: 'GRIND',
-                  value: shot.grindSize.toStringAsFixed(1),
+                  value: shot.grindSize.toStringAsFixed(2),
                   icon: Icons.settings,
                   textShadow: textShadow,
                 ),

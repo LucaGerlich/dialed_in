@@ -14,6 +14,8 @@ class CoffeeProvider with ChangeNotifier {
   double _grindMin = 0.0;
   double _grindMax = 30.0;
   double _grindStep = 0.01;
+  bool _useClicksMode = false; // Track grind as clicks/notches instead of numbered settings
+  String _grindLabel = 'Grind Size'; // Label for the grind dial (e.g., "Clicks" or "Grind Size")
 
   // Theme Settings
   ThemeMode _themeMode = ThemeMode.system;
@@ -32,6 +34,8 @@ class CoffeeProvider with ChangeNotifier {
   double get grindMin => _grindMin;
   double get grindMax => _grindMax;
   double get grindStep => _grindStep;
+  bool get useClicksMode => _useClicksMode;
+  String get grindLabel => _grindLabel;
   ThemeMode get themeMode => _themeMode;
   bool get hasCompletedOnboarding => _hasCompletedOnboarding;
   bool get isLoading => _isLoading;
@@ -64,6 +68,8 @@ class CoffeeProvider with ChangeNotifier {
     _grindMin = prefs.getDouble('grindMin') ?? 0.0;
     _grindMax = prefs.getDouble('grindMax') ?? 30.0;
     _grindStep = prefs.getDouble('grindStep') ?? 0.01;
+    _useClicksMode = prefs.getBool('useClicksMode') ?? false;
+    _grindLabel = prefs.getString('grindLabel') ?? 'Grind Size';
     
     final String? themeModeStr = prefs.getString('themeMode');
     if (themeModeStr != null) {
@@ -101,14 +107,18 @@ class CoffeeProvider with ChangeNotifier {
     await prefs.setDouble('grindMin', _grindMin);
     await prefs.setDouble('grindMax', _grindMax);
     await prefs.setDouble('grindStep', _grindStep);
+    await prefs.setBool('useClicksMode', _useClicksMode);
+    await prefs.setString('grindLabel', _grindLabel);
     await prefs.setString('themeMode', _themeMode.toString());
     await prefs.setString('customFlavorAttributes', jsonEncode(_customFlavorAttributes));
   }
   
-  void updateGrindSettings(double min, double max, double step) {
+  void updateGrindSettings(double min, double max, double step, {bool? useClicksMode, String? grindLabel}) {
     _grindMin = min;
     _grindMax = max;
     _grindStep = step;
+    if (useClicksMode != null) _useClicksMode = useClicksMode;
+    if (grindLabel != null) _grindLabel = grindLabel;
     _saveData();
     notifyListeners();
   }
