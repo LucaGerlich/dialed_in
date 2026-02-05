@@ -1,5 +1,89 @@
 import 'package:uuid/uuid.dart';
 
+enum MaintenanceType {
+  clean,
+  decalcify,
+  checkMachine,
+  checkGrinder,
+}
+
+enum MaintenanceIntervalType {
+  shots,
+  days,
+  waterLiters,
+}
+
+class MaintenanceTask {
+  final String id;
+  final String name;
+  final MaintenanceType type;
+  final MaintenanceIntervalType intervalType;
+  final int intervalValue; // number of shots, days, or liters
+  final DateTime? lastCompleted;
+  final bool isEnabled;
+
+  MaintenanceTask({
+    String? id,
+    required this.name,
+    required this.type,
+    required this.intervalType,
+    required this.intervalValue,
+    this.lastCompleted,
+    this.isEnabled = true,
+  }) : id = id ?? const Uuid().v4();
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'type': type.name,
+      'intervalType': intervalType.name,
+      'intervalValue': intervalValue,
+      'lastCompleted': lastCompleted?.toIso8601String(),
+      'isEnabled': isEnabled,
+    };
+  }
+
+  factory MaintenanceTask.fromJson(Map<String, dynamic> json) {
+    return MaintenanceTask(
+      id: json['id'],
+      name: json['name'],
+      type: MaintenanceType.values.firstWhere(
+        (e) => e.name == json['type'],
+        orElse: () => MaintenanceType.clean,
+      ),
+      intervalType: MaintenanceIntervalType.values.firstWhere(
+        (e) => e.name == json['intervalType'],
+        orElse: () => MaintenanceIntervalType.shots,
+      ),
+      intervalValue: json['intervalValue'],
+      lastCompleted: json['lastCompleted'] != null
+          ? DateTime.parse(json['lastCompleted'])
+          : null,
+      isEnabled: json['isEnabled'] ?? true,
+    );
+  }
+
+  MaintenanceTask copyWith({
+    String? name,
+    MaintenanceType? type,
+    MaintenanceIntervalType? intervalType,
+    int? intervalValue,
+    DateTime? lastCompleted,
+    bool? isEnabled,
+  }) {
+    return MaintenanceTask(
+      id: id,
+      name: name ?? this.name,
+      type: type ?? this.type,
+      intervalType: intervalType ?? this.intervalType,
+      intervalValue: intervalValue ?? this.intervalValue,
+      lastCompleted: lastCompleted ?? this.lastCompleted,
+      isEnabled: isEnabled ?? this.isEnabled,
+    );
+  }
+}
+
 class CoffeeMachine {
   final String id;
   final String name;

@@ -5,6 +5,7 @@ import '../widgets/bean_card.dart';
 import 'add_bean_screen.dart';
 import 'bean_detail_screen.dart';
 import 'gear_settings_screen.dart';
+import 'maintenance_screen.dart';
 
 class BeanListScreen extends StatefulWidget {
   const BeanListScreen({super.key});
@@ -24,7 +25,12 @@ class _BeanListScreenState extends State<BeanListScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Bean Vault'),
-        leading: const Icon(Icons.coffee), // Aesthetic icon
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: const Icon(Icons.menu),
+            onPressed: () => Scaffold.of(context).openDrawer(),
+          ),
+        ),
         actions: [
           PopupMenuButton<String>(
             icon: const Icon(Icons.sort),
@@ -64,6 +70,58 @@ class _BeanListScreenState extends State<BeanListScreen> {
             },
           ),
         ],
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primary,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Icon(
+                    Icons.coffee,
+                    size: 48,
+                    color: Theme.of(context).colorScheme.onPrimary,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Dialed In',
+                    style: TextStyle(
+                      fontFamily: 'RobotoMono',
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.onPrimary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.coffee_maker),
+              title: const Text('Bean Vault', style: TextStyle(fontFamily: 'RobotoMono')),
+              selected: true,
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.build),
+              title: const Text('Maintenance', style: TextStyle(fontFamily: 'RobotoMono')),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const MaintenanceScreen()),
+                );
+              },
+            ),
+          ],
+        ),
       ),
       body: Consumer<CoffeeProvider>(
         builder: (context, provider, child) {
