@@ -470,7 +470,7 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          l10n.grindSize,
+                          l10n.grindSizeOverTime,
                           style: TextStyle(
                             fontFamily: 'RobotoMono',
                             color: Theme.of(
