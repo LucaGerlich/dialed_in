@@ -98,6 +98,8 @@ class _BeanListScreenState extends State<BeanListScreen> {
                         },
                         backgroundColor: Theme.of(context).colorScheme.surface,
                         selectedColor: Theme.of(context).colorScheme.primary,
+                        elevation: isSelected ? 4 : 0,
+                        shadowColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
                         labelStyle: TextStyle(
                           color: isSelected ? Theme.of(context).colorScheme.onPrimary : Theme.of(context).colorScheme.onSurface,
                           fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
@@ -108,6 +110,7 @@ class _BeanListScreenState extends State<BeanListScreen> {
                             color: isSelected
                                 ? Theme.of(context).colorScheme.primary
                                 : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
+                            width: isSelected ? 2 : 1,
                           ),
                         ),
                         showCheckmark: false,

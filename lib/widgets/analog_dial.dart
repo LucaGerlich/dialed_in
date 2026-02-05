@@ -93,11 +93,22 @@ class _AnalogDialState extends State<AnalogDial> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         // The Dial (Left side)
-        GestureDetector(
-          onPanUpdate: _onPanUpdate,
-          child: SizedBox(
-            width: 150,
-            height: 300,
+        Container(
+          width: 150,
+          height: 300,
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.5),
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.1),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: GestureDetector(
+            onPanUpdate: _onPanUpdate,
             child: CustomPaint(
               painter: _RadioTunerPainter(
                 value: _currentValue,
@@ -112,25 +123,40 @@ class _AnalogDialState extends State<AnalogDial> {
         ),
         const SizedBox(width: 20),
         // The Readout (Right side)
-        SizedBox(
-          //padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        Container(
           width: 150,
-          // decoration: BoxDecoration(
-          //   color: Theme.of(context).colorScheme.surface, // Theme surface
-          //   borderRadius: BorderRadius.circular(40),
-          //   border: Border.all(
-          //     color: Theme.of(
-          //       context,
-          //     ).colorScheme.onSurface.withValues(alpha: 0.1),
-          //   ),
-          // ),
-          child: Text(
-            _currentValue.toStringAsFixed(1),
-            style: TextStyle(
-              fontFamily: 'RobotoMono',
-              fontSize: 56,
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.onSurface,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Theme.of(context).colorScheme.surface,
+                Theme.of(context).colorScheme.surface.withValues(alpha: 0.9),
+              ],
+            ),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
+              width: 2,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
+                blurRadius: 12,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Center(
+            child: Text(
+              _currentValue.toStringAsFixed(1),
+              style: TextStyle(
+                fontFamily: 'RobotoMono',
+                fontSize: 56,
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.primary,
+              ),
             ),
           ),
         ),

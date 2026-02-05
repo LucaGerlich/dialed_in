@@ -342,7 +342,15 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 24),
+                
+                // Visual separator
+                Divider(
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
+                  thickness: 1,
+                  height: 1,
+                ),
+                const SizedBox(height: 24),
 
                 // Flavor Wheel (Radar Chart)
                 _buildBentoContainer(
@@ -457,7 +465,15 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                     },
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 24),
+                
+                // Visual separator
+                Divider(
+                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
+                  thickness: 1,
+                  height: 1,
+                ),
+                const SizedBox(height: 24),
 
                 // Chart Bento
                 if (shots.length > 1)
@@ -798,13 +814,27 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
       height: height,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Theme.of(context).colorScheme.surface,
+            Theme.of(context).colorScheme.surface.withValues(alpha: 0.9),
+          ],
+        ),
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
           color: Theme.of(
             context,
           ).colorScheme.onSurface.withValues(alpha: 0.05),
         ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.06),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: child,
     );
@@ -821,6 +851,13 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
             context,
           ).colorScheme.onSurface.withValues(alpha: 0.05),
         ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Column(
         children: [
