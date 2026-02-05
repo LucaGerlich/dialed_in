@@ -10,6 +10,7 @@ Dialed In is a Flutter application for specialty coffee enthusiasts who want to 
 - **Enhanced Shot Analytics:** View shots with a new Bento-grid layout, featuring brew ratios, resting days, and a visual taste profile plotter (Sour/Bitter vs Strong/Weak).
 - **Detailed Extraction Metrics:** Track advanced parameters like pressure, temperature, pre-infusion time, and RPM alongside standard metrics (Dose/Yield, Grind, Time).
 - **Gear Tracking:** Configure your setup (grinders, machines) to link every shot to the equipment used.
+- **Maintenance Tracking:** Set reminders to clean, decalcify, or check your machine and grinder based on shot count, days, or estimated water usage. Never miss maintenance again!
 
 ## Roadmap 🚀
 
