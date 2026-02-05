@@ -13,7 +13,7 @@ class CoffeeProvider with ChangeNotifier {
   // Grind Settings
   double _grindMin = 0.0;
   double _grindMax = 30.0;
-  double _grindStep = 0.5;
+  double _grindStep = 0.01;
 
   // Theme Settings
   ThemeMode _themeMode = ThemeMode.system;
@@ -63,7 +63,7 @@ class CoffeeProvider with ChangeNotifier {
     
     _grindMin = prefs.getDouble('grindMin') ?? 0.0;
     _grindMax = prefs.getDouble('grindMax') ?? 30.0;
-    _grindStep = prefs.getDouble('grindStep') ?? 0.5;
+    _grindStep = prefs.getDouble('grindStep') ?? 0.01;
     
     final String? themeModeStr = prefs.getString('themeMode');
     if (themeModeStr != null) {

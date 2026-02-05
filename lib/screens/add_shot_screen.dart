@@ -42,6 +42,28 @@ class _AddShotScreenState extends State<AddShotScreen> {
   double _flavourY = 0;
 
   @override
+  void initState() {
+    super.initState();
+    // Initialize grind size from the last shot or bean's preferred size
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final provider = Provider.of<CoffeeProvider>(context, listen: false);
+      final bean = provider.beans.firstWhere((b) => b.id == widget.beanId);
+      
+      if (bean.shots.isNotEmpty) {
+        // Use the grind size from the most recent shot
+        setState(() {
+          _grindSize = bean.shots.last.grindSize;
+        });
+      } else {
+        // Fall back to the bean's preferred grind size
+        setState(() {
+          _grindSize = bean.preferredGrindSize;
+        });
+      }
+    });
+  }
+
+  @override
   void dispose() {
     _doseInController.dispose();
     _doseOutController.dispose();

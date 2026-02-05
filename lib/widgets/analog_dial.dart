@@ -125,7 +125,7 @@ class _AnalogDialState extends State<AnalogDial> {
           //   ),
           // ),
           child: Text(
-            _currentValue.toStringAsFixed(1),
+            _currentValue.toStringAsFixed(2),
             style: TextStyle(
               fontFamily: 'RobotoMono',
               fontSize: 56,
