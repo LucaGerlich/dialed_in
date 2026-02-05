@@ -16,6 +16,18 @@ class AddShotScreen extends StatefulWidget {
 }
 
 class _AddShotScreenState extends State<AddShotScreen> {
+  // Encouragement messages for shot logging
+  static const _encouragementMessages = [
+    'Nice pull! 🎯',
+    'Another one dialed in! ☕',
+    'Shot logged! Keep brewing! 💪',
+    'Great work! ✨',
+  ];
+  
+  // Perfect shot threshold: flavor coordinates within ±0.2 of center
+  // (center = 0,0 meaning balanced between sour/bitter and weak/strong)
+  static const _perfectShotThreshold = 0.2;
+  
   final _doseInController = TextEditingController(text: '18.0');
   final _doseOutController = TextEditingController(text: '36.0');
   final _durationController = TextEditingController(text: '00:00.0');
@@ -233,7 +245,9 @@ class _AddShotScreenState extends State<AddShotScreen> {
       ).addShot(widget.beanId, shot, updatePreferredGrind: _updatePreferred);
       
       // Show encouraging message based on flavor profile
-      final isPerfectShot = _flavourX.abs() < 0.2 && _flavourY.abs() < 0.2;
+      // Note: shotCount includes the newly added shot since addShot was called above
+      final isPerfectShot = _flavourX.abs() < _perfectShotThreshold && 
+                           _flavourY.abs() < _perfectShotThreshold;
       final shotCount = Provider.of<CoffeeProvider>(context, listen: false)
           .beans
           .firstWhere((b) => b.id == widget.beanId)
@@ -246,13 +260,7 @@ class _AddShotScreenState extends State<AddShotScreen> {
       } else if (shotCount >= 10 && shotCount % 10 == 0) {
         message = '🔥 ${shotCount} shots logged! You\'re on fire!';
       } else {
-        final messages = [
-          'Nice pull! 🎯',
-          'Another one dialed in! ☕',
-          'Shot logged! Keep brewing! 💪',
-          'Great work! ✨',
-        ];
-        message = messages[(shotCount - 1) % messages.length];
+        message = _encouragementMessages[(shotCount - 1) % _encouragementMessages.length];
       }
       
       ScaffoldMessenger.of(context).showSnackBar(
