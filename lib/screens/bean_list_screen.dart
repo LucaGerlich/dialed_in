@@ -23,7 +23,7 @@ class _BeanListScreenState extends State<BeanListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Bean Vault'),
+        title: const Text('My Coffee Collection'),
         leading: const Icon(Icons.coffee), // Aesthetic icon
         actions: [
           PopupMenuButton<String>(
@@ -125,16 +125,36 @@ class _BeanListScreenState extends State<BeanListScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(
-                              Icons.coffee_maker_outlined,
-                              size: 64,
-                              color: Theme.of(context).colorScheme.secondary,
+                              Icons.coffee,
+                              size: 80,
+                              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
                             ),
                             const SizedBox(height: 16),
                             Text(
-                              'No beans found',
-                              style: TextStyle(fontFamily: 'RobotoMono',
-                                fontSize: 18,
-                                color: Theme.of(context).colorScheme.secondary,
+                              'Your bean collection is empty',
+                              style: TextStyle(
+                                fontFamily: 'RobotoMono',
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Theme.of(context).colorScheme.onSurface,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              'Time to stock up! ☕',
+                              style: TextStyle(
+                                fontFamily: 'RobotoMono',
+                                fontSize: 16,
+                                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              'Tap + to add your first coffee',
+                              style: TextStyle(
+                                fontFamily: 'RobotoMono',
+                                fontSize: 14,
+                                color: Theme.of(context).colorScheme.primary,
                               ),
                             ),
                           ],

@@ -605,7 +605,42 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                   ),
                 ),
                 const SizedBox(height: 8),
-                ...shots.map((shot) {
+                if (shots.isEmpty)
+                  Container(
+                    padding: const EdgeInsets.all(32),
+                    child: Center(
+                      child: Column(
+                        children: [
+                          Icon(
+                            Icons.emoji_events_outlined,
+                            size: 48,
+                            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.4),
+                          ),
+                          const SizedBox(height: 12),
+                          Text(
+                            'No shots logged yet',
+                            style: TextStyle(
+                              fontFamily: 'RobotoMono',
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).colorScheme.onSurface,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'Pull your first! 🎯',
+                            style: TextStyle(
+                              fontFamily: 'RobotoMono',
+                              fontSize: 14,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                else
+                  ...shots.map((shot) {
                   final machine = provider.machines.firstWhere(
                     (m) => m.id == shot.machineId,
                     orElse: () => CoffeeMachine(name: 'Unknown', id: ''),

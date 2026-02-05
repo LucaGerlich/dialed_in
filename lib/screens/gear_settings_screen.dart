@@ -279,7 +279,12 @@ class GearSettingsScreen extends StatelessWidget {
                   color: Theme.of(context).colorScheme.onSurface,
                 ),
                 decoration: InputDecoration(
-                  labelText: 'Name',
+                  labelText: isMachine ? 'Machine Name' : 'Grinder Name',
+                  hintText: isMachine ? 'e.g., "My trusty Gaggia"' : 'e.g., "Betsy the Grinder"',
+                  hintStyle: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
+                    fontSize: 12,
+                  ),
                   labelStyle: const TextStyle(color: Colors.grey),
                   enabledBorder: UnderlineInputBorder(
                     borderSide: BorderSide(

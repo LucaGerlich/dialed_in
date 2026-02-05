@@ -14,13 +14,27 @@ class BeanCard extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.only(bottom: 16),
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface,
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Theme.of(context).colorScheme.surface,
+              Theme.of(context).colorScheme.surface.withValues(alpha: 0.85),
+            ],
+          ),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: Theme.of(
               context,
             ).colorScheme.onSurface.withValues(alpha: 0.1),
           ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.08),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+          ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -87,14 +101,22 @@ class BeanCard extends StatelessWidget {
                     bean.name,
                     style: Theme.of(
                       context,
-                    ).textTheme.titleLarge?.copyWith(fontSize: 20),
+                    ).textTheme.titleLarge?.copyWith(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    bean.notes.isNotEmpty ? bean.notes : 'No notes',
+                    bean.notes.isNotEmpty ? bean.notes : 'Tell us about these beans...',
                     style: Theme.of(
                       context,
-                    ).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
+                    ).textTheme.bodyMedium?.copyWith(
+                      color: bean.notes.isNotEmpty 
+                        ? Colors.grey[600] 
+                        : Theme.of(context).colorScheme.primary.withValues(alpha: 0.5),
+                      fontStyle: bean.notes.isEmpty ? FontStyle.italic : FontStyle.normal,
+                    ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),

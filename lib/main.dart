@@ -26,31 +26,32 @@ class MyApp extends StatelessWidget {
           themeMode: provider.themeMode,
           theme: ThemeData(
             useMaterial3: true,
-            scaffoldBackgroundColor: const Color(0xFFEFF1F1), // Light Grey
+            scaffoldBackgroundColor: const Color(0xFFF5F1ED), // Warm cream background
             colorScheme: ColorScheme.fromSeed(
-              seedColor: const Color(0xFF253ABD), // Primary Blue
+              seedColor: const Color(0xFF6F4E37), // Coffee brown
               brightness: Brightness.light,
-              primary: const Color(0xFF253ABD),
-              secondary: const Color(0xFFE5E5EA), // Light Grey for elements
-              surface: const Color(0xFFFFFFFF), // White for cards
+              primary: const Color(0xFF6F4E37), // Coffee brown
+              secondary: const Color(0xFFE5DDD5), // Warm light beige
+              surface: const Color(0xFFFFFBF7), // Warm white for cards
               onPrimary: const Color(0xFFFFFFFF),
-              onSurface: const Color(0xFF000000),
+              onSurface: const Color(0xFF2B1F1A), // Dark brown text
+              tertiary: const Color(0xFFD2691E), // Warm amber accent
             ),
             textTheme: _buildTextTheme(Brightness.light),
             appBarTheme: AppBarTheme(
-              backgroundColor: const Color(0xFFEFF1F1),
-              foregroundColor: Colors.black,
+              backgroundColor: const Color(0xFFF5F1ED),
+              foregroundColor: const Color(0xFF2B1F1A),
               elevation: 0,
               centerTitle: true,
               titleTextStyle: TextStyle(
                 fontFamily: 'RobotoMono',
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: Colors.black,
+                color: const Color(0xFF2B1F1A),
               ),
             ),
             floatingActionButtonTheme: const FloatingActionButtonThemeData(
-              backgroundColor: Color(0xFF253ABD),
+              backgroundColor: Color(0xFF6F4E37), // Coffee brown
               foregroundColor: Colors.white,
             ),
           ),
@@ -58,13 +59,14 @@ class MyApp extends StatelessWidget {
             useMaterial3: true,
             scaffoldBackgroundColor: const Color(0xFF000000), // Black
             colorScheme: ColorScheme.fromSeed(
-              seedColor: const Color(0xFFFF9F0A), // Technical Orange
+              seedColor: const Color(0xFFD2691E), // Warm amber (chocolate)
               brightness: Brightness.dark,
-              primary: const Color(0xFFFF9F0A),
+              primary: const Color(0xFFD2691E), // Warm amber
               secondary: const Color(0xFF3A3A3C), // Dark Grey for elements
               surface: const Color(0xFF1C1C1E), // Slightly lighter grey for cards
               onPrimary: const Color(0xFF000000),
               onSurface: const Color(0xFFFFFFFF),
+              tertiary: const Color(0xFFFF9F0A), // Keep technical orange as accent
             ),
             textTheme: _buildTextTheme(Brightness.dark),
             appBarTheme: AppBarTheme(
@@ -80,8 +82,8 @@ class MyApp extends StatelessWidget {
               ),
             ),
             floatingActionButtonTheme: const FloatingActionButtonThemeData(
-              backgroundColor: Color(0xFFFF9F0A),
-              foregroundColor: Colors.black,
+              backgroundColor: Color(0xFFD2691E), // Warm amber
+              foregroundColor: Colors.white,
             ),
           ),
           home: const AppHome(),

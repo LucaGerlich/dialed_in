@@ -231,6 +231,17 @@ class _AddShotScreenState extends State<AddShotScreen> {
         context,
         listen: false,
       ).addShot(widget.beanId, shot, updatePreferredGrind: _updatePreferred);
+      
+      // Show encouraging message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Nice pull! 🎯 Shot logged successfully'),
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          behavior: SnackBarBehavior.floating,
+          duration: const Duration(seconds: 2),
+        ),
+      );
+      
       Navigator.pop(context);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
