@@ -67,7 +67,17 @@ class CoffeeProvider with ChangeNotifier {
     
     _grindMin = prefs.getDouble('grindMin') ?? 0.0;
     _grindMax = prefs.getDouble('grindMax') ?? 30.0;
-    _grindStep = prefs.getDouble('grindStep') ?? 0.01;
+    
+    // Migration: Update old default step (0.5) to new default (0.01)
+    final savedStep = prefs.getDouble('grindStep');
+    if (savedStep == null || savedStep == 0.5) {
+      _grindStep = 0.01;
+      // Save the new default immediately
+      await prefs.setDouble('grindStep', 0.01);
+    } else {
+      _grindStep = savedStep;
+    }
+    
     _useClicksMode = prefs.getBool('useClicksMode') ?? false;
     _grindLabel = prefs.getString('grindLabel') ?? 'Grind Size';
     
