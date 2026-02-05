@@ -6,7 +6,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:gal/gal.dart';
 import 'package:pasteboard/pasteboard.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../l10n/app_localizations.dart';
 import '../models/models.dart';
 import '../widgets/shot_sticker.dart';
 
@@ -66,6 +66,7 @@ class _ShareShotDialogState extends State<ShareShotDialog> {
   }
 
   Future<void> _saveToGallery() async {
+    final l10n = AppLocalizations.of(context)!;
     setState(() => _isSaving = true);
     try {
       final imageBytes = await _captureSticker();
@@ -102,6 +103,7 @@ class _ShareShotDialogState extends State<ShareShotDialog> {
   }
 
   Future<void> _copyToClipboard() async {
+    final l10n = AppLocalizations.of(context)!;
     setState(() => _isCopying = true);
     try {
       final imageBytes = await _captureSticker();

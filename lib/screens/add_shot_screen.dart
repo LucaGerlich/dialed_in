@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../l10n/app_localizations.dart';
 import '../models/models.dart';
 import '../providers/coffee_provider.dart';
 import '../widgets/analog_dial.dart';
@@ -80,6 +80,8 @@ class _AddShotScreenState extends State<AddShotScreen> {
 
   void _showTimePicker() {
     if (_isTimerRunning) return;
+    
+    final l10n = AppLocalizations.of(context)!;
 
     // Convert current duration to minutes, seconds, tenths
     int totalSeconds = _durationMs ~/ 1000;
@@ -207,6 +209,7 @@ class _AddShotScreenState extends State<AddShotScreen> {
   }
 
   void _saveShot() {
+    final l10n = AppLocalizations.of(context)!;
     final doseIn = double.tryParse(_doseInController.text) ?? 0.0;
     final doseOut = double.tryParse(_doseOutController.text) ?? 0.0;
 

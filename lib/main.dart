@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:dialed_in/providers/coffee_provider.dart';
 import 'screens/bean_list_screen.dart';
 import 'screens/onboarding_screen.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'l10n/app_localizations.dart';
 
 void main() {
   runApp(
