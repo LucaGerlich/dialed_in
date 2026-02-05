@@ -544,5 +544,60 @@
   "hundredPercentRobusta": "100% Robusta",
   "@hundredPercentRobusta": {
     "description": "Label when bean is pure robusta"
+  },
+  
+  "next": "Next",
+  "@next": {
+    "description": "Next button label"
+  },
+  
+  "back": "Back",
+  "@back": {
+    "description": "Back button label"
+  },
+  
+  "skip": "Skip",
+  "@skip": {
+    "description": "Skip button label"
+  },
+  
+  "days": "days",
+  "@days": {
+    "description": "Days unit of time (lowercase)"
+  },
+  
+  "daysUppercase": "DAYS",
+  "@daysUppercase": {
+    "description": "Days unit of time (uppercase)"
+  },
+  
+  "totalBrews": "BREWS",
+  "@totalBrews": {
+    "description": "Label for total number of brews"
+  },
+  
+  "avgDoseIn": "AVG IN",
+  "@avgDoseIn": {
+    "description": "Label for average dose in"
+  },
+  
+  "avgDoseOut": "AVG OUT",
+  "@avgDoseOut": {
+    "description": "Label for average dose out"
+  },
+  
+  "doseInShort": "IN",
+  "@doseInShort": {
+    "description": "Short label for dose in"
+  },
+  
+  "doseOutShort": "OUT",
+  "@doseOutShort": {
+    "description": "Short label for dose out"
+  },
+  
+  "grindSizeOverTime": "GRIND SIZE OVER TIME",
+  "@grindSizeOverTime": {
+    "description": "Chart title for grind size trends"
   }
 }

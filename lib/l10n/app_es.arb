@@ -109,5 +109,16 @@
   "noNotes": "Sin notas",
   "percentArabica": "% Arábica",
   "percentRobusta": "% Robusta",
-  "hundredPercentRobusta": "100% Robusta"
+  "hundredPercentRobusta": "100% Robusta",
+  "next": "Siguiente",
+  "back": "Atrás",
+  "skip": "Omitir",
+  "days": "días",
+  "daysUppercase": "DÍAS",
+  "totalBrews": "PREPARACIONES",
+  "avgDoseIn": "PROM ENTRADA",
+  "avgDoseOut": "PROM SALIDA",
+  "doseInShort": "ENTRADA",
+  "doseOutShort": "SALIDA",
+  "grindSizeOverTime": "TAMAÑO DE MOLIENDA EN EL TIEMPO"
 }

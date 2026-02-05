@@ -109,5 +109,16 @@
   "noNotes": "Keine Notizen",
   "percentArabica": "% Arabica",
   "percentRobusta": "% Robusta",
-  "hundredPercentRobusta": "100% Robusta"
+  "hundredPercentRobusta": "100% Robusta",
+  "next": "Weiter",
+  "back": "Zurück",
+  "skip": "Überspringen",
+  "days": "Tage",
+  "daysUppercase": "TAGE",
+  "totalBrews": "BRÜHUNGEN",
+  "avgDoseIn": "DURCHSCHN EINGANG",
+  "avgDoseOut": "DURCHSCHN AUSGANG",
+  "doseInShort": "EINGANG",
+  "doseOutShort": "AUSGANG",
+  "grindSizeOverTime": "MAHLGRAD IM ZEITVERLAUF"
 }
