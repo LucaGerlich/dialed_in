@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'dart:io';
 import '../models/models.dart';
 import 'package:dialed_in/providers/coffee_provider.dart';
@@ -12,19 +13,21 @@ class GearSettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Scaffold(
-      appBar: AppBar(title: const Text('Gear Settings')),
+      appBar: AppBar(title: Text(l10n.gearSettings)),
       body: Consumer<CoffeeProvider>(
         builder: (context, provider, child) {
           return ListView(
             padding: const EdgeInsets.all(16),
             children: [
-              _buildSectionHeader(context, 'App Settings'),
+              _buildSectionHeader(context, l10n.appSettings),
               _buildThemeDropdown(context, provider),
               const SizedBox(height: 16),
               _buildLanguageDropdown(context, provider),
               const SizedBox(height: 32),
-              _buildSectionHeader(context, 'Coffee Machines'),
+              _buildSectionHeader(context, l10n.coffeeMachines),
               ...provider.machines.map(
                 (machine) => _buildGearItem(
                   context,
@@ -32,7 +35,7 @@ class GearSettingsScreen extends StatelessWidget {
                   () => provider.deleteMachine(machine.id),
                 ),
               ),
-              _buildAddButton(context, 'Add Machine', (data) {
+              _buildAddButton(context, l10n.addMachine, (data) {
                 provider.addMachine(
                   CoffeeMachine(
                     name: data['name'],
@@ -43,7 +46,7 @@ class GearSettingsScreen extends StatelessWidget {
                 );
               }, isMachine: true),
               const SizedBox(height: 32),
-              _buildSectionHeader(context, 'Grinders'),
+              _buildSectionHeader(context, l10n.grinders),
               ...provider.grinders.map(
                 (grinder) => _buildGearItem(
                   context,
@@ -51,25 +54,25 @@ class GearSettingsScreen extends StatelessWidget {
                   () => provider.deleteGrinder(grinder.id),
                 ),
               ),
-              _buildAddButton(context, 'Add Grinder', (data) {
+              _buildAddButton(context, l10n.addGrinder, (data) {
                 provider.addGrinder(
                   Grinder(name: data['name'], defaultRpm: data['rpm']),
                 );
               }, isMachine: false),
               const SizedBox(height: 32),
-              _buildSectionHeader(context, 'Grind Settings'),
+              _buildSectionHeader(context, l10n.grindSettings),
               _buildGrindSettings(context, provider),
               const SizedBox(height: 32),
-              _buildSectionHeader(context, 'Flavor Profile'),
+              _buildSectionHeader(context, l10n.flavorProfile),
               _buildFlavorProfileSettings(context, provider),
               const SizedBox(height: 32),
-              _buildSectionHeader(context, 'Data Management'),
+              _buildSectionHeader(context, l10n.dataManagement),
               _buildDataManagementSection(context, provider),
               const SizedBox(height: 32),
-              _buildSectionHeader(context, 'Help'),
+              _buildSectionHeader(context, l10n.help),
               _buildHelpSection(context, provider),
               const SizedBox(height: 32),
-              _buildSectionHeader(context, 'About Dialed In'),
+              _buildSectionHeader(context, l10n.aboutDialedIn),
               _buildAboutSection(context),
               const SizedBox(height: 32),
             ],
@@ -80,6 +83,8 @@ class GearSettingsScreen extends StatelessWidget {
   }
 
   Widget _buildHelpSection(BuildContext context, CoffeeProvider provider) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -113,7 +118,7 @@ class GearSettingsScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'View App Tutorial',
+                        l10n.viewAppTutorial,
                         style: TextStyle(
                           fontFamily: 'RobotoMono',
                           fontSize: 16,
@@ -123,7 +128,7 @@ class GearSettingsScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        'Learn how to use Dialed In',
+                        l10n.learnHowToUse,
                         style: TextStyle(
                           fontFamily: 'RobotoMono',
                           fontSize: 12,
@@ -151,6 +156,8 @@ class GearSettingsScreen extends StatelessWidget {
   }
 
   Widget _buildThemeDropdown(BuildContext context, CoffeeProvider provider) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
@@ -165,16 +172,19 @@ class GearSettingsScreen extends StatelessWidget {
           value: provider.themeMode,
           isExpanded: true,
           dropdownColor: Theme.of(context).colorScheme.surface,
-          items: const [
+          items: [
             DropdownMenuItem(
               value: ThemeMode.system,
-              child: Text('System Theme'),
+              child: Text(l10n.systemTheme),
             ),
             DropdownMenuItem(
               value: ThemeMode.light,
-              child: Text('Light Theme'),
+              child: Text(l10n.lightTheme),
             ),
-            DropdownMenuItem(value: ThemeMode.dark, child: Text('Dark Theme')),
+            DropdownMenuItem(
+              value: ThemeMode.dark, 
+              child: Text(l10n.darkTheme),
+            ),
           ],
           onChanged: (mode) {
             if (mode != null) provider.setThemeMode(mode);
@@ -185,12 +195,14 @@ class GearSettingsScreen extends StatelessWidget {
   }
 
   Widget _buildLanguageDropdown(BuildContext context, CoffeeProvider provider) {
+    final l10n = AppLocalizations.of(context)!;
+    
     // Map of locale codes to display names
     final localeOptions = {
-      null: 'System Default',
-      const Locale('en'): 'English',
-      const Locale('es'): 'Spanish',
-      const Locale('de'): 'German',
+      null: l10n.systemDefault,
+      const Locale('en'): l10n.english,
+      const Locale('es'): l10n.spanish,
+      const Locale('de'): l10n.german,
     };
 
     return Container(

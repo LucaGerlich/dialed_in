@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../providers/coffee_provider.dart';
 import '../widgets/bean_card.dart';
 import 'add_bean_screen.dart';
@@ -15,26 +16,28 @@ class BeanListScreen extends StatefulWidget {
 
 class _BeanListScreenState extends State<BeanListScreen> {
   String _selectedFilter = 'All';
-  final List<String> _filters = ['All', 'Light', 'Medium', 'Dark'];
   String _sortBy = 'Ranking';
-  final List<String> _sortOptions = ['Default', 'Ranking'];
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final filters = [l10n.filterAll, l10n.filterLight, l10n.filterMedium, l10n.filterDark];
+    final sortOptions = [l10n.sortDefault, l10n.sortRanking];
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Bean Vault'),
+        title: Text(l10n.beanVault),
         leading: const Icon(Icons.coffee), // Aesthetic icon
         actions: [
           PopupMenuButton<String>(
             icon: const Icon(Icons.sort),
-            tooltip: 'Sort by',
+            tooltip: l10n.sortBy,
             onSelected: (value) {
               setState(() {
                 _sortBy = value;
               });
             },
-            itemBuilder: (context) => _sortOptions.map((option) {
+            itemBuilder: (context) => sortOptions.map((option) {
               return PopupMenuItem<String>(
                 value: option,
                 child: Row(
@@ -68,12 +71,16 @@ class _BeanListScreenState extends State<BeanListScreen> {
       body: Consumer<CoffeeProvider>(
         builder: (context, provider, child) {
           var beans = provider.beans.where((bean) {
-            if (_selectedFilter == 'All') return true;
-            return bean.roastLevel == _selectedFilter;
+            if (_selectedFilter == l10n.filterAll) return true;
+            // Map localized filter names back to data model values
+            if (_selectedFilter == l10n.filterLight) return bean.roastLevel == 'Light';
+            if (_selectedFilter == l10n.filterMedium) return bean.roastLevel == 'Medium';
+            if (_selectedFilter == l10n.filterDark) return bean.roastLevel == 'Dark';
+            return true;
           }).toList();
 
           // Sort beans based on selected sort option
-          if (_sortBy == 'Ranking') {
+          if (_sortBy == l10n.sortRanking) {
             beans.sort((a, b) => b.ranking.compareTo(a.ranking));
           }
 
@@ -84,7 +91,7 @@ class _BeanListScreenState extends State<BeanListScreen> {
                 scrollDirection: Axis.horizontal,
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 child: Row(
-                  children: _filters.map((filter) {
+                  children: filters.map((filter) {
                     final isSelected = _selectedFilter == filter;
                     return Padding(
                       padding: const EdgeInsets.only(right: 8),
@@ -131,7 +138,7 @@ class _BeanListScreenState extends State<BeanListScreen> {
                             ),
                             const SizedBox(height: 16),
                             Text(
-                              'No beans found',
+                              l10n.noBeansFound,
                               style: TextStyle(fontFamily: 'RobotoMono',
                                 fontSize: 18,
                                 color: Theme.of(context).colorScheme.secondary,
