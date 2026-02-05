@@ -431,7 +431,7 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
             _buildLabel('NOTES'),
             _buildTextField(
               _notesController,
-              'Tasting notes, etc.',
+              'What makes these beans special?',
               maxLines: 3,
             ),
             const SizedBox(height: 24),

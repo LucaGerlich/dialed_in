@@ -232,11 +232,35 @@ class _AddShotScreenState extends State<AddShotScreen> {
         listen: false,
       ).addShot(widget.beanId, shot, updatePreferredGrind: _updatePreferred);
       
-      // Show encouraging message
+      // Show encouraging message based on flavor profile
+      final isPerfectShot = _flavourX.abs() < 0.2 && _flavourY.abs() < 0.2;
+      final shotCount = Provider.of<CoffeeProvider>(context, listen: false)
+          .beans
+          .firstWhere((b) => b.id == widget.beanId)
+          .shots
+          .length;
+      
+      String message;
+      if (isPerfectShot) {
+        message = '🎯 Perfect shot! You nailed it!';
+      } else if (shotCount % 10 == 0) {
+        message = '🔥 ${shotCount} shots logged! You\'re on fire!';
+      } else {
+        final messages = [
+          'Nice pull! 🎯',
+          'Another one dialed in! ☕',
+          'Shot logged! Keep brewing! 💪',
+          'Great work! ✨',
+        ];
+        message = messages[shotCount % messages.length];
+      }
+      
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Nice pull! 🎯 Shot logged successfully'),
-          backgroundColor: Theme.of(context).colorScheme.primary,
+          content: Text(message),
+          backgroundColor: isPerfectShot 
+              ? Colors.green 
+              : Theme.of(context).colorScheme.primary,
           behavior: SnackBarBehavior.floating,
           duration: const Duration(seconds: 2),
         ),
@@ -616,14 +640,29 @@ class _AddShotScreenState extends State<AddShotScreen> {
 
                         // Flavour Graph
                         ExpansionTile(
-                          title: Text(
-                            'FLAVOUR PROFILE',
-                            style: TextStyle(
-                              fontFamily: 'RobotoMono',
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
-                              color: Theme.of(context).colorScheme.onSurface,
-                            ),
+                          title: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'FLAVOUR PROFILE',
+                                style: TextStyle(
+                                  fontFamily: 'RobotoMono',
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14,
+                                  color: Theme.of(context).colorScheme.onSurface,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                'Tap the grid to map your shot\'s taste',
+                                style: TextStyle(
+                                  fontFamily: 'RobotoMono',
+                                  fontSize: 11,
+                                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
+                                  fontStyle: FontStyle.italic,
+                                ),
+                              ),
+                            ],
                           ),
                           children: [
                             const SizedBox(height: 12),
