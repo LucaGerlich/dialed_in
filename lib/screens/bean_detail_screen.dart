@@ -654,7 +654,7 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                                 ),
                               ),
                               Text(
-                                shot.grindSize.toStringAsFixed(1),
+                                shot.grindSize.toStringAsFixed(2),
                                 style: TextStyle(
                                   fontFamily: 'RobotoMono',
                                   color: Theme.of(context).colorScheme.primary,
