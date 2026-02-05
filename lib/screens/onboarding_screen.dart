@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/app_localizations.dart';
 
 class OnboardingScreen extends StatefulWidget {
   final VoidCallback onComplete;
@@ -13,73 +14,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
-  final List<OnboardingPage> _pages = [
-    OnboardingPage(
-      icon: Icons.coffee,
-      title: 'Welcome to Dialed In',
-      description:
-          'Your personal coffee companion for tracking beans, brewing shots, and perfecting your espresso.',
-      details: [
-        'Track your coffee bean collection',
-        'Log every shot you pull',
-        'Analyze your brewing patterns',
-        'Find your perfect grind size',
-      ],
-    ),
-    OnboardingPage(
-      icon: Icons.inventory_2_outlined,
-      title: 'Bean Vault',
-      description:
-          'Store and organize your coffee bean collection with detailed information.',
-      details: [
-        'Add beans with origin, roast level, and process',
-        'Set roast dates to track freshness',
-        'Define flavor profiles (acidity, body, sweetness)',
-        'Add custom flavor tags like "Blueberry" or "Chocolate"',
-        'Filter beans by roast level (Light, Medium, Dark)',
-      ],
-    ),
-    OnboardingPage(
-      icon: Icons.timer_outlined,
-      title: 'Shot Tracking',
-      description:
-          'Log every shot you pull to dial in the perfect extraction.',
-      details: [
-        'Record grind size, dose in, and dose out',
-        'Use the built-in timer for extraction time',
-        'Track machine settings (pressure, temperature)',
-        'Map flavor on a Sour-Bitter / Weak-Strong grid',
-        'View grind size trends over time with charts',
-      ],
-    ),
-    OnboardingPage(
-      icon: Icons.settings_outlined,
-      title: 'Gear Settings',
-      description:
-          'Configure your coffee equipment for accurate tracking.',
-      details: [
-        'Add your espresso machines with default settings',
-        'Add your grinders with default RPM',
-        'Customize grind size scale (min, max, step)',
-        'Choose between Light and Dark themes',
-        'Your data is stored locally on your device',
-      ],
-    ),
-    OnboardingPage(
-      icon: Icons.rocket_launch_outlined,
-      title: 'Get Started',
-      description:
-          'You\'re ready to start your coffee journey!',
-      details: [
-        '1. Tap + on Bean Vault to add your first bean',
-        '2. Select a bean to view details',
-        '3. Tap + on bean details to log a shot',
-        '4. Use the dial to set your grind size',
-        '5. Track and improve your brewing over time',
-      ],
-    ),
-  ];
-
   @override
   void dispose() {
     _pageController.dispose();
@@ -87,7 +21,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   void _nextPage() {
-    if (_currentPage < _pages.length - 1) {
+    // Hard-coded to 5 pages (this could also be passed as a parameter if pages change)
+    const totalPages = 5;
+    if (_currentPage < totalPages - 1) {
       _pageController.nextPage(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
@@ -112,8 +48,77 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
-    final isLastPage = _currentPage == _pages.length - 1;
+    
+    final pages = [
+      OnboardingPage(
+        icon: Icons.coffee,
+        title: l10n.welcomeToDialedIn,
+        description:
+            'Your personal coffee companion for tracking beans, brewing shots, and perfecting your espresso.',
+        details: [
+          'Track your coffee bean collection',
+          'Log every shot you pull',
+          'Analyze your brewing patterns',
+          'Find your perfect grind size',
+        ],
+      ),
+      OnboardingPage(
+        icon: Icons.inventory_2_outlined,
+        title: l10n.onboardingBeanVault,
+        description:
+            'Store and organize your coffee bean collection with detailed information.',
+        details: [
+          'Add beans with origin, roast level, and process',
+          'Set roast dates to track freshness',
+          'Define flavor profiles (acidity, body, sweetness)',
+          'Add custom flavor tags like "Blueberry" or "Chocolate"',
+          'Filter beans by roast level (Light, Medium, Dark)',
+        ],
+      ),
+      OnboardingPage(
+        icon: Icons.timer_outlined,
+        title: l10n.onboardingShotTracking,
+        description:
+            'Log every shot you pull to dial in the perfect extraction.',
+        details: [
+          'Record grind size, dose in, and dose out',
+          'Use the built-in timer for extraction time',
+          'Track machine settings (pressure, temperature)',
+          'Map flavor on a Sour-Bitter / Weak-Strong grid',
+          'View grind size trends over time with charts',
+        ],
+      ),
+      OnboardingPage(
+        icon: Icons.settings_outlined,
+        title: l10n.onboardingGearSettings,
+        description:
+            'Configure your coffee equipment for accurate tracking.',
+        details: [
+          'Add your espresso machines with default settings',
+          'Add your grinders with default RPM',
+          'Customize grind size scale (min, max, step)',
+          'Choose between Light and Dark themes',
+          'Your data is stored locally on your device',
+        ],
+      ),
+      OnboardingPage(
+        icon: Icons.rocket_launch_outlined,
+        title: l10n.getStarted,
+        description:
+            'You\'re ready to start your coffee journey!',
+        details: [
+          '1. Tap + on Bean Vault to add your first bean',
+          '2. Select a bean to view details',
+          '3. Tap + on bean details to log a shot',
+          '4. Use the dial to set your grind size',
+          '5. Track and improve your brewing over time',
+        ],
+      ),
+    ];
+    
+    final isLastPage = _currentPage == pages.length - 1;
 
     return Scaffold(
       body: SafeArea(
@@ -146,9 +151,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     _currentPage = index;
                   });
                 },
-                itemCount: _pages.length,
+                itemCount: pages.length,
                 itemBuilder: (context, index) {
-                  return _buildPage(_pages[index]);
+                  return _buildPage(pages[index]);
                 },
               ),
             ),
@@ -159,7 +164,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: List.generate(
-                  _pages.length,
+                  pages.length,
                   (index) => AnimatedContainer(
                     duration: const Duration(milliseconds: 300),
                     margin: const EdgeInsets.symmetric(horizontal: 4),
@@ -218,7 +223,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         ),
                       ),
                       child: Text(
-                        isLastPage ? 'Get Started' : 'Next',
+                        isLastPage ? l10n.getStarted : l10n.next,
                         style: const TextStyle(
                           fontFamily: 'RobotoMono',
                           fontWeight: FontWeight.bold,

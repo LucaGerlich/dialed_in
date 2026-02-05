@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:dialed_in/providers/coffee_provider.dart';
 import 'screens/bean_list_screen.dart';
 import 'screens/onboarding_screen.dart';
+import 'l10n/app_localizations.dart';
 
 void main() {
   runApp(
@@ -23,6 +25,25 @@ class MyApp extends StatelessWidget {
         return MaterialApp(
           title: 'Dialed In',
           debugShowCheckedModeBanner: false,
+          
+          // Localization delegates
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          
+          // Supported locales
+          supportedLocales: const [
+            Locale('en'), // English
+            Locale('es'), // Spanish
+            Locale('de'), // German
+          ],
+          
+          // Use locale from provider, or system default if null
+          locale: provider.locale,
+          
           themeMode: provider.themeMode,
           theme: ThemeData(
             useMaterial3: true,
