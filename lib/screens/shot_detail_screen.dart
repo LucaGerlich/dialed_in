@@ -102,7 +102,7 @@ class ShotDetailScreen extends StatelessWidget {
                               style: TextStyle(fontFamily: 'RobotoMono', color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6), fontSize: 12),
                             ),
                             Text(
-                              '${l10n.resting}: ${shot.timestamp.difference(bean.roastDate!).inDays} DAYS',
+                              '${l10n.resting}: ${shot.timestamp.difference(bean.roastDate!).inDays} ${l10n.daysUppercase}',
                               style: TextStyle(fontFamily: 'RobotoMono',
                                 color: Theme.of(context).colorScheme.primary,
                                 fontSize: 12,

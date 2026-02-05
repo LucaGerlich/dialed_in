@@ -221,7 +221,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         ),
                       ),
                       child: Text(
-                        isLastPage ? l10n.getStarted : 'Next',
+                        isLastPage ? l10n.getStarted : l10n.next,
                         style: const TextStyle(
                           fontFamily: 'RobotoMono',
                           fontWeight: FontWeight.bold,

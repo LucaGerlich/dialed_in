@@ -150,7 +150,7 @@ class _ShareShotDialogState extends State<ShareShotDialog> {
               children: [
                 Text(
                   l10n.share,
-                  style: const TextStyle(fontFamily: 'RobotoMono',
+                  style: TextStyle(fontFamily: 'RobotoMono',
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                     color: Theme.of(context).colorScheme.onSurface,

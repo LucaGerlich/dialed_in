@@ -391,13 +391,13 @@ class _AddShotScreenState extends State<AddShotScreen> {
                                 children: [
                                   _buildCompactInput(
                                     context,
-                                    l10n.doseIn.split(' ').last, // "IN"
+                                    l10n.doseInShort, // "IN"
                                     _doseInController,
                                   ),
                                   const SizedBox(height: 8),
                                   _buildCompactInput(
                                     context,
-                                    l10n.doseOut.split(' ').last, // "OUT"
+                                    l10n.doseOutShort, // "OUT"
                                     _doseOutController,
                                   ),
                                 ],
