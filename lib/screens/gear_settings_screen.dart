@@ -21,6 +21,8 @@ class GearSettingsScreen extends StatelessWidget {
             children: [
               _buildSectionHeader(context, 'App Settings'),
               _buildThemeDropdown(context, provider),
+              const SizedBox(height: 16),
+              _buildLanguageDropdown(context, provider),
               const SizedBox(height: 32),
               _buildSectionHeader(context, 'Coffee Machines'),
               ...provider.machines.map(
@@ -176,6 +178,43 @@ class GearSettingsScreen extends StatelessWidget {
           ],
           onChanged: (mode) {
             if (mode != null) provider.setThemeMode(mode);
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLanguageDropdown(BuildContext context, CoffeeProvider provider) {
+    // Map of locale codes to display names
+    final localeOptions = {
+      null: 'System Default',
+      const Locale('en'): 'English',
+      const Locale('es'): 'Spanish',
+      const Locale('de'): 'German',
+    };
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
+        ),
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<Locale?>(
+          value: provider.locale,
+          isExpanded: true,
+          dropdownColor: Theme.of(context).colorScheme.surface,
+          items: localeOptions.entries.map((entry) {
+            return DropdownMenuItem<Locale?>(
+              value: entry.key,
+              child: Text(entry.value),
+            );
+          }).toList(),
+          onChanged: (locale) {
+            provider.setLocale(locale);
           },
         ),
       ),
