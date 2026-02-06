@@ -12,6 +12,8 @@ class MaintenanceScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Maintenance'),
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        surfaceTintColor: Theme.of(context).scaffoldBackgroundColor,
       ),
       body: Consumer<CoffeeProvider>(
         builder: (context, provider, child) {
@@ -85,11 +87,11 @@ class _MaintenanceTaskCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<CoffeeProvider>(context, listen: false);
-    
+
     // Calculate progress
     final progress = _calculateProgress(provider);
     final isOverdue = progress >= 1.0;
-    
+
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       child: InkWell(
@@ -104,8 +106,8 @@ class _MaintenanceTaskCard extends StatelessWidget {
                 children: [
                   Icon(
                     _getIconForType(task.type),
-                    color: isOverdue 
-                        ? Colors.red 
+                    color: isOverdue
+                        ? Colors.red
                         : Theme.of(context).colorScheme.primary,
                   ),
                   const SizedBox(width: 12),
@@ -128,7 +130,9 @@ class _MaintenanceTaskCard extends StatelessWidget {
                           style: TextStyle(
                             fontFamily: 'RobotoMono',
                             fontSize: 12,
-                            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onSurface.withValues(alpha: 0.7),
                           ),
                         ),
                       ],
@@ -136,7 +140,10 @@ class _MaintenanceTaskCard extends StatelessWidget {
                   ),
                   if (isOverdue)
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.red,
                         borderRadius: BorderRadius.circular(12),
@@ -160,7 +167,9 @@ class _MaintenanceTaskCard extends StatelessWidget {
                   value: progress.clamp(0.0, 1.0),
                   backgroundColor: Theme.of(context).colorScheme.surface,
                   valueColor: AlwaysStoppedAnimation<Color>(
-                    isOverdue ? Colors.red : Theme.of(context).colorScheme.primary,
+                    isOverdue
+                        ? Colors.red
+                        : Theme.of(context).colorScheme.primary,
                   ),
                   minHeight: 8,
                 ),
@@ -171,7 +180,9 @@ class _MaintenanceTaskCard extends StatelessWidget {
                 style: TextStyle(
                   fontFamily: 'RobotoMono',
                   fontSize: 11,
-                  color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.onSurface.withValues(alpha: 0.6),
                 ),
               ),
               if (task.lastCompleted != null) ...[
@@ -181,7 +192,9 @@ class _MaintenanceTaskCard extends StatelessWidget {
                   style: TextStyle(
                     fontFamily: 'RobotoMono',
                     fontSize: 11,
-                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withValues(alpha: 0.6),
                   ),
                 ),
               ],
@@ -220,11 +233,11 @@ class _MaintenanceTaskCard extends StatelessWidget {
           }
         }
         return shotsSince / task.intervalValue;
-      
+
       case MaintenanceIntervalType.days:
         final daysSince = DateTime.now().difference(task.lastCompleted!).inDays;
         return daysSince / task.intervalValue;
-      
+
       case MaintenanceIntervalType.waterLiters:
         // Count shots since last completion and calculate water
         int shotsSince = 0;
@@ -265,11 +278,11 @@ class _MaintenanceTaskCard extends StatelessWidget {
           }
         }
         return '$shotsSince / ${task.intervalValue} shots';
-      
+
       case MaintenanceIntervalType.days:
         final daysSince = DateTime.now().difference(task.lastCompleted!).inDays;
         return '$daysSince / ${task.intervalValue} days';
-      
+
       case MaintenanceIntervalType.waterLiters:
         int shotsSince = 0;
         for (final bean in provider.beans) {
@@ -310,7 +323,7 @@ class _MaintenanceTaskCard extends StatelessWidget {
 
   void _showTaskDetails(BuildContext context) {
     final provider = Provider.of<CoffeeProvider>(context, listen: false);
-    
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -390,7 +403,8 @@ class _AddMaintenanceTaskDialog extends StatefulWidget {
   const _AddMaintenanceTaskDialog();
 
   @override
-  State<_AddMaintenanceTaskDialog> createState() => _AddMaintenanceTaskDialogState();
+  State<_AddMaintenanceTaskDialog> createState() =>
+      _AddMaintenanceTaskDialogState();
 }
 
 class _AddMaintenanceTaskDialogState extends State<_AddMaintenanceTaskDialog> {
@@ -409,7 +423,10 @@ class _AddMaintenanceTaskDialogState extends State<_AddMaintenanceTaskDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Add Maintenance Task', style: TextStyle(fontFamily: 'RobotoMono')),
+      title: const Text(
+        'Add Maintenance Task',
+        style: TextStyle(fontFamily: 'RobotoMono'),
+      ),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -429,7 +446,10 @@ class _AddMaintenanceTaskDialogState extends State<_AddMaintenanceTaskDialog> {
               items: MaintenanceType.values.map((type) {
                 return DropdownMenuItem(
                   value: type,
-                  child: Text(_getTypeLabel(type), style: const TextStyle(fontFamily: 'RobotoMono')),
+                  child: Text(
+                    _getTypeLabel(type),
+                    style: const TextStyle(fontFamily: 'RobotoMono'),
+                  ),
                 );
               }).toList(),
               onChanged: (value) {
@@ -445,7 +465,10 @@ class _AddMaintenanceTaskDialogState extends State<_AddMaintenanceTaskDialog> {
               items: MaintenanceIntervalType.values.map((type) {
                 return DropdownMenuItem(
                   value: type,
-                  child: Text(_getIntervalTypeLabel(type), style: const TextStyle(fontFamily: 'RobotoMono')),
+                  child: Text(
+                    _getIntervalTypeLabel(type),
+                    style: const TextStyle(fontFamily: 'RobotoMono'),
+                  ),
                 );
               }).toList(),
               onChanged: (value) {
@@ -474,7 +497,8 @@ class _AddMaintenanceTaskDialogState extends State<_AddMaintenanceTaskDialog> {
         ),
         TextButton(
           onPressed: () {
-            if (_nameController.text.isEmpty || _intervalController.text.isEmpty) {
+            if (_nameController.text.isEmpty ||
+                _intervalController.text.isEmpty) {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('Please fill all fields')),
               );
@@ -496,7 +520,10 @@ class _AddMaintenanceTaskDialogState extends State<_AddMaintenanceTaskDialog> {
               intervalValue: interval,
             );
 
-            Provider.of<CoffeeProvider>(context, listen: false).addMaintenanceTask(task);
+            Provider.of<CoffeeProvider>(
+              context,
+              listen: false,
+            ).addMaintenanceTask(task);
             Navigator.pop(context);
           },
           child: const Text('Add'),

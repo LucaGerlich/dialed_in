@@ -16,13 +16,16 @@ class GearSettingsScreen extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.gearSettings)),
+      appBar: AppBar(
+        title: Text(l10n.gearSettings),
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        surfaceTintColor: Theme.of(context).scaffoldBackgroundColor,
+      ),
       body: Consumer<CoffeeProvider>(
         builder: (context, provider, child) {
           return ListView(
             padding: const EdgeInsets.all(16),
             children: [
-              _buildSectionHeader(context, l10n.appSettings),
               _buildSectionSubHeader(context, "Theme"),
               _buildThemeDropdown(context, provider),
               const SizedBox(height: 16),
@@ -1123,7 +1126,7 @@ class GearSettingsScreen extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            'Version 1.1.0',
+            'Version 1.4.0',
             style: Theme.of(context).textTheme.labelSmall?.copyWith(
               color: Theme.of(
                 context,

@@ -178,6 +178,8 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.bean != null ? l10n.editBean : l10n.addBean),
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        surfaceTintColor: Theme.of(context).scaffoldBackgroundColor,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
@@ -431,11 +433,7 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
             const SizedBox(height: 24),
 
             _buildLabel(l10n.notes),
-            _buildTextField(
-              _notesController,
-              l10n.notesHint,
-              maxLines: 3,
-            ),
+            _buildTextField(_notesController, l10n.notesHint, maxLines: 3),
             const SizedBox(height: 24),
 
             _buildLabel(l10n.flavorProfile),
@@ -444,7 +442,11 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
               _acidity,
               (val) => setState(() => _acidity = val),
             ),
-            _buildSlider(l10n.body, _body, (val) => setState(() => _body = val)),
+            _buildSlider(
+              l10n.body,
+              _body,
+              (val) => setState(() => _body = val),
+            ),
             _buildSlider(
               l10n.sweetness,
               _sweetness,
@@ -483,10 +485,7 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
             Row(
               children: [
                 Expanded(
-                  child: _buildTextField(
-                    _tagController,
-                    l10n.flavorTagHint,
-                  ),
+                  child: _buildTextField(_tagController, l10n.flavorTagHint),
                 ),
                 const SizedBox(width: 8),
                 IconButton.filled(
@@ -542,7 +541,9 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
                   ),
                 ),
                 child: Text(
-                  widget.bean != null ? l10n.updateBeanButton : l10n.addBeanButton,
+                  widget.bean != null
+                      ? l10n.updateBeanButton
+                      : l10n.addBeanButton,
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -580,7 +581,9 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
               size: 36,
               color: isSelected
                   ? Theme.of(context).colorScheme.primary
-                  : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
+                  : Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withValues(alpha: 0.3),
             ),
           ),
         );

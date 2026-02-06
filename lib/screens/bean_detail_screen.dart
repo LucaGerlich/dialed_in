@@ -45,6 +45,8 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                 fontWeight: FontWeight.bold,
               ),
             ),
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            surfaceTintColor: Theme.of(context).scaffoldBackgroundColor,
             actions: [
               IconButton(
                 icon: const Icon(Icons.edit),

@@ -36,6 +36,8 @@ class ShotDetailScreen extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            surfaceTintColor: Theme.of(context).scaffoldBackgroundColor,
             actions: [
               IconButton(
                 icon: const Icon(Icons.ios_share),

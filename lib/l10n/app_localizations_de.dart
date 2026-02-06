@@ -12,10 +12,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get appTitle => 'Dialed In';
 
   @override
-  String get beanVault => 'Bohnen-Tresor';
+  String get beanVault => 'Deine Bohnen';
 
   @override
-  String get gearSettings => 'Geräte-Einstellungen';
+  String get gearSettings => 'Einstellungen';
 
   @override
   String get sortBy => 'Sortieren nach';

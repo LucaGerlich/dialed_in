@@ -141,9 +141,9 @@ class _BeanListScreenState extends State<BeanListScreen> {
               ),
             ),
             ListTile(
-              leading: const Icon(Icons.coffee_maker),
-              title: const Text(
-                'Bean Vault',
+              leading: const Icon(Icons.warehouse),
+              title: Text(
+                l10n.beanVault,
                 style: TextStyle(fontFamily: 'RobotoMono'),
               ),
               selected: true,
@@ -154,7 +154,7 @@ class _BeanListScreenState extends State<BeanListScreen> {
             ListTile(
               leading: const Icon(Icons.build),
               title: const Text(
-                'Maintenance',
+                'Maintenance', //TODO: add localization later
                 style: TextStyle(fontFamily: 'RobotoMono'),
               ),
               onTap: () {
@@ -245,7 +245,7 @@ class _BeanListScreenState extends State<BeanListScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(
-                              Icons.coffee_maker_outlined,
+                              Icons.coffee,
                               size: 64,
                               color: Theme.of(context).colorScheme.secondary,
                             ),

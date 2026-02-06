@@ -269,7 +269,11 @@ class _AddShotScreenState extends State<AddShotScreen> {
     final provider = Provider.of<CoffeeProvider>(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.addShot)),
+      appBar: AppBar(
+        title: Text(l10n.addShot),
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        surfaceTintColor: Theme.of(context).scaffoldBackgroundColor,
+      ),
       body: Stack(
         children: [
           // Expanded Dial Area (Background)
