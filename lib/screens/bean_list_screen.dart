@@ -8,6 +8,7 @@ import '../widgets/bean_card_compact.dart';
 import 'add_bean_screen.dart';
 import 'bean_detail_screen.dart';
 import 'gear_settings_screen.dart';
+import 'maintenance_screen.dart';
 
 class BeanListScreen extends StatefulWidget {
   const BeanListScreen({super.key});
@@ -45,13 +46,23 @@ class _BeanListScreenState extends State<BeanListScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final filters = [l10n.filterAll, l10n.filterLight, l10n.filterMedium, l10n.filterDark];
+    final filters = [
+      l10n.filterAll,
+      l10n.filterLight,
+      l10n.filterMedium,
+      l10n.filterDark,
+    ];
     final sortOptions = [l10n.sortDefault, l10n.sortRanking];
 
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.beanVault),
-        leading: const Icon(Icons.coffee), // Aesthetic icon
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: const Icon(Icons.menu),
+            onPressed: () => Scaffold.of(context).openDrawer(),
+          ),
+        ),
         actions: [
           IconButton(
             icon: Icon(_isCompactView ? Icons.view_list : Icons.grid_view),
@@ -91,20 +102,85 @@ class _BeanListScreenState extends State<BeanListScreen> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const GearSettingsScreen()),
+                MaterialPageRoute(
+                  builder: (context) => const GearSettingsScreen(),
+                ),
               );
             },
           ),
         ],
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primary,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Icon(
+                    Icons.coffee,
+                    size: 48,
+                    color: Theme.of(context).colorScheme.onPrimary,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Dialed In',
+                    style: TextStyle(
+                      fontFamily: 'RobotoMono',
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.onPrimary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.coffee_maker),
+              title: const Text(
+                'Bean Vault',
+                style: TextStyle(fontFamily: 'RobotoMono'),
+              ),
+              selected: true,
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.build),
+              title: const Text(
+                'Maintenance',
+                style: TextStyle(fontFamily: 'RobotoMono'),
+              ),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const MaintenanceScreen(),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
       ),
       body: Consumer<CoffeeProvider>(
         builder: (context, provider, child) {
           var beans = provider.beans.where((bean) {
             if (_selectedFilter == l10n.filterAll) return true;
             // Map localized filter names back to data model values
-            if (_selectedFilter == l10n.filterLight) return bean.roastLevel == 'Light';
-            if (_selectedFilter == l10n.filterMedium) return bean.roastLevel == 'Medium';
-            if (_selectedFilter == l10n.filterDark) return bean.roastLevel == 'Dark';
+            if (_selectedFilter == l10n.filterLight)
+              return bean.roastLevel == 'Light';
+            if (_selectedFilter == l10n.filterMedium)
+              return bean.roastLevel == 'Medium';
+            if (_selectedFilter == l10n.filterDark)
+              return bean.roastLevel == 'Dark';
             return true;
           }).toList();
 
@@ -118,7 +194,10 @@ class _BeanListScreenState extends State<BeanListScreen> {
               // Filter Chips
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
                 child: Row(
                   children: filters.map((filter) {
                     final isSelected = _selectedFilter == filter;
@@ -135,15 +214,20 @@ class _BeanListScreenState extends State<BeanListScreen> {
                         backgroundColor: Theme.of(context).colorScheme.surface,
                         selectedColor: Theme.of(context).colorScheme.primary,
                         labelStyle: TextStyle(
-                          color: isSelected ? Theme.of(context).colorScheme.onPrimary : Theme.of(context).colorScheme.onSurface,
-                          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                          color: isSelected
+                              ? Theme.of(context).colorScheme.onPrimary
+                              : Theme.of(context).colorScheme.onSurface,
+                          fontWeight: isSelected
+                              ? FontWeight.bold
+                              : FontWeight.normal,
                         ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),
                           side: BorderSide(
                             color: isSelected
                                 ? Theme.of(context).colorScheme.primary
-                                : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
+                                : Theme.of(context).colorScheme.onSurface
+                                      .withValues(alpha: 0.1),
                           ),
                         ),
                         showCheckmark: false,
@@ -168,7 +252,8 @@ class _BeanListScreenState extends State<BeanListScreen> {
                             const SizedBox(height: 16),
                             Text(
                               l10n.noBeansFound,
-                              style: TextStyle(fontFamily: 'RobotoMono',
+                              style: TextStyle(
+                                fontFamily: 'RobotoMono',
                                 fontSize: 18,
                                 color: Theme.of(context).colorScheme.secondary,
                               ),
@@ -177,48 +262,51 @@ class _BeanListScreenState extends State<BeanListScreen> {
                         ),
                       )
                     : _isCompactView
-                        ? GridView.builder(
-                            padding: const EdgeInsets.all(16),
-                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    ? GridView.builder(
+                        padding: const EdgeInsets.all(16),
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 2,
                               childAspectRatio: 0.75,
                               crossAxisSpacing: 12,
                               mainAxisSpacing: 12,
                             ),
-                            itemCount: beans.length,
-                            itemBuilder: (context, index) {
-                              final bean = beans[index];
-                              return BeanCardCompact(
-                                bean: bean,
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => BeanDetailScreen(beanId: bean.id),
-                                    ),
-                                  );
-                                },
+                        itemCount: beans.length,
+                        itemBuilder: (context, index) {
+                          final bean = beans[index];
+                          return BeanCardCompact(
+                            bean: bean,
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      BeanDetailScreen(beanId: bean.id),
+                                ),
                               );
                             },
-                          )
-                        : ListView.builder(
-                            padding: const EdgeInsets.all(16),
-                            itemCount: beans.length,
-                            itemBuilder: (context, index) {
-                              final bean = beans[index];
-                              return BeanCard(
-                                bean: bean,
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => BeanDetailScreen(beanId: bean.id),
-                                    ),
-                                  );
-                                },
+                          );
+                        },
+                      )
+                    : ListView.builder(
+                        padding: const EdgeInsets.all(16),
+                        itemCount: beans.length,
+                        itemBuilder: (context, index) {
+                          final bean = beans[index];
+                          return BeanCard(
+                            bean: bean,
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      BeanDetailScreen(beanId: bean.id),
+                                ),
                               );
                             },
-                          ),
+                          );
+                        },
+                      ),
               ),
             ],
           );

@@ -13,6 +13,7 @@ class CoffeeProvider with ChangeNotifier {
   List<Bean> _beans = [];
   List<CoffeeMachine> _machines = [];
   List<Grinder> _grinders = [];
+  List<MaintenanceTask> _maintenanceTasks = [];
   
   // Grind Settings
   double _grindMin = 0.0;
@@ -37,6 +38,7 @@ class CoffeeProvider with ChangeNotifier {
   List<Bean> get beans => _beans;
   List<CoffeeMachine> get machines => _machines;
   List<Grinder> get grinders => _grinders;
+  List<MaintenanceTask> get maintenanceTasks => _maintenanceTasks;
   
   double get grindMin => _grindMin;
   double get grindMax => _grindMax;
@@ -71,6 +73,12 @@ class CoffeeProvider with ChangeNotifier {
     if (grindersJson != null) {
       final List<dynamic> decoded = jsonDecode(grindersJson);
       _grinders = decoded.map((item) => Grinder.fromJson(item)).toList();
+    }
+
+    final String? maintenanceJson = prefs.getString('maintenanceTasks');
+    if (maintenanceJson != null) {
+      final List<dynamic> decoded = jsonDecode(maintenanceJson);
+      _maintenanceTasks = decoded.map((item) => MaintenanceTask.fromJson(item)).toList();
     }
     
     _grindMin = prefs.getDouble('grindMin') ?? 0.0;
@@ -127,6 +135,9 @@ class CoffeeProvider with ChangeNotifier {
 
     final String grindersJson = jsonEncode(_grinders.map((g) => g.toJson()).toList());
     await prefs.setString('grinders', grindersJson);
+
+    final String maintenanceJson = jsonEncode(_maintenanceTasks.map((t) => t.toJson()).toList());
+    await prefs.setString('maintenanceTasks', maintenanceJson);
     
     await prefs.setDouble('grindMin', _grindMin);
     await prefs.setDouble('grindMax', _grindMax);
@@ -296,6 +307,55 @@ class CoffeeProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  // Maintenance Task Management
+  void addMaintenanceTask(MaintenanceTask task) {
+    _maintenanceTasks.add(task);
+    _saveData();
+    notifyListeners();
+  }
+
+  void updateMaintenanceTask(MaintenanceTask updatedTask) {
+    final index = _maintenanceTasks.indexWhere((t) => t.id == updatedTask.id);
+    if (index != -1) {
+      _maintenanceTasks[index] = updatedTask;
+      _saveData();
+      notifyListeners();
+    }
+  }
+
+  void deleteMaintenanceTask(String id) {
+    _maintenanceTasks.removeWhere((t) => t.id == id);
+    _saveData();
+    notifyListeners();
+  }
+
+  void completeMaintenanceTask(String id) {
+    final index = _maintenanceTasks.indexWhere((t) => t.id == id);
+    if (index != -1) {
+      _maintenanceTasks[index] = _maintenanceTasks[index].copyWith(
+        lastCompleted: DateTime.now(),
+      );
+      _saveData();
+      notifyListeners();
+    }
+  }
+
+  // Calculate total shots across all beans
+  int getTotalShotCount() {
+    int total = 0;
+    for (final bean in _beans) {
+      total += bean.shots.length;
+    }
+    return total;
+  }
+
+  // Calculate total estimated water usage in liters
+  // Assuming ~60ml of water per shot (standard espresso)
+  double getTotalWaterUsage() {
+    final shotCount = getTotalShotCount();
+    return shotCount * 0.06; // 60ml = 0.06 liters
+  }
+
   /// Returns all data as a JSON string for export
   String exportDataToJson() {
     final exportData = {
@@ -304,6 +364,7 @@ class CoffeeProvider with ChangeNotifier {
       'beans': _beans.map((b) => b.toJson()).toList(),
       'machines': _machines.map((m) => m.toJson()).toList(),
       'grinders': _grinders.map((g) => g.toJson()).toList(),
+      'maintenanceTasks': _maintenanceTasks.map((t) => t.toJson()).toList(),
       'settings': {
         'grindMin': _grindMin,
         'grindMax': _grindMax,
@@ -375,6 +436,22 @@ class CoffeeProvider with ChangeNotifier {
         for (final grinder in importedGrinders) {
           if (!existingIds.contains(grinder.id)) {
             _grinders.add(grinder);
+          }
+        }
+      }
+    }
+
+    // Import maintenance tasks
+    if (data['maintenanceTasks'] != null) {
+      final List<dynamic> maintenanceJson = data['maintenanceTasks'];
+      final importedTasks = maintenanceJson.map((item) => MaintenanceTask.fromJson(item)).toList();
+      if (replaceExisting) {
+        _maintenanceTasks = importedTasks;
+      } else {
+        final existingIds = _maintenanceTasks.map((t) => t.id).toSet();
+        for (final task in importedTasks) {
+          if (!existingIds.contains(task.id)) {
+            _maintenanceTasks.add(task);
           }
         }
       }
