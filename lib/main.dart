@@ -165,8 +165,47 @@ class AppHome extends StatelessWidget {
         if (provider.isLoading) {
           return Scaffold(
             body: Center(
-              child: CircularProgressIndicator(
-                color: Theme.of(context).colorScheme.primary,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TweenAnimationBuilder<double>(
+                    duration: const Duration(milliseconds: 1000),
+                    tween: Tween(begin: 0.8, end: 1.2),
+                    curve: Curves.easeInOut,
+                    builder: (context, value, child) {
+                      return Transform.scale(
+                        scale: value,
+                        child: CircularProgressIndicator(
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                      );
+                    },
+                    onEnd: () {
+                      // Rebuild to restart animation
+                    },
+                  ),
+                  const SizedBox(height: 24),
+                  TweenAnimationBuilder<double>(
+                    duration: const Duration(milliseconds: 1000),
+                    tween: Tween(begin: 0.5, end: 1.0),
+                    curve: Curves.easeInOut,
+                    builder: (context, value, child) {
+                      return Opacity(
+                        opacity: value,
+                        child: Text(
+                          'Loading...',
+                          style: TextStyle(
+                            fontFamily: 'RobotoMono',
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ),
+                      );
+                    },
+                    onEnd: () {
+                      // Rebuild to restart animation
+                    },
+                  ),
+                ],
               ),
             ),
           );

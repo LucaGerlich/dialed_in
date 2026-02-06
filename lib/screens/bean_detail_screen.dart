@@ -5,6 +5,8 @@ import 'package:intl/intl.dart';
 import '../l10n/app_localizations.dart';
 import '../models/models.dart';
 import '../providers/coffee_provider.dart';
+import '../utils/page_transitions.dart';
+import '../widgets/animated_button.dart';
 import 'add_shot_screen.dart';
 import 'add_bean_screen.dart';
 import 'shot_detail_screen.dart';
@@ -53,7 +55,7 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
+                    FadePageRoute(
                       builder: (context) => AddBeanScreen(bean: bean),
                     ),
                   );
@@ -77,6 +79,20 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Hero coffee icon
+                Center(
+                  child: Hero(
+                    tag: 'bean-icon-${bean.id}',
+                    child: Icon(
+                      Icons.coffee,
+                      size: 80,
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.primary.withValues(alpha: 0.3),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
                 // Bean Info Bento
                 _buildBentoContainer(
                   context,
@@ -623,7 +639,7 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
+                        SlidePageRoute(
                           builder: (context) =>
                               ShotDetailScreen(shot: shot, bean: bean),
                         ),
@@ -710,19 +726,22 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
               ],
             ),
           ),
-          floatingActionButton: FloatingActionButton.extended(
+          floatingActionButton: AnimatedButton(
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(
+                FadePageRoute(
                   builder: (context) => AddShotScreen(beanId: widget.beanId),
                 ),
               );
             },
-            backgroundColor: Theme.of(context).colorScheme.primary,
-            foregroundColor: Theme.of(context).colorScheme.onPrimary,
-            icon: const Icon(Icons.add),
-            label: Text(l10n.addShot),
+            child: FloatingActionButton.extended(
+              onPressed: null,
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              foregroundColor: Theme.of(context).colorScheme.onPrimary,
+              icon: const Icon(Icons.add),
+              label: Text(l10n.addShot),
+            ),
           ),
           floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
         );
@@ -781,7 +800,13 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
     );
   }
 
-  Widget _buildStatCard(BuildContext context, String label, String value) {
+  Widget _buildStatCard(
+    BuildContext context,
+    String label,
+    String value, {
+    IconData? icon,
+    String? heroTag,
+  }) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -795,6 +820,23 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
       ),
       child: Column(
         children: [
+          if (icon != null) ...[
+            heroTag != null
+                ? Hero(
+                    tag: heroTag,
+                    child: Icon(
+                      icon,
+                      color: Theme.of(context).colorScheme.primary,
+                      size: 20,
+                    ),
+                  )
+                : Icon(
+                    icon,
+                    color: Theme.of(context).colorScheme.primary,
+                    size: 20,
+                  ),
+            const SizedBox(height: 4),
+          ],
           Text(
             label,
             style: TextStyle(

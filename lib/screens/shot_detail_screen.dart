@@ -158,24 +158,28 @@ class ShotDetailScreen extends StatelessWidget {
                       l10n.grindSize,
                       shot.grindSize.toStringAsFixed(1),
                       Icons.settings,
+                      heroTag: 'stat-icon-${bean.id}-grind',
                     ),
                     _buildStatCard(
                       context,
                       l10n.time,
                       '${shot.duration}s',
                       Icons.timer,
+                      heroTag: 'stat-icon-${bean.id}-time',
                     ),
                     _buildStatCard(
                       context,
                       l10n.doseIn,
                       '${shot.doseIn}g',
                       Icons.arrow_downward,
+                      heroTag: 'stat-icon-${bean.id}-dosein',
                     ),
                     _buildStatCard(
                       context,
                       l10n.doseOut,
                       '${shot.doseOut}g',
                       Icons.water_drop,
+                      heroTag: 'stat-icon-${bean.id}-doseout',
                     ),
                   ],
                 ),
@@ -478,8 +482,9 @@ class ShotDetailScreen extends StatelessWidget {
     BuildContext context,
     String label,
     String value,
-    IconData icon,
-  ) {
+    IconData icon, {
+    String? heroTag,
+  }) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -494,7 +499,16 @@ class ShotDetailScreen extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, color: Theme.of(context).colorScheme.primary, size: 20),
+          heroTag != null
+              ? Hero(
+                  tag: heroTag,
+                  child: Icon(
+                    icon,
+                    color: Theme.of(context).colorScheme.primary,
+                    size: 20,
+                  ),
+                )
+              : Icon(icon, color: Theme.of(context).colorScheme.primary, size: 20),
           const SizedBox(height: 8),
           Text(
             label,

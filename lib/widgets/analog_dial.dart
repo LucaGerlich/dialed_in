@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter/physics.dart';
 import 'package:flutter/services.dart';
 
 class AnalogDial extends StatefulWidget {
@@ -25,13 +26,23 @@ class AnalogDial extends StatefulWidget {
   State<AnalogDial> createState() => _AnalogDialState();
 }
 
-class _AnalogDialState extends State<AnalogDial> {
+class _AnalogDialState extends State<AnalogDial>
+    with SingleTickerProviderStateMixin {
   late double _currentValue;
+  late AnimationController _animationController;
+  Animation<double>? _animation;
 
   @override
   void initState() {
     super.initState();
     _currentValue = widget.value;
+    _animationController = AnimationController(vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 
   @override
@@ -43,6 +54,8 @@ class _AnalogDialState extends State<AnalogDial> {
   }
 
   void _onPanUpdate(DragUpdateDetails details) {
+    _animationController.stop();
+
     // Calculate dynamic sensitivity
     // We want a specific number of pixels to represent one "step" visually
     const double pixelsPerStep = 16.0;
@@ -87,6 +100,51 @@ class _AnalogDialState extends State<AnalogDial> {
     });
   }
 
+  void _onPanEnd(DragEndDetails details) {
+    const double pixelsPerStep = 16.0;
+    final double effectiveStep = widget.step <= 0 ? 0.1 : widget.step;
+    final double pixelsPerUnit = pixelsPerStep / effectiveStep;
+
+    // Calculate velocity in value units per second
+    final velocity = details.velocity.pixelsPerSecond.dy * -1.0 / pixelsPerUnit;
+
+    // Only apply momentum if velocity is significant
+    if (velocity.abs() < 0.1) return;
+
+    // Create spring simulation
+    final spring = SpringDescription(
+      mass: 1.0,
+      stiffness: 100.0,
+      damping: 10.0,
+    );
+
+    final simulation = SpringSimulation(spring, 0.0, 0.0, velocity);
+
+    _animationController.animateWith(simulation);
+
+    final startValue = _currentValue;
+    _animation = _animationController.drive(Tween<double>(
+      begin: startValue,
+      end: startValue,
+    ));
+
+    _animationController.addListener(() {
+      final offset = _animation?.value ?? 0.0;
+      double newValue = (startValue + offset).clamp(widget.min, widget.max);
+
+      // Snap to nearest step
+      newValue = (newValue / effectiveStep).round() * effectiveStep;
+      newValue = newValue.clamp(widget.min, widget.max);
+
+      if (newValue != _currentValue) {
+        setState(() {
+          _currentValue = newValue;
+          widget.onChanged(newValue);
+        });
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -95,6 +153,7 @@ class _AnalogDialState extends State<AnalogDial> {
         // The Dial (Left side)
         GestureDetector(
           onPanUpdate: _onPanUpdate,
+          onPanEnd: _onPanEnd,
           child: SizedBox(
             width: 150,
             height: 300,
@@ -232,6 +291,16 @@ class _RadioTunerPainter extends CustomPainter {
       paint.color = paint.color.withValues(
         alpha: opacity * (isMajor ? 1.0 : 0.5),
       );
+
+      // Add glow effect for ticks with high opacity (near center)
+      if (opacity > 0.8) {
+        final glowPaint = Paint()
+          ..color = accentColor.withValues(alpha: (opacity - 0.8) * 2.5)
+          ..strokeWidth = 4
+          ..strokeCap = StrokeCap.round
+          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3.0);
+        canvas.drawLine(Offset(dx, yPos), Offset(dx - tickLength, yPos), glowPaint);
+      }
 
       canvas.drawLine(Offset(dx, yPos), Offset(dx - tickLength, yPos), paint);
 

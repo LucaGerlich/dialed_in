@@ -38,12 +38,15 @@ class BeanCardCompact extends StatelessWidget {
                 child: Stack(
                   children: [
                     Center(
-                      child: Icon(
-                        Icons.coffee,
-                        size: 40,
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.onSurface.withValues(alpha: 0.2),
+                      child: Hero(
+                        tag: 'bean-icon-${bean.id}',
+                        child: Icon(
+                          Icons.coffee,
+                          size: 40,
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.onSurface.withValues(alpha: 0.2),
+                        ),
                       ),
                     ),
                     if (bean.ranking > 0)

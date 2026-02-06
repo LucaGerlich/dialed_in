@@ -3,8 +3,11 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../l10n/app_localizations.dart';
 import '../providers/coffee_provider.dart';
+import '../utils/page_transitions.dart';
+import '../widgets/animated_button.dart';
 import '../widgets/bean_card.dart';
 import '../widgets/bean_card_compact.dart';
+import '../widgets/dripping_coffee_icon.dart';
 import 'add_bean_screen.dart';
 import 'bean_detail_screen.dart';
 import 'gear_settings_screen.dart';
@@ -17,15 +20,33 @@ class BeanListScreen extends StatefulWidget {
   State<BeanListScreen> createState() => _BeanListScreenState();
 }
 
-class _BeanListScreenState extends State<BeanListScreen> {
+class _BeanListScreenState extends State<BeanListScreen>
+    with SingleTickerProviderStateMixin {
   String _selectedFilter = 'All';
   String _sortBy = 'Ranking';
   bool _isCompactView = false;
+  late AnimationController _listAnimationController;
 
   @override
   void initState() {
     super.initState();
+    _listAnimationController = AnimationController(
+      duration: const Duration(milliseconds: 600),
+      vsync: this,
+    );
     _loadViewMode();
+    _listAnimationController.forward();
+  }
+
+  @override
+  void dispose() {
+    _listAnimationController.dispose();
+    super.dispose();
+  }
+
+  void _restartListAnimation() {
+    _listAnimationController.reset();
+    _listAnimationController.forward();
   }
 
   Future<void> _loadViewMode() async {
@@ -76,6 +97,7 @@ class _BeanListScreenState extends State<BeanListScreen> {
               setState(() {
                 _sortBy = value;
               });
+              _restartListAnimation();
             },
             itemBuilder: (context) => sortOptions.map((option) {
               return PopupMenuItem<String>(
@@ -102,7 +124,7 @@ class _BeanListScreenState extends State<BeanListScreen> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(
+                SlidePageRoute(
                   builder: (context) => const GearSettingsScreen(),
                 ),
               );
@@ -161,7 +183,7 @@ class _BeanListScreenState extends State<BeanListScreen> {
                 Navigator.pop(context);
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
+                  SlidePageRoute(
                     builder: (context) => const MaintenanceScreen(),
                   ),
                 );
@@ -210,6 +232,7 @@ class _BeanListScreenState extends State<BeanListScreen> {
                           setState(() {
                             _selectedFilter = filter;
                           });
+                          _restartListAnimation();
                         },
                         backgroundColor: Theme.of(context).colorScheme.surface,
                         selectedColor: Theme.of(context).colorScheme.primary,
@@ -244,19 +267,41 @@ class _BeanListScreenState extends State<BeanListScreen> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(
-                              Icons.coffee,
-                              size: 64,
-                              color: Theme.of(context).colorScheme.secondary,
+                            TweenAnimationBuilder<double>(
+                              duration: const Duration(milliseconds: 800),
+                              tween: Tween(begin: 0.0, end: 1.0),
+                              curve: Curves.elasticOut,
+                              builder: (context, value, child) {
+                                return Transform.scale(
+                                  scale: value,
+                                  child: DrippingCoffeeIcon(
+                                    size: 64,
+                                    color: Theme.of(context).colorScheme.secondary,
+                                  ),
+                                );
+                              },
                             ),
-                            const SizedBox(height: 16),
-                            Text(
-                              l10n.noBeansFound,
-                              style: TextStyle(
-                                fontFamily: 'RobotoMono',
-                                fontSize: 18,
-                                color: Theme.of(context).colorScheme.secondary,
-                              ),
+                            const SizedBox(height: 24),
+                            TweenAnimationBuilder<double>(
+                              duration: const Duration(milliseconds: 600),
+                              tween: Tween(begin: 0.0, end: 1.0),
+                              curve: Curves.easeOut,
+                              builder: (context, value, child) {
+                                return Opacity(
+                                  opacity: value,
+                                  child: Transform.translate(
+                                    offset: Offset(0, 20 * (1 - value)),
+                                    child: Text(
+                                      l10n.noBeansFound,
+                                      style: TextStyle(
+                                        fontFamily: 'RobotoMono',
+                                        fontSize: 18,
+                                        color: Theme.of(context).colorScheme.secondary,
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
                             ),
                           ],
                         ),
@@ -274,17 +319,22 @@ class _BeanListScreenState extends State<BeanListScreen> {
                         itemCount: beans.length,
                         itemBuilder: (context, index) {
                           final bean = beans[index];
-                          return BeanCardCompact(
-                            bean: bean,
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      BeanDetailScreen(beanId: bean.id),
-                                ),
-                              );
-                            },
+                          return _AnimatedListItem(
+                            controller: _listAnimationController,
+                            index: index,
+                            totalItems: beans.length,
+                            child: BeanCardCompact(
+                              bean: bean,
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  SlidePageRoute(
+                                    builder: (context) =>
+                                        BeanDetailScreen(beanId: bean.id),
+                                  ),
+                                );
+                              },
+                            ),
                           );
                         },
                       )
@@ -293,17 +343,22 @@ class _BeanListScreenState extends State<BeanListScreen> {
                         itemCount: beans.length,
                         itemBuilder: (context, index) {
                           final bean = beans[index];
-                          return BeanCard(
-                            bean: bean,
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      BeanDetailScreen(beanId: bean.id),
-                                ),
-                              );
-                            },
+                          return _AnimatedListItem(
+                            controller: _listAnimationController,
+                            index: index,
+                            totalItems: beans.length,
+                            child: BeanCard(
+                              bean: bean,
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  SlidePageRoute(
+                                    builder: (context) =>
+                                        BeanDetailScreen(beanId: bean.id),
+                                  ),
+                                );
+                              },
+                            ),
                           );
                         },
                       ),
@@ -312,15 +367,55 @@ class _BeanListScreenState extends State<BeanListScreen> {
           );
         },
       ),
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButton: AnimatedButton(
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const AddBeanScreen()),
+            FadePageRoute(builder: (context) => const AddBeanScreen()),
           );
         },
-        icon: const Icon(Icons.add),
-        label: Text(l10n.addBean),
+        child: FloatingActionButton.extended(
+          onPressed: null,
+          icon: const Icon(Icons.add),
+          label: Text(l10n.addBean),
+        ),
+      ),
+    );
+  }
+}
+
+class _AnimatedListItem extends StatelessWidget {
+  final AnimationController controller;
+  final int index;
+  final int totalItems;
+  final Widget child;
+
+  const _AnimatedListItem({
+    required this.controller,
+    required this.index,
+    required this.totalItems,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final delay = (index * 50).clamp(0, 500) / 1000.0;
+    final interval = Interval(
+      delay,
+      (delay + 0.5).clamp(0.0, 1.0),
+      curve: Curves.easeOut,
+    );
+
+    return FadeTransition(
+      opacity: controller.drive(CurveTween(curve: interval)),
+      child: SlideTransition(
+        position: controller.drive(
+          Tween<Offset>(
+            begin: const Offset(0, 0.1),
+            end: Offset.zero,
+          ).chain(CurveTween(curve: interval)),
+        ),
+        child: child,
       ),
     );
   }
