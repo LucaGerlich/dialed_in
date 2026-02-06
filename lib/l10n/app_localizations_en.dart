@@ -336,6 +336,147 @@ class AppLocalizationsEn extends AppLocalizations {
   String get getStarted => 'Get Started';
 
   @override
+  String get onboardingWelcomeDescription =>
+      'Your personal coffee companion for tracking beans, brewing shots, and perfecting your espresso.';
+
+  @override
+  String get onboardingWelcomeDetail1 => 'Track your coffee bean collection';
+
+  @override
+  String get onboardingWelcomeDetail2 => 'Log every shot you pull';
+
+  @override
+  String get onboardingWelcomeDetail3 => 'Analyze your brewing patterns';
+
+  @override
+  String get onboardingWelcomeDetail4 => 'Find your perfect grind size';
+
+  @override
+  String get onboardingBeanVaultDescription =>
+      'Store and organize your coffee bean collection with detailed information.';
+
+  @override
+  String get onboardingBeanVaultDetail1 =>
+      'Add beans with origin, roast level, and process';
+
+  @override
+  String get onboardingBeanVaultDetail2 => 'Set roast dates to track freshness';
+
+  @override
+  String get onboardingBeanVaultDetail3 =>
+      'Define flavor profiles (acidity, body, sweetness)';
+
+  @override
+  String get onboardingBeanVaultDetail4 =>
+      'Add custom flavor tags like \"Blueberry\" or \"Chocolate\"';
+
+  @override
+  String get onboardingBeanVaultDetail5 =>
+      'Filter beans by roast level (Light, Medium, Dark)';
+
+  @override
+  String get onboardingShotTrackingDescription =>
+      'Log every shot you pull to dial in the perfect extraction.';
+
+  @override
+  String get onboardingShotTrackingDetail1 =>
+      'Record grind size, dose in, and dose out';
+
+  @override
+  String get onboardingShotTrackingDetail2 =>
+      'Use the built-in timer for extraction time';
+
+  @override
+  String get onboardingShotTrackingDetail3 =>
+      'Track machine settings (pressure, temperature)';
+
+  @override
+  String get onboardingShotTrackingDetail4 =>
+      'Map flavor on a Sour-Bitter / Weak-Strong grid';
+
+  @override
+  String get onboardingShotTrackingDetail5 =>
+      'View grind size trends over time with charts';
+
+  @override
+  String get onboardingGearSettingsDescription =>
+      'Configure your coffee equipment for accurate tracking.';
+
+  @override
+  String get onboardingGearSettingsDetail1 =>
+      'Add your espresso machines with default settings';
+
+  @override
+  String get onboardingGearSettingsDetail2 =>
+      'Add your grinders with default RPM';
+
+  @override
+  String get onboardingGearSettingsDetail3 =>
+      'Customize grind size scale (min, max, step)';
+
+  @override
+  String get onboardingGearSettingsDetail4 =>
+      'Choose between Light and Dark themes';
+
+  @override
+  String get onboardingGearSettingsDetail5 =>
+      'Your data is stored locally on your device';
+
+  @override
+  String get onboardingConfigureGearTitle => 'Configure Your Gear';
+
+  @override
+  String get onboardingConfigureGearDescription =>
+      'Set up your equipment now or skip to configure later in settings.';
+
+  @override
+  String get onboardingGetStartedDescription =>
+      'You\'re ready to start your coffee journey!';
+
+  @override
+  String get onboardingGetStartedStep1 =>
+      '1. Tap + on Bean Vault to add your first bean';
+
+  @override
+  String get onboardingGetStartedStep2 => '2. Select a bean to view details';
+
+  @override
+  String get onboardingGetStartedStep3 =>
+      '3. Tap + on bean details to log a shot';
+
+  @override
+  String get onboardingGetStartedStep4 =>
+      '4. Use the dial to set your grind size';
+
+  @override
+  String get onboardingGetStartedStep5 =>
+      '5. Track and improve your brewing over time';
+
+  @override
+  String get noItemsAdded => 'No items added yet';
+
+  @override
+  String get name => 'Name';
+
+  @override
+  String get pressureBar => 'Pressure (bar)';
+
+  @override
+  String get temperatureCelsius => 'Temperature (°C)';
+
+  @override
+  String get preInfusionSeconds => 'Pre-infusion (s)';
+
+  @override
+  String get min => 'Min';
+
+  @override
+  String get max => 'Max';
+
+  @override
+  String get step => 'Step';
+
+  @override
   String get noNotes => 'No notes';
 
   @override

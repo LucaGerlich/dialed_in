@@ -39,13 +39,13 @@ class AppLocalizationsDe extends AppLocalizations {
   String get sortDefault => 'Standard';
 
   @override
-  String get viewMode => 'View mode';
+  String get viewMode => 'Ansichtsmodus';
 
   @override
-  String get viewDetailed => 'Detailed';
+  String get viewDetailed => 'Detailliert';
 
   @override
-  String get viewCompact => 'Compact';
+  String get viewCompact => 'Kompakt';
 
   @override
   String get sortRanking => 'Bewertung';
@@ -334,6 +334,152 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get getStarted => 'Loslegen';
+
+  @override
+  String get onboardingWelcomeDescription =>
+      'Ihr persönlicher Kaffee-Begleiter zum Verfolgen von Bohnen, Brühen von Shots und Perfektionieren Ihres Espressos.';
+
+  @override
+  String get onboardingWelcomeDetail1 =>
+      'Verfolgen Sie Ihre Kaffeebohnen-Sammlung';
+
+  @override
+  String get onboardingWelcomeDetail2 =>
+      'Protokollieren Sie jeden Shot, den Sie ziehen';
+
+  @override
+  String get onboardingWelcomeDetail3 => 'Analysieren Sie Ihre Brühmuster';
+
+  @override
+  String get onboardingWelcomeDetail4 => 'Finden Sie Ihren perfekten Mahlgrad';
+
+  @override
+  String get onboardingBeanVaultDescription =>
+      'Speichern und organisieren Sie Ihre Kaffeebohnen-Sammlung mit detaillierten Informationen.';
+
+  @override
+  String get onboardingBeanVaultDetail1 =>
+      'Bohnen mit Herkunft, Röstgrad und Prozess hinzufügen';
+
+  @override
+  String get onboardingBeanVaultDetail2 =>
+      'Röstdaten festlegen, um Frische zu verfolgen';
+
+  @override
+  String get onboardingBeanVaultDetail3 =>
+      'Geschmacksprofile definieren (Säure, Körper, Süße)';
+
+  @override
+  String get onboardingBeanVaultDetail4 =>
+      'Benutzerdefinierte Geschmacks-Tags wie \"Blaubeere\" oder \"Schokolade\" hinzufügen';
+
+  @override
+  String get onboardingBeanVaultDetail5 =>
+      'Bohnen nach Röstgrad filtern (Hell, Mittel, Dunkel)';
+
+  @override
+  String get onboardingShotTrackingDescription =>
+      'Protokollieren Sie jeden Shot, um die perfekte Extraktion zu erreichen.';
+
+  @override
+  String get onboardingShotTrackingDetail1 =>
+      'Mahlgrad, Eingangsdosis und Ausgangsdosis aufzeichnen';
+
+  @override
+  String get onboardingShotTrackingDetail2 =>
+      'Verwenden Sie den integrierten Timer für die Extraktionszeit';
+
+  @override
+  String get onboardingShotTrackingDetail3 =>
+      'Maschineneinstellungen verfolgen (Druck, Temperatur)';
+
+  @override
+  String get onboardingShotTrackingDetail4 =>
+      'Geschmack auf einem Sauer-Bitter / Schwach-Stark-Raster abbilden';
+
+  @override
+  String get onboardingShotTrackingDetail5 =>
+      'Mahlgrad-Trends im Zeitverlauf mit Diagrammen anzeigen';
+
+  @override
+  String get onboardingGearSettingsDescription =>
+      'Konfigurieren Sie Ihre Kaffeeausrüstung für genaues Tracking.';
+
+  @override
+  String get onboardingGearSettingsDetail1 =>
+      'Fügen Sie Ihre Espressomaschinen mit Standardeinstellungen hinzu';
+
+  @override
+  String get onboardingGearSettingsDetail2 =>
+      'Fügen Sie Ihre Mühlen mit Standard-U/MIN hinzu';
+
+  @override
+  String get onboardingGearSettingsDetail3 =>
+      'Passen Sie die Mahlgrad-Skala an (Min, Max, Schritt)';
+
+  @override
+  String get onboardingGearSettingsDetail4 =>
+      'Wählen Sie zwischen hellem und dunklem Theme';
+
+  @override
+  String get onboardingGearSettingsDetail5 =>
+      'Ihre Daten werden lokal auf Ihrem Gerät gespeichert';
+
+  @override
+  String get onboardingConfigureGearTitle =>
+      'Konfigurieren Sie Ihre Ausrüstung';
+
+  @override
+  String get onboardingConfigureGearDescription =>
+      'Richten Sie Ihre Ausrüstung jetzt ein oder überspringen Sie, um später in den Einstellungen zu konfigurieren.';
+
+  @override
+  String get onboardingGetStartedDescription =>
+      'Sie sind bereit, Ihre Kaffee-Reise zu beginnen!';
+
+  @override
+  String get onboardingGetStartedStep1 =>
+      '1. Tippen Sie auf + im Bohnen-Tresor, um Ihre erste Bohne hinzuzufügen';
+
+  @override
+  String get onboardingGetStartedStep2 =>
+      '2. Wählen Sie eine Bohne aus, um Details anzuzeigen';
+
+  @override
+  String get onboardingGetStartedStep3 =>
+      '3. Tippen Sie auf + in den Bohnendetails, um einen Shot zu protokollieren';
+
+  @override
+  String get onboardingGetStartedStep4 =>
+      '4. Verwenden Sie das Wählrad, um Ihren Mahlgrad einzustellen';
+
+  @override
+  String get onboardingGetStartedStep5 =>
+      '5. Verfolgen und verbessern Sie Ihr Brühen im Laufe der Zeit';
+
+  @override
+  String get noItemsAdded => 'Noch keine Elemente hinzugefügt';
+
+  @override
+  String get name => 'Name';
+
+  @override
+  String get pressureBar => 'Druck (bar)';
+
+  @override
+  String get temperatureCelsius => 'Temperatur (°C)';
+
+  @override
+  String get preInfusionSeconds => 'Vor-Infusion (s)';
+
+  @override
+  String get min => 'Min';
+
+  @override
+  String get max => 'Max';
+
+  @override
+  String get step => 'Schritt';
 
   @override
   String get noNotes => 'Keine Notizen';

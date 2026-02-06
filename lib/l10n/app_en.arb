@@ -540,6 +540,221 @@
   "@getStarted": {
     "description": "Button to complete onboarding"
   },
+
+  "onboardingWelcomeDescription": "Your personal coffee companion for tracking beans, brewing shots, and perfecting your espresso.",
+  "@onboardingWelcomeDescription": {
+    "description": "Welcome page description"
+  },
+
+  "onboardingWelcomeDetail1": "Track your coffee bean collection",
+  "@onboardingWelcomeDetail1": {
+    "description": "Welcome page detail 1"
+  },
+
+  "onboardingWelcomeDetail2": "Log every shot you pull",
+  "@onboardingWelcomeDetail2": {
+    "description": "Welcome page detail 2"
+  },
+
+  "onboardingWelcomeDetail3": "Analyze your brewing patterns",
+  "@onboardingWelcomeDetail3": {
+    "description": "Welcome page detail 3"
+  },
+
+  "onboardingWelcomeDetail4": "Find your perfect grind size",
+  "@onboardingWelcomeDetail4": {
+    "description": "Welcome page detail 4"
+  },
+
+  "onboardingBeanVaultDescription": "Store and organize your coffee bean collection with detailed information.",
+  "@onboardingBeanVaultDescription": {
+    "description": "Bean vault page description"
+  },
+
+  "onboardingBeanVaultDetail1": "Add beans with origin, roast level, and process",
+  "@onboardingBeanVaultDetail1": {
+    "description": "Bean vault detail 1"
+  },
+
+  "onboardingBeanVaultDetail2": "Set roast dates to track freshness",
+  "@onboardingBeanVaultDetail2": {
+    "description": "Bean vault detail 2"
+  },
+
+  "onboardingBeanVaultDetail3": "Define flavor profiles (acidity, body, sweetness)",
+  "@onboardingBeanVaultDetail3": {
+    "description": "Bean vault detail 3"
+  },
+
+  "onboardingBeanVaultDetail4": "Add custom flavor tags like \"Blueberry\" or \"Chocolate\"",
+  "@onboardingBeanVaultDetail4": {
+    "description": "Bean vault detail 4"
+  },
+
+  "onboardingBeanVaultDetail5": "Filter beans by roast level (Light, Medium, Dark)",
+  "@onboardingBeanVaultDetail5": {
+    "description": "Bean vault detail 5"
+  },
+
+  "onboardingShotTrackingDescription": "Log every shot you pull to dial in the perfect extraction.",
+  "@onboardingShotTrackingDescription": {
+    "description": "Shot tracking page description"
+  },
+
+  "onboardingShotTrackingDetail1": "Record grind size, dose in, and dose out",
+  "@onboardingShotTrackingDetail1": {
+    "description": "Shot tracking detail 1"
+  },
+
+  "onboardingShotTrackingDetail2": "Use the built-in timer for extraction time",
+  "@onboardingShotTrackingDetail2": {
+    "description": "Shot tracking detail 2"
+  },
+
+  "onboardingShotTrackingDetail3": "Track machine settings (pressure, temperature)",
+  "@onboardingShotTrackingDetail3": {
+    "description": "Shot tracking detail 3"
+  },
+
+  "onboardingShotTrackingDetail4": "Map flavor on a Sour-Bitter / Weak-Strong grid",
+  "@onboardingShotTrackingDetail4": {
+    "description": "Shot tracking detail 4"
+  },
+
+  "onboardingShotTrackingDetail5": "View grind size trends over time with charts",
+  "@onboardingShotTrackingDetail5": {
+    "description": "Shot tracking detail 5"
+  },
+
+  "onboardingGearSettingsDescription": "Configure your coffee equipment for accurate tracking.",
+  "@onboardingGearSettingsDescription": {
+    "description": "Gear settings page description"
+  },
+
+  "onboardingGearSettingsDetail1": "Add your espresso machines with default settings",
+  "@onboardingGearSettingsDetail1": {
+    "description": "Gear settings detail 1"
+  },
+
+  "onboardingGearSettingsDetail2": "Add your grinders with default RPM",
+  "@onboardingGearSettingsDetail2": {
+    "description": "Gear settings detail 2"
+  },
+
+  "onboardingGearSettingsDetail3": "Customize grind size scale (min, max, step)",
+  "@onboardingGearSettingsDetail3": {
+    "description": "Gear settings detail 3"
+  },
+
+  "onboardingGearSettingsDetail4": "Choose between Light and Dark themes",
+  "@onboardingGearSettingsDetail4": {
+    "description": "Gear settings detail 4"
+  },
+
+  "onboardingGearSettingsDetail5": "Your data is stored locally on your device",
+  "@onboardingGearSettingsDetail5": {
+    "description": "Gear settings detail 5"
+  },
+
+  "onboardingConfigureGearTitle": "Configure Your Gear",
+  "@onboardingConfigureGearTitle": {
+    "description": "Configure gear page title"
+  },
+
+  "onboardingConfigureGearDescription": "Set up your equipment now or skip to configure later in settings.",
+  "@onboardingConfigureGearDescription": {
+    "description": "Configure gear page description"
+  },
+
+  "onboardingGetStartedDescription": "You're ready to start your coffee journey!",
+  "@onboardingGetStartedDescription": {
+    "description": "Get started page description"
+  },
+
+  "onboardingGetStartedStep1": "1. Tap + on Bean Vault to add your first bean",
+  "@onboardingGetStartedStep1": {
+    "description": "Get started step 1"
+  },
+
+  "onboardingGetStartedStep2": "2. Select a bean to view details",
+  "@onboardingGetStartedStep2": {
+    "description": "Get started step 2"
+  },
+
+  "onboardingGetStartedStep3": "3. Tap + on bean details to log a shot",
+  "@onboardingGetStartedStep3": {
+    "description": "Get started step 3"
+  },
+
+  "onboardingGetStartedStep4": "4. Use the dial to set your grind size",
+  "@onboardingGetStartedStep4": {
+    "description": "Get started step 4"
+  },
+
+  "onboardingGetStartedStep5": "5. Track and improve your brewing over time",
+  "@onboardingGetStartedStep5": {
+    "description": "Get started step 5"
+  },
+
+  "noItemsAdded": "No items added yet",
+  "@noItemsAdded": {
+    "description": "Empty state message for configuration sections"
+  },
+
+  "addMachine": "Add Machine",
+  "@addMachine": {
+    "description": "Add machine dialog title"
+  },
+
+  "addGrinder": "Add Grinder",
+  "@addGrinder": {
+    "description": "Add grinder dialog title"
+  },
+
+  "add": "Add",
+  "@add": {
+    "description": "Add button label"
+  },
+
+  "name": "Name",
+  "@name": {
+    "description": "Name field label"
+  },
+
+  "pressureBar": "Pressure (bar)",
+  "@pressureBar": {
+    "description": "Pressure field label"
+  },
+
+  "temperatureCelsius": "Temperature (°C)",
+  "@temperatureCelsius": {
+    "description": "Temperature field label"
+  },
+
+  "preInfusionSeconds": "Pre-infusion (s)",
+  "@preInfusionSeconds": {
+    "description": "Pre-infusion field label"
+  },
+
+  "rpm": "RPM",
+  "@rpm": {
+    "description": "RPM field label"
+  },
+
+  "min": "Min",
+  "@min": {
+    "description": "Minimum value label"
+  },
+
+  "max": "Max",
+  "@max": {
+    "description": "Maximum value label"
+  },
+
+  "step": "Step",
+  "@step": {
+    "description": "Step value label"
+  },
   
   "noNotes": "No notes",
   "@noNotes": {

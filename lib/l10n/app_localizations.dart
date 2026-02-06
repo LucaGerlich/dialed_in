@@ -466,7 +466,7 @@ abstract class AppLocalizations {
   /// **'PRE-INFUSION'**
   String get preInfusion;
 
-  /// Label for grinder RPM
+  /// RPM field label
   ///
   /// In en, this message translates to:
   /// **'RPM'**
@@ -658,13 +658,13 @@ abstract class AppLocalizations {
   /// **'Import'**
   String get import;
 
-  /// Button to add a coffee machine
+  /// Add machine dialog title
   ///
   /// In en, this message translates to:
   /// **'Add Machine'**
   String get addMachine;
 
-  /// Button to add a grinder
+  /// Add grinder dialog title
   ///
   /// In en, this message translates to:
   /// **'Add Grinder'**
@@ -747,6 +747,240 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Get Started'**
   String get getStarted;
+
+  /// Welcome page description
+  ///
+  /// In en, this message translates to:
+  /// **'Your personal coffee companion for tracking beans, brewing shots, and perfecting your espresso.'**
+  String get onboardingWelcomeDescription;
+
+  /// Welcome page detail 1
+  ///
+  /// In en, this message translates to:
+  /// **'Track your coffee bean collection'**
+  String get onboardingWelcomeDetail1;
+
+  /// Welcome page detail 2
+  ///
+  /// In en, this message translates to:
+  /// **'Log every shot you pull'**
+  String get onboardingWelcomeDetail2;
+
+  /// Welcome page detail 3
+  ///
+  /// In en, this message translates to:
+  /// **'Analyze your brewing patterns'**
+  String get onboardingWelcomeDetail3;
+
+  /// Welcome page detail 4
+  ///
+  /// In en, this message translates to:
+  /// **'Find your perfect grind size'**
+  String get onboardingWelcomeDetail4;
+
+  /// Bean vault page description
+  ///
+  /// In en, this message translates to:
+  /// **'Store and organize your coffee bean collection with detailed information.'**
+  String get onboardingBeanVaultDescription;
+
+  /// Bean vault detail 1
+  ///
+  /// In en, this message translates to:
+  /// **'Add beans with origin, roast level, and process'**
+  String get onboardingBeanVaultDetail1;
+
+  /// Bean vault detail 2
+  ///
+  /// In en, this message translates to:
+  /// **'Set roast dates to track freshness'**
+  String get onboardingBeanVaultDetail2;
+
+  /// Bean vault detail 3
+  ///
+  /// In en, this message translates to:
+  /// **'Define flavor profiles (acidity, body, sweetness)'**
+  String get onboardingBeanVaultDetail3;
+
+  /// Bean vault detail 4
+  ///
+  /// In en, this message translates to:
+  /// **'Add custom flavor tags like \"Blueberry\" or \"Chocolate\"'**
+  String get onboardingBeanVaultDetail4;
+
+  /// Bean vault detail 5
+  ///
+  /// In en, this message translates to:
+  /// **'Filter beans by roast level (Light, Medium, Dark)'**
+  String get onboardingBeanVaultDetail5;
+
+  /// Shot tracking page description
+  ///
+  /// In en, this message translates to:
+  /// **'Log every shot you pull to dial in the perfect extraction.'**
+  String get onboardingShotTrackingDescription;
+
+  /// Shot tracking detail 1
+  ///
+  /// In en, this message translates to:
+  /// **'Record grind size, dose in, and dose out'**
+  String get onboardingShotTrackingDetail1;
+
+  /// Shot tracking detail 2
+  ///
+  /// In en, this message translates to:
+  /// **'Use the built-in timer for extraction time'**
+  String get onboardingShotTrackingDetail2;
+
+  /// Shot tracking detail 3
+  ///
+  /// In en, this message translates to:
+  /// **'Track machine settings (pressure, temperature)'**
+  String get onboardingShotTrackingDetail3;
+
+  /// Shot tracking detail 4
+  ///
+  /// In en, this message translates to:
+  /// **'Map flavor on a Sour-Bitter / Weak-Strong grid'**
+  String get onboardingShotTrackingDetail4;
+
+  /// Shot tracking detail 5
+  ///
+  /// In en, this message translates to:
+  /// **'View grind size trends over time with charts'**
+  String get onboardingShotTrackingDetail5;
+
+  /// Gear settings page description
+  ///
+  /// In en, this message translates to:
+  /// **'Configure your coffee equipment for accurate tracking.'**
+  String get onboardingGearSettingsDescription;
+
+  /// Gear settings detail 1
+  ///
+  /// In en, this message translates to:
+  /// **'Add your espresso machines with default settings'**
+  String get onboardingGearSettingsDetail1;
+
+  /// Gear settings detail 2
+  ///
+  /// In en, this message translates to:
+  /// **'Add your grinders with default RPM'**
+  String get onboardingGearSettingsDetail2;
+
+  /// Gear settings detail 3
+  ///
+  /// In en, this message translates to:
+  /// **'Customize grind size scale (min, max, step)'**
+  String get onboardingGearSettingsDetail3;
+
+  /// Gear settings detail 4
+  ///
+  /// In en, this message translates to:
+  /// **'Choose between Light and Dark themes'**
+  String get onboardingGearSettingsDetail4;
+
+  /// Gear settings detail 5
+  ///
+  /// In en, this message translates to:
+  /// **'Your data is stored locally on your device'**
+  String get onboardingGearSettingsDetail5;
+
+  /// Configure gear page title
+  ///
+  /// In en, this message translates to:
+  /// **'Configure Your Gear'**
+  String get onboardingConfigureGearTitle;
+
+  /// Configure gear page description
+  ///
+  /// In en, this message translates to:
+  /// **'Set up your equipment now or skip to configure later in settings.'**
+  String get onboardingConfigureGearDescription;
+
+  /// Get started page description
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re ready to start your coffee journey!'**
+  String get onboardingGetStartedDescription;
+
+  /// Get started step 1
+  ///
+  /// In en, this message translates to:
+  /// **'1. Tap + on Bean Vault to add your first bean'**
+  String get onboardingGetStartedStep1;
+
+  /// Get started step 2
+  ///
+  /// In en, this message translates to:
+  /// **'2. Select a bean to view details'**
+  String get onboardingGetStartedStep2;
+
+  /// Get started step 3
+  ///
+  /// In en, this message translates to:
+  /// **'3. Tap + on bean details to log a shot'**
+  String get onboardingGetStartedStep3;
+
+  /// Get started step 4
+  ///
+  /// In en, this message translates to:
+  /// **'4. Use the dial to set your grind size'**
+  String get onboardingGetStartedStep4;
+
+  /// Get started step 5
+  ///
+  /// In en, this message translates to:
+  /// **'5. Track and improve your brewing over time'**
+  String get onboardingGetStartedStep5;
+
+  /// Empty state message for configuration sections
+  ///
+  /// In en, this message translates to:
+  /// **'No items added yet'**
+  String get noItemsAdded;
+
+  /// Name field label
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get name;
+
+  /// Pressure field label
+  ///
+  /// In en, this message translates to:
+  /// **'Pressure (bar)'**
+  String get pressureBar;
+
+  /// Temperature field label
+  ///
+  /// In en, this message translates to:
+  /// **'Temperature (°C)'**
+  String get temperatureCelsius;
+
+  /// Pre-infusion field label
+  ///
+  /// In en, this message translates to:
+  /// **'Pre-infusion (s)'**
+  String get preInfusionSeconds;
+
+  /// Minimum value label
+  ///
+  /// In en, this message translates to:
+  /// **'Min'**
+  String get min;
+
+  /// Maximum value label
+  ///
+  /// In en, this message translates to:
+  /// **'Max'**
+  String get max;
+
+  /// Step value label
+  ///
+  /// In en, this message translates to:
+  /// **'Step'**
+  String get step;
 
   /// Placeholder when no notes are present
   ///

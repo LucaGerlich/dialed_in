@@ -58,71 +58,67 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       OnboardingPage(
         icon: Icons.coffee,
         title: l10n.welcomeToDialedIn,
-        description:
-            'Your personal coffee companion for tracking beans, brewing shots, and perfecting your espresso.',
+        description: l10n.onboardingWelcomeDescription,
         details: [
-          'Track your coffee bean collection',
-          'Log every shot you pull',
-          'Analyze your brewing patterns',
-          'Find your perfect grind size',
+          l10n.onboardingWelcomeDetail1,
+          l10n.onboardingWelcomeDetail2,
+          l10n.onboardingWelcomeDetail3,
+          l10n.onboardingWelcomeDetail4,
         ],
       ),
       OnboardingPage(
         icon: Icons.inventory_2_outlined,
         title: l10n.onboardingBeanVault,
-        description:
-            'Store and organize your coffee bean collection with detailed information.',
+        description: l10n.onboardingBeanVaultDescription,
         details: [
-          'Add beans with origin, roast level, and process',
-          'Set roast dates to track freshness',
-          'Define flavor profiles (acidity, body, sweetness)',
-          'Add custom flavor tags like "Blueberry" or "Chocolate"',
-          'Filter beans by roast level (Light, Medium, Dark)',
+          l10n.onboardingBeanVaultDetail1,
+          l10n.onboardingBeanVaultDetail2,
+          l10n.onboardingBeanVaultDetail3,
+          l10n.onboardingBeanVaultDetail4,
+          l10n.onboardingBeanVaultDetail5,
         ],
       ),
       OnboardingPage(
         icon: Icons.timer_outlined,
         title: l10n.onboardingShotTracking,
-        description:
-            'Log every shot you pull to dial in the perfect extraction.',
+        description: l10n.onboardingShotTrackingDescription,
         details: [
-          'Record grind size, dose in, and dose out',
-          'Use the built-in timer for extraction time',
-          'Track machine settings (pressure, temperature)',
-          'Map flavor on a Sour-Bitter / Weak-Strong grid',
-          'View grind size trends over time with charts',
+          l10n.onboardingShotTrackingDetail1,
+          l10n.onboardingShotTrackingDetail2,
+          l10n.onboardingShotTrackingDetail3,
+          l10n.onboardingShotTrackingDetail4,
+          l10n.onboardingShotTrackingDetail5,
         ],
       ),
       OnboardingPage(
         icon: Icons.settings_outlined,
         title: l10n.onboardingGearSettings,
-        description: 'Configure your coffee equipment for accurate tracking.',
+        description: l10n.onboardingGearSettingsDescription,
         details: [
-          'Add your espresso machines with default settings',
-          'Add your grinders with default RPM',
-          'Customize grind size scale (min, max, step)',
-          'Choose between Light and Dark themes',
-          'Your data is stored locally on your device',
+          l10n.onboardingGearSettingsDetail1,
+          l10n.onboardingGearSettingsDetail2,
+          l10n.onboardingGearSettingsDetail3,
+          l10n.onboardingGearSettingsDetail4,
+          l10n.onboardingGearSettingsDetail5,
         ],
       ),
       OnboardingPage(
         icon: Icons.build_outlined,
-        title: 'Configure Your Gear',
-        description:
-            'Set up your equipment now or skip to configure later in settings.',
+        title: l10n.onboardingConfigureGearTitle,
+        description: l10n.onboardingConfigureGearDescription,
         details: [],
         isConfigPage: true,
       ),
       OnboardingPage(
         icon: Icons.rocket_launch_outlined,
         title: l10n.getStarted,
-        description: 'You\'re ready to start your coffee journey!',
+        description: l10n.onboardingGetStartedDescription,
         details: [
-          '1. Tap + on Bean Vault to add your first bean',
-          '2. Select a bean to view details',
-          '3. Tap + on bean details to log a shot',
-          '4. Use the dial to set your grind size',
-          '5. Track and improve your brewing over time',
+          l10n.onboardingGetStartedStep1,
+          l10n.onboardingGetStartedStep2,
+          l10n.onboardingGetStartedStep3,
+          l10n.onboardingGetStartedStep4,
+          l10n.onboardingGetStartedStep5,
         ],
       ),
     ];
@@ -154,7 +150,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             child: TextButton(
               onPressed: _skip,
               child: Text(
-                'Skip',
+                l10n.skip,
                 style: TextStyle(
                   fontFamily: 'RobotoMono',
                   color: colorScheme.onSurface.withValues(alpha: 0.6),
@@ -470,6 +466,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 Icons.coffee_maker,
                 provider.machines.map((m) => m.name).toList(),
                 () => _showAddMachineDialog(context, provider),
+                l10n.addMachine,
               ),
               const SizedBox(height: 24),
 
@@ -480,6 +477,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 Icons.settings_input_component,
                 provider.grinders.map((g) => g.name).toList(),
                 () => _showAddGrinderDialog(context, provider),
+                l10n.addGrinder,
               ),
               const SizedBox(height: 24),
 
@@ -499,6 +497,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     IconData icon,
     List<String> items,
     VoidCallback onAdd,
+    String buttonLabel,
   ) {
     final colorScheme = Theme.of(context).colorScheme;
 
@@ -530,7 +529,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           const SizedBox(height: 12),
           if (items.isEmpty)
             Text(
-              'No items added yet',
+              AppLocalizations.of(context)!.noItemsAdded,
               style: TextStyle(
                 fontFamily: 'RobotoMono',
                 fontSize: 12,
@@ -567,7 +566,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             child: OutlinedButton.icon(
               onPressed: onAdd,
               icon: const Icon(Icons.add, size: 16),
-              label: Text('Add ${title.toLowerCase()}'),
+              label: Text(buttonLabel),
               style: OutlinedButton.styleFrom(
                 foregroundColor: colorScheme.primary,
                 side: BorderSide(color: colorScheme.primary),
@@ -618,7 +617,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               Expanded(
                 child: _buildSmallInput(
                   context,
-                  'Min',
+                  l10n.min,
                   provider.grindMin.toString(),
                   (value) {
                     final newVal = double.tryParse(value);
@@ -636,7 +635,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               Expanded(
                 child: _buildSmallInput(
                   context,
-                  'Max',
+                  l10n.max,
                   provider.grindMax.toString(),
                   (value) {
                     final newVal = double.tryParse(value);
@@ -654,7 +653,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               Expanded(
                 child: _buildSmallInput(
                   context,
-                  'Step',
+                  l10n.step,
                   provider.grindStep.toString(),
                   (value) {
                     final newVal = double.tryParse(value);
@@ -715,6 +714,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   void _showAddMachineDialog(BuildContext context, CoffeeProvider provider) {
+    final l10n = AppLocalizations.of(context)!;
     final nameController = TextEditingController();
     final pressureController = TextEditingController();
     final tempController = TextEditingController();
@@ -724,31 +724,31 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: Theme.of(context).colorScheme.surface,
-        title: Text('Add Machine'),
+        title: Text(l10n.addMachine),
         content: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
                 controller: nameController,
-                decoration: const InputDecoration(labelText: 'Name'),
+                decoration: InputDecoration(labelText: l10n.name),
               ),
               TextField(
                 controller: pressureController,
-                decoration: const InputDecoration(labelText: 'Pressure (bar)'),
+                decoration: InputDecoration(labelText: l10n.pressureBar),
                 keyboardType: TextInputType.number,
               ),
               TextField(
                 controller: tempController,
-                decoration: const InputDecoration(
-                  labelText: 'Temperature (°C)',
+                decoration: InputDecoration(
+                  labelText: l10n.temperatureCelsius,
                 ),
                 keyboardType: TextInputType.number,
               ),
               TextField(
                 controller: preInfusionController,
-                decoration: const InputDecoration(
-                  labelText: 'Pre-infusion (s)',
+                decoration: InputDecoration(
+                  labelText: l10n.preInfusionSeconds,
                 ),
                 keyboardType: TextInputType.number,
               ),
@@ -758,7 +758,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel'),
+            child: Text(l10n.cancel),
           ),
           TextButton(
             onPressed: () {
@@ -777,7 +777,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 Navigator.pop(ctx);
               }
             },
-            child: const Text('Add'),
+            child: Text(l10n.add),
           ),
         ],
       ),
@@ -785,6 +785,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   void _showAddGrinderDialog(BuildContext context, CoffeeProvider provider) {
+    final l10n = AppLocalizations.of(context)!;
     final nameController = TextEditingController();
     final rpmController = TextEditingController();
 
@@ -792,17 +793,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: Theme.of(context).colorScheme.surface,
-        title: const Text('Add Grinder'),
+        title: Text(l10n.addGrinder),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             TextField(
               controller: nameController,
-              decoration: const InputDecoration(labelText: 'Name'),
+              decoration: InputDecoration(labelText: l10n.name),
             ),
             TextField(
               controller: rpmController,
-              decoration: const InputDecoration(labelText: 'RPM'),
+              decoration: InputDecoration(labelText: l10n.rpm),
               keyboardType: TextInputType.number,
             ),
           ],
@@ -810,7 +811,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel'),
+            child: Text(l10n.cancel),
           ),
           TextButton(
             onPressed: () {
@@ -824,7 +825,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 Navigator.pop(ctx);
               }
             },
-            child: const Text('Add'),
+            child: Text(l10n.add),
           ),
         ],
       ),
