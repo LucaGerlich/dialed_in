@@ -14,6 +14,7 @@ class MaintenanceScreen extends StatelessWidget {
         title: const Text('Maintenance'),
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         surfaceTintColor: Theme.of(context).scaffoldBackgroundColor,
+        automaticallyImplyLeading: false,
       ),
       body: Consumer<CoffeeProvider>(
         builder: (context, provider, child) {

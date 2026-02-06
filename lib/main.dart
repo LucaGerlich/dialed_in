@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:dialed_in/providers/coffee_provider.dart';
-import 'screens/bean_list_screen.dart';
+import 'screens/main_navigation_screen.dart';
 import 'screens/onboarding_screen.dart';
 import 'l10n/app_localizations.dart';
 
@@ -221,7 +221,7 @@ class AppHome extends StatelessWidget {
         }
 
         // Show main app
-        return const BeanListScreen();
+        return const MainNavigationScreen();
       },
     );
   }

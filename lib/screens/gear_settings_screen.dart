@@ -20,6 +20,7 @@ class GearSettingsScreen extends StatelessWidget {
         title: Text(l10n.gearSettings),
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         surfaceTintColor: Theme.of(context).scaffoldBackgroundColor,
+        automaticallyImplyLeading: false,
       ),
       body: Consumer<CoffeeProvider>(
         builder: (context, provider, child) {
