@@ -128,124 +128,172 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     ];
 
     final isLastPage = _currentPage == pages.length - 1;
+    final backgroundColor = Theme.of(context).scaffoldBackgroundColor;
 
     return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: [
-            // Skip button
-            Align(
-              alignment: Alignment.topRight,
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: TextButton(
-                  onPressed: _skip,
-                  child: Text(
-                    'Skip',
-                    style: TextStyle(
-                      fontFamily: 'RobotoMono',
-                      color: colorScheme.onSurface.withValues(alpha: 0.6),
-                    ),
+      body: Stack(
+        children: [
+          // Main content - extends to full screen
+          PageView.builder(
+            controller: _pageController,
+            onPageChanged: (index) {
+              setState(() {
+                _currentPage = index;
+              });
+            },
+            itemCount: pages.length,
+            itemBuilder: (context, index) {
+              return _buildPage(pages[index]);
+            },
+          ),
+
+          // Skip button (on top)
+          Positioned(
+            top: MediaQuery.of(context).padding.top + 16,
+            right: 16,
+            child: TextButton(
+              onPressed: _skip,
+              child: Text(
+                'Skip',
+                style: TextStyle(
+                  fontFamily: 'RobotoMono',
+                  color: colorScheme.onSurface.withValues(alpha: 0.6),
+                ),
+              ),
+            ),
+          ),
+
+          // Top gradient overlay
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: IgnorePointer(
+              child: Container(
+                height: MediaQuery.of(context).padding.top + 120,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    stops: const [0.0, 0.5, 1.0],
+                    colors: [
+                      backgroundColor,
+                      backgroundColor.withValues(alpha: 0.5),
+                      backgroundColor.withValues(alpha: 0.0),
+                    ],
                   ),
                 ),
               ),
             ),
+          ),
 
-            // Page content
-            Expanded(
-              child: PageView.builder(
-                controller: _pageController,
-                onPageChanged: (index) {
-                  setState(() {
-                    _currentPage = index;
-                  });
-                },
-                itemCount: pages.length,
-                itemBuilder: (context, index) {
-                  return _buildPage(pages[index]);
-                },
-              ),
-            ),
-
-            // Page indicators
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(
-                  pages.length,
-                  (index) => AnimatedContainer(
-                    duration: const Duration(milliseconds: 300),
-                    margin: const EdgeInsets.symmetric(horizontal: 4),
-                    width: _currentPage == index ? 24 : 8,
-                    height: 8,
-                    decoration: BoxDecoration(
-                      color: _currentPage == index
-                          ? colorScheme.primary
-                          : colorScheme.onSurface.withValues(alpha: 0.2),
-                      borderRadius: BorderRadius.circular(4),
-                    ),
+          // Bottom gradient overlay
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: IgnorePointer(
+              child: Container(
+                height: MediaQuery.of(context).padding.bottom + 220,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
+                    stops: const [0.0, 0.4, 0.7, 1.0],
+                    colors: [
+                      backgroundColor,
+                      backgroundColor.withValues(alpha: 0.8),
+                      backgroundColor.withValues(alpha: 0.3),
+                      backgroundColor.withValues(alpha: 0.0),
+                    ],
                   ),
                 ),
               ),
             ),
+          ),
 
-            // Navigation buttons
-            Padding(
-              padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
-              child: Row(
-                children: [
-                  if (_currentPage > 0)
-                    Expanded(
-                      child: OutlinedButton(
-                        onPressed: _previousPage,
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: colorScheme.primary,
-                          side: BorderSide(color: colorScheme.primary),
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        child: Text(
-                          l10n.back,
-                          style: TextStyle(
-                            fontFamily: 'RobotoMono',
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    )
-                  else
-                    const Expanded(child: SizedBox()),
-                  const SizedBox(width: 16),
+          // // Page indicators (on top of gradient)
+          // Positioned(
+          //   bottom: 100 + MediaQuery.of(context).padding.bottom,
+          //   left: 0,
+          //   right: 0,
+          //   child: Row(
+          //     mainAxisAlignment: MainAxisAlignment.center,
+          //     children: List.generate(
+          //       pages.length,
+          //       (index) => AnimatedContainer(
+          //         duration: const Duration(milliseconds: 300),
+          //         margin: const EdgeInsets.symmetric(horizontal: 4),
+          //         width: _currentPage == index ? 24 : 8,
+          //         height: 8,
+          //         decoration: BoxDecoration(
+          //           color: _currentPage == index
+          //               ? colorScheme.primary
+          //               : colorScheme.onSurface.withValues(alpha: 0.2),
+          //           borderRadius: BorderRadius.circular(4),
+          //         ),
+          //       ),
+          //     ),
+          //   ),
+          // ),
+
+          // Navigation buttons (on top of gradient)
+          Positioned(
+            bottom: 24 + MediaQuery.of(context).padding.bottom,
+            left: 24,
+            right: 24,
+            child: Row(
+              children: [
+                if (_currentPage > 0)
                   Expanded(
-                    flex: 2,
-                    child: ElevatedButton(
-                      onPressed: _nextPage,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: colorScheme.primary,
-                        foregroundColor: colorScheme.onPrimary,
+                    child: OutlinedButton(
+                      onPressed: _previousPage,
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: colorScheme.primary,
+                        side: BorderSide(color: colorScheme.primary),
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
                       child: Text(
-                        isLastPage ? l10n.getStarted : l10n.next,
-                        style: const TextStyle(
+                        l10n.back,
+                        style: TextStyle(
                           fontFamily: 'RobotoMono',
                           fontWeight: FontWeight.bold,
-                          fontSize: 16,
                         ),
                       ),
                     ),
+                  )
+                else
+                  const Expanded(child: SizedBox()),
+                const SizedBox(width: 16),
+                Expanded(
+                  flex: 2,
+                  child: ElevatedButton(
+                    onPressed: _nextPage,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: colorScheme.primary,
+                      foregroundColor: colorScheme.onPrimary,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: Text(
+                      isLastPage ? l10n.getStarted : l10n.next,
+                      style: const TextStyle(
+                        fontFamily: 'RobotoMono',
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -259,7 +307,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     }
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: EdgeInsets.fromLTRB(
+        16,
+        MediaQuery.of(context).padding.top + 80,
+        16,
+        140 + MediaQuery.of(context).padding.bottom,
+      ),
       child: Column(
         children: [
           const SizedBox(height: 24),
@@ -359,7 +412,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     return Consumer<CoffeeProvider>(
       builder: (context, provider, child) {
         return SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 32),
+          padding: EdgeInsets.fromLTRB(
+            32,
+            MediaQuery.of(context).padding.top + 80,
+            32,
+            140 + MediaQuery.of(context).padding.bottom,
+          ),
           child: Column(
             children: [
               const SizedBox(height: 24),
