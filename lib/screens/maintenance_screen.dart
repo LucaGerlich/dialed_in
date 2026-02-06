@@ -64,6 +64,7 @@ class MaintenanceScreen extends StatelessWidget {
         },
       ),
       floatingActionButton: FloatingActionButton(
+        heroTag: 'maintenance_fab',
         onPressed: () {
           _showAddTaskDialog(context);
         },

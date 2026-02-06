@@ -736,6 +736,7 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
               );
             },
             child: FloatingActionButton.extended(
+              heroTag: 'bean_detail_fab',
               onPressed: null,
               backgroundColor: Theme.of(context).colorScheme.primary,
               foregroundColor: Theme.of(context).colorScheme.onPrimary,
