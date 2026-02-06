@@ -39,6 +39,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sortDefault => 'Default';
 
   @override
+  String get viewMode => 'View mode';
+
+  @override
+  String get viewDetailed => 'Detailed';
+
+  @override
+  String get viewCompact => 'Compact';
+
+  @override
   String get sortRanking => 'Ranking';
 
   @override

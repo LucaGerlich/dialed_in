@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../l10n/app_localizations.dart';
 import '../providers/coffee_provider.dart';
 import '../widgets/bean_card.dart';
+import '../widgets/bean_card_compact.dart';
 import 'add_bean_screen.dart';
 import 'bean_detail_screen.dart';
 import 'gear_settings_screen.dart';
@@ -17,6 +19,28 @@ class BeanListScreen extends StatefulWidget {
 class _BeanListScreenState extends State<BeanListScreen> {
   String _selectedFilter = 'All';
   String _sortBy = 'Ranking';
+  bool _isCompactView = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadViewMode();
+  }
+
+  Future<void> _loadViewMode() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _isCompactView = prefs.getBool('beanListCompactView') ?? false;
+    });
+  }
+
+  Future<void> _toggleViewMode() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _isCompactView = !_isCompactView;
+    });
+    await prefs.setBool('beanListCompactView', _isCompactView);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +53,11 @@ class _BeanListScreenState extends State<BeanListScreen> {
         title: Text(l10n.beanVault),
         leading: const Icon(Icons.coffee), // Aesthetic icon
         actions: [
+          IconButton(
+            icon: Icon(_isCompactView ? Icons.view_list : Icons.grid_view),
+            tooltip: l10n.viewMode,
+            onPressed: _toggleViewMode,
+          ),
           PopupMenuButton<String>(
             icon: const Icon(Icons.sort),
             tooltip: l10n.sortBy,
@@ -147,37 +176,63 @@ class _BeanListScreenState extends State<BeanListScreen> {
                           ],
                         ),
                       )
-                    : ListView.builder(
-                        padding: const EdgeInsets.all(16),
-                        itemCount: beans.length,
-                        itemBuilder: (context, index) {
-                          final bean = beans[index];
-                          return BeanCard(
-                            bean: bean,
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => BeanDetailScreen(beanId: bean.id),
-                                ),
+                    : _isCompactView
+                        ? GridView.builder(
+                            padding: const EdgeInsets.all(16),
+                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              childAspectRatio: 0.75,
+                              crossAxisSpacing: 12,
+                              mainAxisSpacing: 12,
+                            ),
+                            itemCount: beans.length,
+                            itemBuilder: (context, index) {
+                              final bean = beans[index];
+                              return BeanCardCompact(
+                                bean: bean,
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => BeanDetailScreen(beanId: bean.id),
+                                    ),
+                                  );
+                                },
                               );
                             },
-                          );
-                        },
-                      ),
+                          )
+                        : ListView.builder(
+                            padding: const EdgeInsets.all(16),
+                            itemCount: beans.length,
+                            itemBuilder: (context, index) {
+                              final bean = beans[index];
+                              return BeanCard(
+                                bean: bean,
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => BeanDetailScreen(beanId: bean.id),
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                          ),
               ),
             ],
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const AddBeanScreen()),
           );
         },
-        child: const Icon(Icons.add),
+        icon: const Icon(Icons.add),
+        label: Text(l10n.addBean),
       ),
     );
   }

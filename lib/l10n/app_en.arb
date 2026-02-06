@@ -48,7 +48,22 @@
   
   "sortDefault": "Default",
   "@sortDefault": {
-    "description": "Sort option for default order"
+    "description": "Sort by default order"
+  },
+
+  "viewMode": "View mode",
+  "@viewMode": {
+    "description": "Tooltip for view mode toggle"
+  },
+
+  "viewDetailed": "Detailed",
+  "@viewDetailed": {
+    "description": "Detailed view mode option"
+  },
+
+  "viewCompact": "Compact",
+  "@viewCompact": {
+    "description": "Compact view mode option"
   },
   
   "sortRanking": "Ranking",
@@ -98,7 +113,7 @@
   
   "addBean": "Add Bean",
   "@addBean": {
-    "description": "Title for add bean screen"
+    "description": "Title for add bean screen and FAB label"
   },
   
   "beanName": "BEAN NAME",
@@ -218,7 +233,7 @@
   
   "addShot": "Add Shot",
   "@addShot": {
-    "description": "Title for add shot screen"
+    "description": "Title for add shot screen and FAB label"
   },
   
   "done": "Done",

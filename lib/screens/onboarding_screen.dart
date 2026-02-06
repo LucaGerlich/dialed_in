@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../l10n/app_localizations.dart';
+import '../providers/coffee_provider.dart';
+import '../models/models.dart';
 
 class OnboardingScreen extends StatefulWidget {
   final VoidCallback onComplete;
@@ -21,8 +24,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   void _nextPage() {
-    // Hard-coded to 5 pages (this could also be passed as a parameter if pages change)
-    const totalPages = 5;
+    // Hard-coded to 6 pages (added gear configuration page)
+    const totalPages = 6;
     if (_currentPage < totalPages - 1) {
       _pageController.nextPage(
         duration: const Duration(milliseconds: 300),
@@ -50,7 +53,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colorScheme = Theme.of(context).colorScheme;
-    
+
     final pages = [
       OnboardingPage(
         icon: Icons.coffee,
@@ -93,8 +96,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       OnboardingPage(
         icon: Icons.settings_outlined,
         title: l10n.onboardingGearSettings,
-        description:
-            'Configure your coffee equipment for accurate tracking.',
+        description: 'Configure your coffee equipment for accurate tracking.',
         details: [
           'Add your espresso machines with default settings',
           'Add your grinders with default RPM',
@@ -104,10 +106,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         ],
       ),
       OnboardingPage(
+        icon: Icons.build_outlined,
+        title: 'Configure Your Gear',
+        description:
+            'Set up your equipment now or skip to configure later in settings.',
+        details: [],
+        isConfigPage: true,
+      ),
+      OnboardingPage(
         icon: Icons.rocket_launch_outlined,
         title: l10n.getStarted,
-        description:
-            'You\'re ready to start your coffee journey!',
+        description: 'You\'re ready to start your coffee journey!',
         details: [
           '1. Tap + on Bean Vault to add your first bean',
           '2. Select a bean to view details',
@@ -117,7 +126,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         ],
       ),
     ];
-    
+
     final isLastPage = _currentPage == pages.length - 1;
 
     return Scaffold(
@@ -198,8 +207,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                        child: const Text(
-                          'Back',
+                        child: Text(
+                          l10n.back,
                           style: TextStyle(
                             fontFamily: 'RobotoMono',
                             fontWeight: FontWeight.bold,
@@ -244,8 +253,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Widget _buildPage(OnboardingPage page) {
     final colorScheme = Theme.of(context).colorScheme;
 
+    // If this is the configuration page, show the configuration UI
+    if (page.isConfigPage) {
+      return _buildConfigPage(page);
+    }
+
     return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 32),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
         children: [
           const SizedBox(height: 24),
@@ -261,11 +275,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 width: 2,
               ),
             ),
-            child: Icon(
-              page.icon,
-              size: 56,
-              color: colorScheme.primary,
-            ),
+            child: Icon(page.icon, size: 56, color: colorScheme.primary),
           ),
           const SizedBox(height: 32),
 
@@ -341,6 +351,427 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       ),
     );
   }
+
+  Widget _buildConfigPage(OnboardingPage page) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context)!;
+
+    return Consumer<CoffeeProvider>(
+      builder: (context, provider, child) {
+        return SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 32),
+          child: Column(
+            children: [
+              const SizedBox(height: 24),
+              // Icon container
+              Container(
+                width: 120,
+                height: 120,
+                decoration: BoxDecoration(
+                  color: colorScheme.primary.withValues(alpha: 0.1),
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: colorScheme.primary.withValues(alpha: 0.3),
+                    width: 2,
+                  ),
+                ),
+                child: Icon(page.icon, size: 56, color: colorScheme.primary),
+              ),
+              const SizedBox(height: 32),
+
+              // Title
+              Text(
+                page.title,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: 'RobotoMono',
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  color: colorScheme.onSurface,
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // Description
+              Text(
+                page.description,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: 'RobotoMono',
+                  fontSize: 16,
+                  color: colorScheme.onSurface.withValues(alpha: 0.7),
+                  height: 1.5,
+                ),
+              ),
+              const SizedBox(height: 32),
+
+              // Coffee Machines Section
+              _buildConfigSection(
+                context,
+                l10n.coffeeMachines,
+                Icons.coffee_maker,
+                provider.machines.map((m) => m.name).toList(),
+                () => _showAddMachineDialog(context, provider),
+              ),
+              const SizedBox(height: 24),
+
+              // Grinders Section
+              _buildConfigSection(
+                context,
+                l10n.grinders,
+                Icons.settings_input_component,
+                provider.grinders.map((g) => g.name).toList(),
+                () => _showAddGrinderDialog(context, provider),
+              ),
+              const SizedBox(height: 24),
+
+              // Grind Settings Section
+              _buildGrindSettingsSection(context, provider),
+              const SizedBox(height: 24),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildConfigSection(
+    BuildContext context,
+    String title,
+    IconData icon,
+    List<String> items,
+    VoidCallback onAdd,
+  ) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: colorScheme.surface,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: colorScheme.onSurface.withValues(alpha: 0.1)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(icon, size: 20, color: colorScheme.primary),
+              const SizedBox(width: 8),
+              Text(
+                title,
+                style: TextStyle(
+                  fontFamily: 'RobotoMono',
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: colorScheme.onSurface,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          if (items.isEmpty)
+            Text(
+              'No items added yet',
+              style: TextStyle(
+                fontFamily: 'RobotoMono',
+                fontSize: 12,
+                color: colorScheme.onSurface.withValues(alpha: 0.5),
+              ),
+            )
+          else
+            ...items.map(
+              (item) => Padding(
+                padding: const EdgeInsets.only(bottom: 4),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.check_circle,
+                      size: 16,
+                      color: colorScheme.primary,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      item,
+                      style: TextStyle(
+                        fontFamily: 'RobotoMono',
+                        fontSize: 12,
+                        color: colorScheme.onSurface.withValues(alpha: 0.8),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          const SizedBox(height: 12),
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: onAdd,
+              icon: const Icon(Icons.add, size: 16),
+              label: Text('Add ${title.toLowerCase()}'),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: colorScheme.primary,
+                side: BorderSide(color: colorScheme.primary),
+                padding: const EdgeInsets.symmetric(vertical: 12),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildGrindSettingsSection(
+    BuildContext context,
+    CoffeeProvider provider,
+  ) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context)!;
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: colorScheme.surface,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: colorScheme.onSurface.withValues(alpha: 0.1)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.tune, size: 20, color: colorScheme.primary),
+              const SizedBox(width: 8),
+              Text(
+                l10n.grindSettings,
+                style: TextStyle(
+                  fontFamily: 'RobotoMono',
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: colorScheme.onSurface,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: _buildSmallInput(
+                  context,
+                  'Min',
+                  provider.grindMin.toString(),
+                  (value) {
+                    final newVal = double.tryParse(value);
+                    if (newVal != null) {
+                      provider.updateGrindSettings(
+                        newVal,
+                        provider.grindMax,
+                        provider.grindStep,
+                      );
+                    }
+                  },
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: _buildSmallInput(
+                  context,
+                  'Max',
+                  provider.grindMax.toString(),
+                  (value) {
+                    final newVal = double.tryParse(value);
+                    if (newVal != null) {
+                      provider.updateGrindSettings(
+                        provider.grindMin,
+                        newVal,
+                        provider.grindStep,
+                      );
+                    }
+                  },
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: _buildSmallInput(
+                  context,
+                  'Step',
+                  provider.grindStep.toString(),
+                  (value) {
+                    final newVal = double.tryParse(value);
+                    if (newVal != null) {
+                      provider.updateGrindSettings(
+                        provider.grindMin,
+                        provider.grindMax,
+                        newVal,
+                      );
+                    }
+                  },
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSmallInput(
+    BuildContext context,
+    String label,
+    String initialValue,
+    Function(String) onChanged,
+  ) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            fontFamily: 'RobotoMono',
+            fontSize: 10,
+            color: colorScheme.onSurface.withValues(alpha: 0.6),
+          ),
+        ),
+        const SizedBox(height: 4),
+        TextField(
+          controller: TextEditingController(text: initialValue),
+          keyboardType: TextInputType.number,
+          onChanged: onChanged,
+          style: TextStyle(
+            fontFamily: 'RobotoMono',
+            fontSize: 12,
+            color: colorScheme.onSurface,
+          ),
+          decoration: InputDecoration(
+            isDense: true,
+            contentPadding: const EdgeInsets.all(8),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _showAddMachineDialog(BuildContext context, CoffeeProvider provider) {
+    final nameController = TextEditingController();
+    final pressureController = TextEditingController();
+    final tempController = TextEditingController();
+    final preInfusionController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        title: Text('Add Machine'),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: nameController,
+                decoration: const InputDecoration(labelText: 'Name'),
+              ),
+              TextField(
+                controller: pressureController,
+                decoration: const InputDecoration(labelText: 'Pressure (bar)'),
+                keyboardType: TextInputType.number,
+              ),
+              TextField(
+                controller: tempController,
+                decoration: const InputDecoration(
+                  labelText: 'Temperature (°C)',
+                ),
+                keyboardType: TextInputType.number,
+              ),
+              TextField(
+                controller: preInfusionController,
+                decoration: const InputDecoration(
+                  labelText: 'Pre-infusion (s)',
+                ),
+                keyboardType: TextInputType.number,
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              if (nameController.text.isNotEmpty) {
+                provider.addMachine(
+                  CoffeeMachine(
+                    name: nameController.text,
+                    defaultPressure:
+                        double.tryParse(pressureController.text) ?? 9.0,
+                    defaultTemperature:
+                        double.tryParse(tempController.text) ?? 93.0,
+                    defaultPreInfusionTime:
+                        int.tryParse(preInfusionController.text) ?? 0,
+                  ),
+                );
+                Navigator.pop(ctx);
+              }
+            },
+            child: const Text('Add'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showAddGrinderDialog(BuildContext context, CoffeeProvider provider) {
+    final nameController = TextEditingController();
+    final rpmController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        title: const Text('Add Grinder'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: nameController,
+              decoration: const InputDecoration(labelText: 'Name'),
+            ),
+            TextField(
+              controller: rpmController,
+              decoration: const InputDecoration(labelText: 'RPM'),
+              keyboardType: TextInputType.number,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              if (nameController.text.isNotEmpty) {
+                provider.addGrinder(
+                  Grinder(
+                    name: nameController.text,
+                    defaultRpm: double.tryParse(rpmController.text) ?? 0.0,
+                  ),
+                );
+                Navigator.pop(ctx);
+              }
+            },
+            child: const Text('Add'),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class OnboardingPage {
@@ -348,11 +779,13 @@ class OnboardingPage {
   final String title;
   final String description;
   final List<String> details;
+  final bool isConfigPage;
 
   OnboardingPage({
     required this.icon,
     required this.title,
     required this.description,
     required this.details,
+    this.isConfigPage = false,
   });
 }

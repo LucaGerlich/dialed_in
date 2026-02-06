@@ -708,7 +708,7 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
               ],
             ),
           ),
-          floatingActionButton: FloatingActionButton(
+          floatingActionButton: FloatingActionButton.extended(
             onPressed: () {
               Navigator.push(
                 context,
@@ -719,7 +719,8 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
             },
             backgroundColor: Theme.of(context).colorScheme.primary,
             foregroundColor: Theme.of(context).colorScheme.onPrimary,
-            child: const Icon(Icons.add),
+            icon: const Icon(Icons.add),
+            label: Text(l10n.addShot),
           ),
           floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
         );

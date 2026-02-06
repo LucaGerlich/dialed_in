@@ -154,11 +154,29 @@ abstract class AppLocalizations {
   /// **'Dark'**
   String get filterDark;
 
-  /// Sort option for default order
+  /// Sort by default order
   ///
   /// In en, this message translates to:
   /// **'Default'**
   String get sortDefault;
+
+  /// Tooltip for view mode toggle
+  ///
+  /// In en, this message translates to:
+  /// **'View mode'**
+  String get viewMode;
+
+  /// Detailed view mode option
+  ///
+  /// In en, this message translates to:
+  /// **'Detailed'**
+  String get viewDetailed;
+
+  /// Compact view mode option
+  ///
+  /// In en, this message translates to:
+  /// **'Compact'**
+  String get viewCompact;
 
   /// Sort option by ranking
   ///
@@ -214,7 +232,7 @@ abstract class AppLocalizations {
   /// **'Edit Bean'**
   String get editBean;
 
-  /// Title for add bean screen
+  /// Title for add bean screen and FAB label
   ///
   /// In en, this message translates to:
   /// **'Add Bean'**
@@ -358,7 +376,7 @@ abstract class AppLocalizations {
   /// **'UPDATE BEAN'**
   String get updateBeanButton;
 
-  /// Title for add shot screen
+  /// Title for add shot screen and FAB label
   ///
   /// In en, this message translates to:
   /// **'Add Shot'**
