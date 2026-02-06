@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_title">Dialed In</string>
+    <string name="widget_beans">Beans</string>
+    <string name="widget_shots">Shots</string>
+    <string name="widget_top_bean">Top Bean</string>
+    <string name="widget_no_beans">No beans yet</string>
+    <string name="widget_label">Dialed In Widget</string>
+</resources>

@@ -4,23 +4,26 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/models.dart';
+import '../services/bean_home_widget_service.dart';
 
 class CoffeeProvider with ChangeNotifier {
   // Constants for migration
   static const double _legacyDefaultGrindStep = 0.5;
   static const double _currentDefaultGrindStep = 0.01;
-  
+
   List<Bean> _beans = [];
   List<CoffeeMachine> _machines = [];
   List<Grinder> _grinders = [];
   List<MaintenanceTask> _maintenanceTasks = [];
-  
+
   // Grind Settings
   double _grindMin = 0.0;
   double _grindMax = 30.0;
   double _grindStep = _currentDefaultGrindStep;
-  bool _useClicksMode = false; // Track grind as clicks/notches instead of numbered settings
-  String _grindLabel = 'Grind Size'; // Label for the grind dial (e.g., "Clicks" or "Grind Size")
+  bool _useClicksMode =
+      false; // Track grind as clicks/notches instead of numbered settings
+  String _grindLabel =
+      'Grind Size'; // Label for the grind dial (e.g., "Clicks" or "Grind Size")
 
   // Theme Settings
   ThemeMode _themeMode = ThemeMode.system;
@@ -39,7 +42,7 @@ class CoffeeProvider with ChangeNotifier {
   List<CoffeeMachine> get machines => _machines;
   List<Grinder> get grinders => _grinders;
   List<MaintenanceTask> get maintenanceTasks => _maintenanceTasks;
-  
+
   double get grindMin => _grindMin;
   double get grindMax => _grindMax;
   double get grindStep => _grindStep;
@@ -78,12 +81,14 @@ class CoffeeProvider with ChangeNotifier {
     final String? maintenanceJson = prefs.getString('maintenanceTasks');
     if (maintenanceJson != null) {
       final List<dynamic> decoded = jsonDecode(maintenanceJson);
-      _maintenanceTasks = decoded.map((item) => MaintenanceTask.fromJson(item)).toList();
+      _maintenanceTasks = decoded
+          .map((item) => MaintenanceTask.fromJson(item))
+          .toList();
     }
-    
+
     _grindMin = prefs.getDouble('grindMin') ?? 0.0;
     _grindMax = prefs.getDouble('grindMax') ?? 30.0;
-    
+
     // Migration: Update old default step to new default for better precision
     final savedStep = prefs.getDouble('grindStep');
     if (savedStep == null || savedStep == _legacyDefaultGrindStep) {
@@ -93,10 +98,10 @@ class CoffeeProvider with ChangeNotifier {
     } else {
       _grindStep = savedStep;
     }
-    
+
     _useClicksMode = prefs.getBool('useClicksMode') ?? false;
     _grindLabel = prefs.getString('grindLabel') ?? 'Grind Size';
-    
+
     final String? themeModeStr = prefs.getString('themeMode');
     if (themeModeStr != null) {
       _themeMode = ThemeMode.values.firstWhere(
@@ -104,24 +109,25 @@ class CoffeeProvider with ChangeNotifier {
         orElse: () => ThemeMode.system,
       );
     }
-    
+
     // Load locale settings
     final String? localeCode = prefs.getString('locale');
     if (localeCode != null && localeCode.isNotEmpty) {
       _locale = Locale(localeCode);
     }
-    
+
     _hasCompletedOnboarding = prefs.getBool('hasCompletedOnboarding') ?? false;
-    
+
     // Load custom flavor attributes
     final String? customFlavorJson = prefs.getString('customFlavorAttributes');
     if (customFlavorJson != null) {
       final List<dynamic> decoded = jsonDecode(customFlavorJson);
       _customFlavorAttributes = decoded.map((e) => e.toString()).toList();
     }
-    
+
     _isLoading = false;
-    
+    await BeanHomeWidgetService.sync(_beans);
+
     notifyListeners();
   }
 
@@ -129,33 +135,50 @@ class CoffeeProvider with ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     final String beansJson = jsonEncode(_beans.map((b) => b.toJson()).toList());
     await prefs.setString('beans', beansJson);
-    
-    final String machinesJson = jsonEncode(_machines.map((m) => m.toJson()).toList());
+
+    final String machinesJson = jsonEncode(
+      _machines.map((m) => m.toJson()).toList(),
+    );
     await prefs.setString('machines', machinesJson);
 
-    final String grindersJson = jsonEncode(_grinders.map((g) => g.toJson()).toList());
+    final String grindersJson = jsonEncode(
+      _grinders.map((g) => g.toJson()).toList(),
+    );
     await prefs.setString('grinders', grindersJson);
 
-    final String maintenanceJson = jsonEncode(_maintenanceTasks.map((t) => t.toJson()).toList());
+    final String maintenanceJson = jsonEncode(
+      _maintenanceTasks.map((t) => t.toJson()).toList(),
+    );
     await prefs.setString('maintenanceTasks', maintenanceJson);
-    
+
     await prefs.setDouble('grindMin', _grindMin);
     await prefs.setDouble('grindMax', _grindMax);
     await prefs.setDouble('grindStep', _grindStep);
     await prefs.setBool('useClicksMode', _useClicksMode);
     await prefs.setString('grindLabel', _grindLabel);
     await prefs.setString('themeMode', _themeMode.toString());
-    await prefs.setString('customFlavorAttributes', jsonEncode(_customFlavorAttributes));
-    
+    await prefs.setString(
+      'customFlavorAttributes',
+      jsonEncode(_customFlavorAttributes),
+    );
+
     // Save locale
     if (_locale != null) {
       await prefs.setString('locale', _locale!.languageCode);
     } else {
       await prefs.remove('locale');
     }
+
+    await BeanHomeWidgetService.sync(_beans);
   }
-  
-  void updateGrindSettings(double min, double max, double step, {bool? useClicksMode, String? grindLabel}) {
+
+  void updateGrindSettings(
+    double min,
+    double max,
+    double step, {
+    bool? useClicksMode,
+    String? grindLabel,
+  }) {
     _grindMin = min;
     _grindMax = max;
     _grindStep = step;
@@ -185,11 +208,19 @@ class CoffeeProvider with ChangeNotifier {
     }
     // Check for duplicates (case-insensitive)
     final nameLower = name.toLowerCase();
-    if (_customFlavorAttributes.any((attr) => attr.toLowerCase() == nameLower)) {
+    if (_customFlavorAttributes.any(
+      (attr) => attr.toLowerCase() == nameLower,
+    )) {
       return false;
     }
     // Check for conflicts with default attributes
-    final defaultAttributes = ['acidity', 'body', 'sweetness', 'bitterness', 'aftertaste'];
+    final defaultAttributes = [
+      'acidity',
+      'body',
+      'sweetness',
+      'bitterness',
+      'aftertaste',
+    ];
     if (defaultAttributes.contains(nameLower)) {
       return false;
     }
@@ -246,10 +277,10 @@ class CoffeeProvider with ChangeNotifier {
     if (beanIndex != -1) {
       final bean = _beans[beanIndex];
       final updatedShots = List<Shot>.from(bean.shots)..add(shot);
-      
+
       // Sort shots by timestamp descending (newest first)
       updatedShots.sort((a, b) => b.timestamp.compareTo(a.timestamp));
-      
+
       // Calculate new preferred grind if requested
       double newPreferred = bean.preferredGrindSize;
       if (updatePreferredGrind) {
@@ -277,7 +308,7 @@ class CoffeeProvider with ChangeNotifier {
         robustaPercentage: bean.robustaPercentage,
         ranking: bean.ranking,
       );
-      
+
       _saveData();
       notifyListeners();
     }
@@ -379,7 +410,11 @@ class CoffeeProvider with ChangeNotifier {
   /// Exports data to a JSON file and returns the file path
   Future<String> exportDataToFile() async {
     final directory = await getApplicationDocumentsDirectory();
-    final timestamp = DateTime.now().toIso8601String().replaceAll(':', '-').split('.').first;
+    final timestamp = DateTime.now()
+        .toIso8601String()
+        .replaceAll(':', '-')
+        .split('.')
+        .first;
     final file = File('${directory.path}/dialed_in_export_$timestamp.json');
     await file.writeAsString(exportDataToJson());
     return file.path;
@@ -387,15 +422,20 @@ class CoffeeProvider with ChangeNotifier {
 
   /// Imports data from a JSON string, merging with or replacing existing data.
   /// When [replaceExisting] is true, all data including settings is replaced.
-  /// When [replaceExisting] is false, only beans/machines/grinders not already 
+  /// When [replaceExisting] is false, only beans/machines/grinders not already
   /// present (by ID) are added, and settings are preserved.
-  Future<void> importDataFromJson(String jsonString, {bool replaceExisting = true}) async {
+  Future<void> importDataFromJson(
+    String jsonString, {
+    bool replaceExisting = true,
+  }) async {
     final Map<String, dynamic> data = jsonDecode(jsonString);
-    
+
     // Import beans
     if (data['beans'] != null) {
       final List<dynamic> beansJson = data['beans'];
-      final importedBeans = beansJson.map((item) => Bean.fromJson(item)).toList();
+      final importedBeans = beansJson
+          .map((item) => Bean.fromJson(item))
+          .toList();
       if (replaceExisting) {
         _beans = importedBeans;
       } else {
@@ -412,7 +452,9 @@ class CoffeeProvider with ChangeNotifier {
     // Import machines
     if (data['machines'] != null) {
       final List<dynamic> machinesJson = data['machines'];
-      final importedMachines = machinesJson.map((item) => CoffeeMachine.fromJson(item)).toList();
+      final importedMachines = machinesJson
+          .map((item) => CoffeeMachine.fromJson(item))
+          .toList();
       if (replaceExisting) {
         _machines = importedMachines;
       } else {
@@ -428,7 +470,9 @@ class CoffeeProvider with ChangeNotifier {
     // Import grinders
     if (data['grinders'] != null) {
       final List<dynamic> grindersJson = data['grinders'];
-      final importedGrinders = grindersJson.map((item) => Grinder.fromJson(item)).toList();
+      final importedGrinders = grindersJson
+          .map((item) => Grinder.fromJson(item))
+          .toList();
       if (replaceExisting) {
         _grinders = importedGrinders;
       } else {
@@ -444,7 +488,9 @@ class CoffeeProvider with ChangeNotifier {
     // Import maintenance tasks
     if (data['maintenanceTasks'] != null) {
       final List<dynamic> maintenanceJson = data['maintenanceTasks'];
-      final importedTasks = maintenanceJson.map((item) => MaintenanceTask.fromJson(item)).toList();
+      final importedTasks = maintenanceJson
+          .map((item) => MaintenanceTask.fromJson(item))
+          .toList();
       if (replaceExisting) {
         _maintenanceTasks = importedTasks;
       } else {
