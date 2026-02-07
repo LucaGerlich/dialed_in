@@ -650,6 +650,15 @@ class ShotDetailScreen extends StatelessWidget {
                 process: bean.process,
                 flavourTags: bean.flavourTags,
                 roastDate: bean.roastDate,
+                acidity: bean.acidity,
+                body: bean.body,
+                sweetness: bean.sweetness,
+                bitterness: bean.bitterness,
+                aftertaste: bean.aftertaste,
+                arabicaPercentage: bean.arabicaPercentage,
+                robustaPercentage: bean.robustaPercentage,
+                ranking: bean.ranking,
+                customFlavorValues: bean.customFlavorValues,
                 imagePath: bean.imagePath,
               );
 
