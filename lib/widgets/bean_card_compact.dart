@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import '../models/models.dart';
 
@@ -34,21 +35,28 @@ class BeanCardCompact extends StatelessWidget {
                   borderRadius: const BorderRadius.vertical(
                     top: Radius.circular(16),
                   ),
+                  image: bean.imagePath != null && File(bean.imagePath!).existsSync()
+                      ? DecorationImage(
+                          image: FileImage(File(bean.imagePath!)),
+                          fit: BoxFit.cover,
+                        )
+                      : null,
                 ),
                 child: Stack(
                   children: [
-                    Center(
-                      child: Hero(
-                        tag: 'bean-icon-${bean.id}',
-                        child: Icon(
-                          Icons.coffee,
-                          size: 40,
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.onSurface.withValues(alpha: 0.2),
+                    if (bean.imagePath == null || !File(bean.imagePath!).existsSync())
+                      Center(
+                        child: Hero(
+                          tag: 'bean-icon-${bean.id}',
+                          child: Icon(
+                            Icons.coffee,
+                            size: 40,
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onSurface.withValues(alpha: 0.2),
+                          ),
                         ),
                       ),
-                    ),
                     if (bean.ranking > 0)
                       Positioned(
                         top: 8,
