@@ -250,6 +250,9 @@ class Bean {
   // User ranking (0 = unranked, 1-5 = star rating)
   final int ranking;
 
+  // Optional image path for bean card
+  final String? imagePath;
+
   Bean({
     String? id,
     required this.name,
@@ -269,6 +272,7 @@ class Bean {
     this.arabicaPercentage = 100.0,
     this.robustaPercentage = 0.0,
     this.ranking = 0,
+    this.imagePath,
     Map<String, double>? customFlavorValues,
   }) : id = id ?? const Uuid().v4(),
        shots = shots ?? [],
@@ -295,6 +299,7 @@ class Bean {
       'robustaPercentage': robustaPercentage,
       'customFlavorValues': customFlavorValues,
       'ranking': ranking,
+      'imagePath': imagePath,
     };
   }
 
@@ -328,6 +333,7 @@ class Bean {
           ) ??
           {},
       ranking: json['ranking'] ?? 0,
+      imagePath: json['imagePath'],
     );
   }
 }

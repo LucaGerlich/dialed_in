@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -79,19 +80,30 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Hero coffee icon
-                Center(
-                  child: Hero(
-                    tag: 'bean-icon-${bean.id}',
-                    child: Icon(
-                      Icons.coffee,
-                      size: 80,
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.primary.withValues(alpha: 0.3),
+                // Hero coffee icon or image
+                if (bean.imagePath != null && File(bean.imagePath!).existsSync())
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(16),
+                    child: Image.file(
+                      File(bean.imagePath!),
+                      height: 200,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    ),
+                  )
+                else
+                  Center(
+                    child: Hero(
+                      tag: 'bean-icon-${bean.id}',
+                      child: Icon(
+                        Icons.coffee,
+                        size: 80,
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.primary.withValues(alpha: 0.3),
+                      ),
                     ),
                   ),
-                ),
                 const SizedBox(height: 16),
                 // Bean Info Bento
                 _buildBentoContainer(

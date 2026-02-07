@@ -150,6 +150,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get addShot => 'Agregar Shot';
 
   @override
+  String get editShot => 'Editar Shot';
+
+  @override
   String get done => 'Listo';
 
   @override
@@ -519,4 +522,19 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get grindSizeOverTime => 'TAMAÑO DE MOLIENDA EN EL TIEMPO';
+
+  @override
+  String get discardChangesTitle => '¿Descartar cambios?';
+
+  @override
+  String get discardChangesMessage => 'Tiene cambios sin guardar. ¿Está seguro de que desea volver?';
+
+  @override
+  String get discard => 'Descartar';
+
+  @override
+  String get beanImage => 'FOTO';
+
+  @override
+  String get tapToAddPhoto => 'Toca para agregar una foto';
 }

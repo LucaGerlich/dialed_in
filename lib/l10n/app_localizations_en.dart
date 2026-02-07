@@ -151,6 +151,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addShot => 'Add Shot';
 
   @override
+  String get editShot => 'Edit Shot';
+
+  @override
   String get done => 'Done';
 
   @override
@@ -520,4 +523,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get grindSizeOverTime => 'GRIND SIZE OVER TIME';
+
+  @override
+  String get discardChangesTitle => 'Discard Changes?';
+
+  @override
+  String get discardChangesMessage => 'You have unsaved changes. Are you sure you want to go back?';
+
+  @override
+  String get discard => 'Discard';
+
+  @override
+  String get beanImage => 'PHOTO';
+
+  @override
+  String get tapToAddPhoto => 'Tap to add a photo';
 }

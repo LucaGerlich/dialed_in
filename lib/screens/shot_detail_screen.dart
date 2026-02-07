@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../l10n/app_localizations.dart';
 import '../models/models.dart';
 import '../providers/coffee_provider.dart';
+import 'add_shot_screen.dart';
 import 'share_shot_dialog.dart';
 
 class ShotDetailScreen extends StatelessWidget {
@@ -53,6 +54,20 @@ class ShotDetailScreen extends StatelessWidget {
                       grinderName: grinder.name != 'Unknown'
                           ? grinder.name
                           : null,
+                    ),
+                  );
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.edit),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AddShotScreen(
+                        beanId: bean.id,
+                        shot: shot,
+                      ),
                     ),
                   );
                 },
@@ -635,6 +650,7 @@ class ShotDetailScreen extends StatelessWidget {
                 process: bean.process,
                 flavourTags: bean.flavourTags,
                 roastDate: bean.roastDate,
+                imagePath: bean.imagePath,
               );
 
               provider.updateBean(updatedBean);

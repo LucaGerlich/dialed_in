@@ -9,8 +9,9 @@ import '../widgets/analog_dial.dart';
 
 class AddShotScreen extends StatefulWidget {
   final String beanId;
+  final Shot? shot; // Optional: if provided, we're editing
 
-  const AddShotScreen({super.key, required this.beanId});
+  const AddShotScreen({super.key, required this.beanId, this.shot});
 
   @override
   State<AddShotScreen> createState() => _AddShotScreenState();
@@ -45,21 +46,39 @@ class _AddShotScreenState extends State<AddShotScreen> {
   @override
   void initState() {
     super.initState();
-    // Initialize grind size from the last shot or bean's preferred size
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final provider = Provider.of<CoffeeProvider>(context, listen: false);
-      final bean = provider.beans.firstWhere((b) => b.id == widget.beanId);
+    
+    if (widget.shot != null) {
+      // Editing an existing shot - populate all fields
+      final shot = widget.shot!;
+      _grindSize = shot.grindSize;
+      _doseInController.text = shot.doseIn.toString();
+      _doseOutController.text = shot.doseOut.toString();
+      _durationMs = shot.duration * 1000;
+      _durationController.text = _formatDuration(_durationMs);
+      if (shot.grinderRpm != null) _rpmController.text = shot.grinderRpm.toString();
+      if (shot.pressure != null) _pressureController.text = shot.pressure.toString();
+      if (shot.temperature != null) _tempController.text = shot.temperature.toString();
+      if (shot.preInfusionTime != null) _preInfusionController.text = shot.preInfusionTime.toString();
+      if (shot.water != null) _waterController.text = shot.water!;
+      _selectedMachineId = shot.machineId;
+      _selectedGrinderId = shot.grinderId;
+      _flavourX = shot.flavourX ?? 0;
+      _flavourY = shot.flavourY ?? 0;
+    } else {
+      // Adding a new shot - initialize grind size from last shot or bean's preferred
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final provider = Provider.of<CoffeeProvider>(context, listen: false);
+        final bean = provider.beans.firstWhere((b) => b.id == widget.beanId);
 
-      // Use grind size from the most recent shot (shots are sorted newest first)
-      // or fall back to preferred size
-      final initialGrindSize = bean.shots.isNotEmpty
-          ? bean.shots.first.grindSize
-          : bean.preferredGrindSize;
+        final initialGrindSize = bean.shots.isNotEmpty
+            ? bean.shots.first.grindSize
+            : bean.preferredGrindSize;
 
-      setState(() {
-        _grindSize = initialGrindSize;
+        setState(() {
+          _grindSize = initialGrindSize;
+        });
       });
-    });
+    }
   }
 
   @override
@@ -235,11 +254,12 @@ class _AddShotScreenState extends State<AddShotScreen> {
 
     if (doseIn > 0 && doseOut > 0 && _durationMs > 0) {
       final shot = Shot(
+        id: widget.shot?.id, // Keep ID if editing
         grindSize: _grindSize,
         doseIn: doseIn,
         doseOut: doseOut,
         duration: _durationMs ~/ 1000, // Convert back to seconds for Shot model
-        timestamp: DateTime.now(),
+        timestamp: widget.shot?.timestamp ?? DateTime.now(),
         grinderRpm: double.tryParse(_rpmController.text),
         pressure: double.tryParse(_pressureController.text),
         temperature: double.tryParse(_tempController.text),
@@ -251,10 +271,12 @@ class _AddShotScreenState extends State<AddShotScreen> {
         flavourY: _flavourY,
       );
 
-      Provider.of<CoffeeProvider>(
-        context,
-        listen: false,
-      ).addShot(widget.beanId, shot, updatePreferredGrind: _updatePreferred);
+      final provider = Provider.of<CoffeeProvider>(context, listen: false);
+      if (widget.shot != null) {
+        provider.updateShot(widget.beanId, shot);
+      } else {
+        provider.addShot(widget.beanId, shot, updatePreferredGrind: _updatePreferred);
+      }
       Navigator.pop(context);
     } else {
       ScaffoldMessenger.of(
@@ -270,7 +292,7 @@ class _AddShotScreenState extends State<AddShotScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(l10n.addShot),
+        title: Text(widget.shot != null ? l10n.editShot : l10n.addShot),
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         surfaceTintColor: Theme.of(context).scaffoldBackgroundColor,
       ),
@@ -825,8 +847,8 @@ class _AddShotScreenState extends State<AddShotScreen> {
                                 borderRadius: BorderRadius.circular(16),
                               ),
                             ),
-                            child: const Text(
-                              'SAVE SHOT',
+                            child: Text(
+                              widget.shot != null ? 'UPDATE SHOT' : 'SAVE SHOT',
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,

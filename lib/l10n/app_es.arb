@@ -45,6 +45,7 @@
   "addBeanButton": "AGREGAR GRANO",
   "updateBeanButton": "ACTUALIZAR GRANO",
   "addShot": "Agregar Shot",
+  "editShot": "Editar Shot",
   "done": "Listo",
   "fillAllFields": "Por favor complete todos los campos",
   "bean": "GRANO",
@@ -120,5 +121,10 @@
   "avgDoseOut": "PROM SALIDA",
   "doseInShort": "ENTRADA",
   "doseOutShort": "SALIDA",
-  "grindSizeOverTime": "TAMAÑO DE MOLIENDA EN EL TIEMPO"
+  "grindSizeOverTime": "TAMAÑO DE MOLIENDA EN EL TIEMPO",
+  "discardChangesTitle": "¿Descartar cambios?",
+  "discardChangesMessage": "Tiene cambios sin guardar. ¿Está seguro de que desea volver?",
+  "discard": "Descartar",
+  "beanImage": "FOTO",
+  "tapToAddPhoto": "Toca para agregar una foto"
 }

@@ -1,4 +1,8 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as p;
 import 'package:provider/provider.dart';
 import '../l10n/app_localizations.dart';
 import '../models/models.dart';
@@ -42,6 +46,11 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
   // Ranking (0 = unranked, 1-5 = star rating)
   int _ranking = 0;
 
+  // Image path
+  String? _imagePath;
+
+  bool _hasUnsavedChanges = false;
+
   @override
   void initState() {
     super.initState();
@@ -64,7 +73,19 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
       _robustaPercentage = widget.bean!.robustaPercentage;
       _customFlavorValues = Map.from(widget.bean!.customFlavorValues);
       _ranking = widget.bean!.ranking;
+      _imagePath = widget.bean!.imagePath;
     }
+
+    // Track unsaved changes via text controllers
+    void markChanged() {
+      if (!_hasUnsavedChanges) {
+        setState(() => _hasUnsavedChanges = true);
+      }
+    }
+    _nameController.addListener(markChanged);
+    _originController.addListener(markChanged);
+    _processController.addListener(markChanged);
+    _notesController.addListener(markChanged);
   }
 
   @override
@@ -99,6 +120,7 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
       setState(() {
         _flavourTags.add(_tagController.text.trim());
         _tagController.clear();
+        _hasUnsavedChanges = true;
       });
     }
   }
@@ -106,6 +128,7 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
   void _removeTag(String tag) {
     setState(() {
       _flavourTags.remove(tag);
+      _hasUnsavedChanges = true;
     });
   }
 
@@ -131,6 +154,7 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
         robustaPercentage: _robustaPercentage,
         customFlavorValues: _customFlavorValues,
         ranking: _ranking,
+        imagePath: _imagePath,
       );
 
       if (widget.bean != null) {
@@ -138,6 +162,7 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
       } else {
         Provider.of<CoffeeProvider>(context, listen: false).addBean(bean);
       }
+      _hasUnsavedChanges = false;
       Navigator.pop(context);
     }
   }
@@ -168,24 +193,155 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
     if (picked != null && picked != _roastDate) {
       setState(() {
         _roastDate = picked;
+        _hasUnsavedChanges = true;
       });
     }
+  }
+
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final XFile? image = await picker.pickImage(
+      source: ImageSource.gallery,
+      maxWidth: 1024,
+      maxHeight: 1024,
+      imageQuality: 85,
+    );
+    if (image != null) {
+      // Copy image to app's documents directory for persistence
+      final directory = await getApplicationDocumentsDirectory();
+      final fileName = 'bean_${DateTime.now().millisecondsSinceEpoch}${p.extension(image.path)}';
+      final savedImage = await File(image.path).copy('${directory.path}/$fileName');
+      setState(() {
+        _imagePath = savedImage.path;
+        _hasUnsavedChanges = true;
+      });
+    }
+  }
+
+  void _removeImage() {
+    setState(() {
+      _imagePath = null;
+      _hasUnsavedChanges = true;
+    });
+  }
+
+  Future<bool> _onWillPop() async {
+    if (!_hasUnsavedChanges) return true;
+    final l10n = AppLocalizations.of(context)!;
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.discardChangesTitle),
+        content: Text(l10n.discardChangesMessage),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(l10n.cancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(l10n.discard, style: const TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+    return result ?? false;
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return Scaffold(
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) return;
+        final shouldPop = await _onWillPop();
+        if (shouldPop && context.mounted) {
+          Navigator.pop(context);
+        }
+      },
+      child: Scaffold(
       appBar: AppBar(
         title: Text(widget.bean != null ? l10n.editBean : l10n.addBean),
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         surfaceTintColor: Theme.of(context).scaffoldBackgroundColor,
+        actions: [
+          TextButton(
+            onPressed: _nameController.text.isNotEmpty ? _saveBean : null,
+            child: Text(
+              widget.bean != null ? l10n.updateBeanButton : l10n.addBeanButton,
+              style: TextStyle(
+                color: _nameController.text.isNotEmpty
+                    ? Theme.of(context).colorScheme.primary
+                    : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Image Section
+            _buildLabel(l10n.beanImage),
+            const SizedBox(height: 8),
+            GestureDetector(
+              onTap: _pickImage,
+              child: Container(
+                height: 160,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surface,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
+                  ),
+                  image: _imagePath != null && File(_imagePath!).existsSync()
+                      ? DecorationImage(
+                          image: FileImage(File(_imagePath!)),
+                          fit: BoxFit.cover,
+                        )
+                      : null,
+                ),
+                child: _imagePath == null || !File(_imagePath!).existsSync()
+                    ? Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.add_a_photo,
+                            size: 40,
+                            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            l10n.tapToAddPhoto,
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4),
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      )
+                    : Align(
+                        alignment: Alignment.topRight,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: IconButton(
+                            icon: const Icon(Icons.close, color: Colors.white),
+                            style: IconButton.styleFrom(
+                              backgroundColor: Colors.black54,
+                            ),
+                            onPressed: _removeImage,
+                          ),
+                        ),
+                      ),
+              ),
+            ),
+            const SizedBox(height: 24),
+
             _buildLabel(l10n.beanName),
             _buildTextField(_nameController, l10n.beanNameHint),
             const SizedBox(height: 24),
@@ -254,7 +410,7 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
                     label: Text(level),
                     selected: isSelected,
                     onSelected: (selected) {
-                      if (selected) setState(() => _roastLevel = level);
+                      if (selected) setState(() { _roastLevel = level; _hasUnsavedChanges = true; });
                     },
                     backgroundColor: Theme.of(context).colorScheme.surface,
                     selectedColor: Theme.of(context).colorScheme.primary,
@@ -334,6 +490,7 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
                                   setState(() {
                                     _arabicaPercentage = val;
                                     _robustaPercentage = 100.0 - val;
+                                    _hasUnsavedChanges = true;
                                   });
                                 },
                               ),
@@ -405,6 +562,7 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
                                   setState(() {
                                     _robustaPercentage = val;
                                     _arabicaPercentage = 100.0 - val;
+                                    _hasUnsavedChanges = true;
                                   });
                                 },
                               ),
@@ -440,27 +598,27 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
             _buildSlider(
               l10n.acidity,
               _acidity,
-              (val) => setState(() => _acidity = val),
+              (val) => setState(() { _acidity = val; _hasUnsavedChanges = true; }),
             ),
             _buildSlider(
               l10n.body,
               _body,
-              (val) => setState(() => _body = val),
+              (val) => setState(() { _body = val; _hasUnsavedChanges = true; }),
             ),
             _buildSlider(
               l10n.sweetness,
               _sweetness,
-              (val) => setState(() => _sweetness = val),
+              (val) => setState(() { _sweetness = val; _hasUnsavedChanges = true; }),
             ),
             _buildSlider(
               l10n.bitterness,
               _bitterness,
-              (val) => setState(() => _bitterness = val),
+              (val) => setState(() { _bitterness = val; _hasUnsavedChanges = true; }),
             ),
             _buildSlider(
               l10n.aftertaste,
               _aftertaste,
-              (val) => setState(() => _aftertaste = val),
+              (val) => setState(() { _aftertaste = val; _hasUnsavedChanges = true; }),
             ),
             // Custom flavor attributes from settings
             Consumer<CoffeeProvider>(
@@ -473,7 +631,7 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
                     return _buildSlider(
                       attr,
                       _customFlavorValues[attr] ?? 5.0,
-                      (val) => setState(() => _customFlavorValues[attr] = val),
+                      (val) => setState(() { _customFlavorValues[attr] = val; _hasUnsavedChanges = true; }),
                     );
                   }).toList(),
                 );
@@ -555,6 +713,7 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
           ],
         ),
       ),
+      ),
     );
   }
 
@@ -572,6 +731,7 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
               } else {
                 _ranking = starIndex;
               }
+              _hasUnsavedChanges = true;
             });
           },
           child: Padding(

@@ -236,6 +236,11 @@
     "description": "Title for add shot screen and FAB label"
   },
   
+  "editShot": "Edit Shot",
+  "@editShot": {
+    "description": "Title for edit shot screen"
+  },
+  
   "done": "Done",
   "@done": {
     "description": "Done button label"
@@ -829,5 +834,30 @@
   "grindSizeOverTime": "GRIND SIZE OVER TIME",
   "@grindSizeOverTime": {
     "description": "Chart title for grind size trends"
+  },
+
+  "discardChangesTitle": "Discard Changes?",
+  "@discardChangesTitle": {
+    "description": "Title for discard changes dialog"
+  },
+
+  "discardChangesMessage": "You have unsaved changes. Are you sure you want to go back?",
+  "@discardChangesMessage": {
+    "description": "Message for discard changes dialog"
+  },
+
+  "discard": "Discard",
+  "@discard": {
+    "description": "Discard button label"
+  },
+
+  "beanImage": "PHOTO",
+  "@beanImage": {
+    "description": "Label for bean image section"
+  },
+
+  "tapToAddPhoto": "Tap to add a photo",
+  "@tapToAddPhoto": {
+    "description": "Placeholder text for image picker"
   }
 }

@@ -7,8 +7,8 @@ import '../models/models.dart';
 
 class CoffeeProvider with ChangeNotifier {
   // Constants for migration
-  static const double _legacyDefaultGrindStep = 0.5;
-  static const double _currentDefaultGrindStep = 0.01;
+  static const double _legacyDefaultGrindStep = 0.01;
+  static const double _currentDefaultGrindStep = 0.5;
   
   List<Bean> _beans = [];
   List<CoffeeMachine> _machines = [];
@@ -276,10 +276,50 @@ class CoffeeProvider with ChangeNotifier {
         arabicaPercentage: bean.arabicaPercentage,
         robustaPercentage: bean.robustaPercentage,
         ranking: bean.ranking,
+        imagePath: bean.imagePath,
       );
       
       _saveData();
       notifyListeners();
+    }
+  }
+
+  void updateShot(String beanId, Shot updatedShot) {
+    final beanIndex = _beans.indexWhere((b) => b.id == beanId);
+    if (beanIndex != -1) {
+      final bean = _beans[beanIndex];
+      final updatedShots = List<Shot>.from(bean.shots);
+      final shotIndex = updatedShots.indexWhere((s) => s.id == updatedShot.id);
+      if (shotIndex != -1) {
+        updatedShots[shotIndex] = updatedShot;
+        updatedShots.sort((a, b) => b.timestamp.compareTo(a.timestamp));
+
+        _beans[beanIndex] = Bean(
+          id: bean.id,
+          name: bean.name,
+          notes: bean.notes,
+          preferredGrindSize: bean.preferredGrindSize,
+          shots: updatedShots,
+          origin: bean.origin,
+          roastLevel: bean.roastLevel,
+          process: bean.process,
+          flavourTags: bean.flavourTags,
+          roastDate: bean.roastDate,
+          acidity: bean.acidity,
+          body: bean.body,
+          sweetness: bean.sweetness,
+          bitterness: bean.bitterness,
+          aftertaste: bean.aftertaste,
+          customFlavorValues: bean.customFlavorValues,
+          arabicaPercentage: bean.arabicaPercentage,
+          robustaPercentage: bean.robustaPercentage,
+          ranking: bean.ranking,
+          imagePath: bean.imagePath,
+        );
+
+        _saveData();
+        notifyListeners();
+      }
     }
   }
 

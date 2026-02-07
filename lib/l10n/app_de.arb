@@ -45,6 +45,7 @@
   "addBeanButton": "BOHNE HINZUFÜGEN",
   "updateBeanButton": "BOHNE AKTUALISIEREN",
   "addShot": "Shot hinzufügen",
+  "editShot": "Shot bearbeiten",
   "done": "Fertig",
   "fillAllFields": "Bitte füllen Sie alle Felder aus",
   "bean": "BOHNE",
@@ -162,5 +163,10 @@
   "avgDoseOut": "DURCHSCHN AUSGANG",
   "doseInShort": "EINGANG",
   "doseOutShort": "AUSGANG",
-  "grindSizeOverTime": "MAHLGRAD IM ZEITVERLAUF"
+  "grindSizeOverTime": "MAHLGRAD IM ZEITVERLAUF",
+  "discardChangesTitle": "Änderungen verwerfen?",
+  "discardChangesMessage": "Sie haben nicht gespeicherte Änderungen. Möchten Sie wirklich zurückgehen?",
+  "discard": "Verwerfen",
+  "beanImage": "FOTO",
+  "tapToAddPhoto": "Tippen, um ein Foto hinzuzufügen"
 }

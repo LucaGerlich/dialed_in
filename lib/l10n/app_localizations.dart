@@ -382,6 +382,12 @@ abstract class AppLocalizations {
   /// **'Add Shot'**
   String get addShot;
 
+  /// Title for edit shot screen
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Shot'**
+  String get editShot;
+
   /// Done button label
   ///
   /// In en, this message translates to:
@@ -1071,6 +1077,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'GRIND SIZE OVER TIME'**
   String get grindSizeOverTime;
+
+  /// Title for discard changes dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Discard Changes?'**
+  String get discardChangesTitle;
+
+  /// Message for discard changes dialog
+  ///
+  /// In en, this message translates to:
+  /// **'You have unsaved changes. Are you sure you want to go back?'**
+  String get discardChangesMessage;
+
+  /// Discard button label
+  ///
+  /// In en, this message translates to:
+  /// **'Discard'**
+  String get discard;
+
+  /// Label for bean image section
+  ///
+  /// In en, this message translates to:
+  /// **'PHOTO'**
+  String get beanImage;
+
+  /// Placeholder text for image picker
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to add a photo'**
+  String get tapToAddPhoto;
 }
 
 class _AppLocalizationsDelegate
