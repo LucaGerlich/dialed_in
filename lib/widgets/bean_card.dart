@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import '../models/models.dart';
 
@@ -9,6 +11,11 @@ class BeanCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final hasBeanImage =
+        bean.imagePath != null &&
+        bean.imagePath!.isNotEmpty &&
+        File(bean.imagePath!).existsSync();
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -36,49 +43,60 @@ class BeanCard extends StatelessWidget {
                   top: Radius.circular(20),
                 ),
               ),
-              child: Stack(
-                children: [
-                  Center(
-                    child: Hero(
-                      tag: 'bean-icon-${bean.id}',
-                      child: Icon(
-                        Icons.coffee,
-                        size: 48,
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.onSurface.withValues(alpha: 0.2),
+              child: ClipRRect(
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(20),
+                ),
+                child: Stack(
+                  children: [
+                    Positioned.fill(
+                      child: Hero(
+                        tag: 'bean-icon-${bean.id}',
+                        child: hasBeanImage
+                            ? Image.file(
+                                File(bean.imagePath!),
+                                fit: BoxFit.cover,
+                              )
+                            : Center(
+                                child: Icon(
+                                  Icons.coffee,
+                                  size: 48,
+                                  color: Theme.of(context).colorScheme.onSurface
+                                      .withValues(alpha: 0.2),
+                                ),
+                              ),
                       ),
                     ),
-                  ),
-                  if (bean.ranking > 0)
-                    Positioned(
-                      top: 12,
-                      right: 12,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 6,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.black.withValues(alpha: 0.6),
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                            color: Theme.of(context).colorScheme.primary,
+                    if (bean.ranking > 0)
+                      Positioned(
+                        top: 12,
+                        right: 12,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.black.withValues(alpha: 0.6),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: List.generate(bean.ranking, (index) {
+                              return Icon(
+                                Icons.star,
+                                size: 14,
+                                color: Theme.of(context).colorScheme.primary,
+                              );
+                            }),
                           ),
                         ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: List.generate(bean.ranking, (index) {
-                            return Icon(
-                              Icons.star,
-                              size: 14,
-                              color: Theme.of(context).colorScheme.primary,
-                            );
-                          }),
-                        ),
                       ),
-                    ),
-                ],
+                  ],
+                ),
               ),
             ),
             Padding(

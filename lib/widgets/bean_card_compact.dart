@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import '../models/models.dart';
 
@@ -9,6 +11,11 @@ class BeanCardCompact extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final hasBeanImage =
+        bean.imagePath != null &&
+        bean.imagePath!.isNotEmpty &&
+        File(bean.imagePath!).existsSync();
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -35,50 +42,63 @@ class BeanCardCompact extends StatelessWidget {
                     top: Radius.circular(16),
                   ),
                 ),
-                child: Stack(
-                  children: [
-                    Center(
-                      child: Hero(
-                        tag: 'bean-icon-${bean.id}',
-                        child: Icon(
-                          Icons.coffee,
-                          size: 40,
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.onSurface.withValues(alpha: 0.2),
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(16),
+                  ),
+                  child: Stack(
+                    children: [
+                      Positioned.fill(
+                        child: Hero(
+                          tag: 'bean-icon-${bean.id}',
+                          child: hasBeanImage
+                              ? Image.file(
+                                  File(bean.imagePath!),
+                                  fit: BoxFit.cover,
+                                )
+                              : Center(
+                                  child: Icon(
+                                    Icons.coffee,
+                                    size: 40,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurface
+                                        .withValues(alpha: 0.2),
+                                  ),
+                                ),
                         ),
                       ),
-                    ),
-                    if (bean.ranking > 0)
-                      Positioned(
-                        top: 8,
-                        right: 8,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 6,
-                            vertical: 4,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.black.withValues(alpha: 0.6),
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(
-                              color: Theme.of(context).colorScheme.primary,
-                              width: 0.5,
+                      if (bean.ranking > 0)
+                        Positioned(
+                          top: 8,
+                          right: 8,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 6,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.black.withValues(alpha: 0.6),
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(
+                                color: Theme.of(context).colorScheme.primary,
+                                width: 0.5,
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: List.generate(bean.ranking, (index) {
+                                return Icon(
+                                  Icons.star,
+                                  size: 10,
+                                  color: Theme.of(context).colorScheme.primary,
+                                );
+                              }),
                             ),
                           ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: List.generate(bean.ranking, (index) {
-                              return Icon(
-                                Icons.star,
-                                size: 10,
-                                color: Theme.of(context).colorScheme.primary,
-                              );
-                            }),
-                          ),
                         ),
-                      ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -89,9 +109,7 @@ class BeanCardCompact extends StatelessWidget {
                 children: [
                   Text(
                     bean.name,
-                    style: Theme.of(
-                      context,
-                    ).textTheme.titleMedium?.copyWith(
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
                     ),

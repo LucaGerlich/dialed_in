@@ -1,4 +1,8 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import '../l10n/app_localizations.dart';
 import '../models/models.dart';
@@ -19,6 +23,7 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
   late TextEditingController _processController;
   late TextEditingController _notesController;
   final TextEditingController _tagController = TextEditingController();
+  String? _beanImagePath;
 
   String _roastLevel = 'Medium';
   final List<String> _roastLevels = ['Light', 'Medium', 'Dark'];
@@ -51,6 +56,7 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
       text: widget.bean?.process ?? '',
     );
     _notesController = TextEditingController(text: widget.bean?.notes ?? '');
+    _beanImagePath = widget.bean?.imagePath;
     if (widget.bean != null) {
       _roastLevel = widget.bean!.roastLevel;
       _roastDate = widget.bean!.roastDate;
@@ -109,6 +115,92 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
     });
   }
 
+  Future<void> _pickBeanImage() async {
+    try {
+      final result = await FilePicker.platform.pickFiles(
+        type: FileType.image,
+        allowMultiple: false,
+      );
+
+      if (result == null || result.files.isEmpty) return;
+      final selectedFile = result.files.single;
+      final selectedPath = selectedFile.path;
+      if (selectedPath == null || selectedPath.isEmpty) return;
+
+      final copiedImagePath = await _copyImageToAppStorage(
+        selectedPath,
+        extension: selectedFile.extension,
+      );
+      if (!mounted) return;
+
+      final previousImagePath = _beanImagePath;
+      setState(() {
+        _beanImagePath = copiedImagePath;
+      });
+
+      if (previousImagePath != null && previousImagePath != copiedImagePath) {
+        await _deleteManagedImage(previousImagePath);
+      }
+    } catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Could not load image: $error')));
+    }
+  }
+
+  Future<void> _removeBeanImage() async {
+    final currentImagePath = _beanImagePath;
+    setState(() {
+      _beanImagePath = null;
+    });
+    await _deleteManagedImage(currentImagePath);
+  }
+
+  Future<String> _copyImageToAppStorage(
+    String sourcePath, {
+    String? extension,
+  }) async {
+    final sourceFile = File(sourcePath);
+    final fileExtension = (extension != null && extension.isNotEmpty)
+        ? '.${extension.toLowerCase()}'
+        : '';
+    final docsDir = await getApplicationDocumentsDirectory();
+    final imagesDir = Directory(
+      '${docsDir.path}${Platform.pathSeparator}bean_images',
+    );
+    if (!await imagesDir.exists()) {
+      await imagesDir.create(recursive: true);
+    }
+
+    final fileName =
+        'bean_${DateTime.now().microsecondsSinceEpoch}$fileExtension';
+    final destinationPath =
+        '${imagesDir.path}${Platform.pathSeparator}$fileName';
+    final copiedFile = await sourceFile.copy(destinationPath);
+    return copiedFile.path;
+  }
+
+  Future<void> _deleteManagedImage(String? imagePath) async {
+    if (imagePath == null || imagePath.isEmpty) return;
+    try {
+      final docsDir = await getApplicationDocumentsDirectory();
+      final managedDirectoryPath = Directory(
+        '${docsDir.path}${Platform.pathSeparator}bean_images',
+      ).path;
+      final managedDirectoryPrefix =
+          '$managedDirectoryPath${Platform.pathSeparator}';
+      if (!imagePath.startsWith(managedDirectoryPrefix)) return;
+
+      final imageFile = File(imagePath);
+      if (await imageFile.exists()) {
+        await imageFile.delete();
+      }
+    } catch (_) {
+      // Best effort cleanup only.
+    }
+  }
+
   void _saveBean() {
     if (_nameController.text.isNotEmpty) {
       final bean = Bean(
@@ -118,6 +210,7 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
         roastLevel: _roastLevel,
         process: _processController.text,
         notes: _notesController.text,
+        imagePath: _beanImagePath,
         roastDate: _roastDate,
         shots: widget.bean?.shots, // Keep shots if editing
         preferredGrindSize: widget.bean?.preferredGrindSize ?? 10.0,
@@ -175,6 +268,11 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final hasBeanImage =
+        _beanImagePath != null &&
+        _beanImagePath!.isNotEmpty &&
+        File(_beanImagePath!).existsSync();
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.bean != null ? l10n.editBean : l10n.addBean),
@@ -188,6 +286,73 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
           children: [
             _buildLabel(l10n.beanName),
             _buildTextField(_nameController, l10n.beanNameHint),
+            const SizedBox(height: 24),
+
+            _buildLabel('CARD IMAGE'),
+            Container(
+              height: 170,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surface,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.onSurface.withValues(alpha: 0.1),
+                ),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: hasBeanImage
+                    ? Image.file(
+                        File(_beanImagePath!),
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                      )
+                    : Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.image_outlined,
+                              size: 36,
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.onSurface.withValues(alpha: 0.35),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              'No image selected',
+                              style: TextStyle(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurface.withValues(alpha: 0.5),
+                                fontFamily: 'RobotoMono',
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+              ),
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                FilledButton.icon(
+                  onPressed: _pickBeanImage,
+                  icon: Icon(
+                    hasBeanImage ? Icons.edit : Icons.add_photo_alternate,
+                  ),
+                  label: Text(hasBeanImage ? 'Change Image' : 'Add Image'),
+                ),
+                const SizedBox(width: 8),
+                if (hasBeanImage)
+                  OutlinedButton.icon(
+                    onPressed: _removeBeanImage,
+                    icon: const Icon(Icons.delete_outline),
+                    label: const Text('Remove'),
+                  ),
+              ],
+            ),
             const SizedBox(height: 24),
 
             _buildLabel(l10n.ranking),

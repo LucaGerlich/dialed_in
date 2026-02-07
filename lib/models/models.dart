@@ -1,17 +1,8 @@
 import 'package:uuid/uuid.dart';
 
-enum MaintenanceType {
-  clean,
-  decalcify,
-  checkMachine,
-  checkGrinder,
-}
+enum MaintenanceType { clean, decalcify, checkMachine, checkGrinder }
 
-enum MaintenanceIntervalType {
-  shots,
-  days,
-  waterLiters,
-}
+enum MaintenanceIntervalType { shots, days, waterLiters }
 
 class MaintenanceTask {
   final String id;
@@ -223,6 +214,7 @@ class Bean {
   final String id;
   final String name;
   final String notes;
+  final String? imagePath;
   final double preferredGrindSize;
   final List<Shot> shots;
 
@@ -254,6 +246,7 @@ class Bean {
     String? id,
     required this.name,
     this.notes = '',
+    this.imagePath,
     this.preferredGrindSize = 10.0,
     List<Shot>? shots,
     this.origin = '',
@@ -279,6 +272,7 @@ class Bean {
       'id': id,
       'name': name,
       'notes': notes,
+      'imagePath': imagePath,
       'preferredGrindSize': preferredGrindSize,
       'shots': shots.map((s) => s.toJson()).toList(),
       'origin': origin,
@@ -303,6 +297,7 @@ class Bean {
       id: json['id'],
       name: json['name'],
       notes: json['notes'] ?? '',
+      imagePath: json['imagePath'],
       preferredGrindSize: json['preferredGrindSize']?.toDouble() ?? 10.0,
       shots:
           (json['shots'] as List?)?.map((s) => Shot.fromJson(s)).toList() ?? [],

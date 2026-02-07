@@ -258,7 +258,11 @@ class CoffeeProvider with ChangeNotifier {
   }
 
   void deleteBean(String id) {
-    _beans.removeWhere((b) => b.id == id);
+    final beanIndex = _beans.indexWhere((b) => b.id == id);
+    if (beanIndex == -1) return;
+
+    _deleteBeanImageIfManaged(_beans[beanIndex].imagePath);
+    _beans.removeAt(beanIndex);
     _saveData();
     notifyListeners();
   }
@@ -266,6 +270,10 @@ class CoffeeProvider with ChangeNotifier {
   void updateBean(Bean updatedBean) {
     final index = _beans.indexWhere((b) => b.id == updatedBean.id);
     if (index != -1) {
+      final previousBean = _beans[index];
+      if (previousBean.imagePath != updatedBean.imagePath) {
+        _deleteBeanImageIfManaged(previousBean.imagePath);
+      }
       _beans[index] = updatedBean;
       _saveData();
       notifyListeners();
@@ -291,6 +299,7 @@ class CoffeeProvider with ChangeNotifier {
         id: bean.id,
         name: bean.name,
         notes: bean.notes,
+        imagePath: bean.imagePath,
         preferredGrindSize: newPreferred,
         shots: updatedShots,
         origin: bean.origin,
@@ -311,6 +320,27 @@ class CoffeeProvider with ChangeNotifier {
 
       _saveData();
       notifyListeners();
+    }
+  }
+
+  Future<void> _deleteBeanImageIfManaged(String? imagePath) async {
+    if (imagePath == null || imagePath.isEmpty) return;
+    try {
+      final docsDir = await getApplicationDocumentsDirectory();
+      final managedDirectoryPath = Directory(
+        '${docsDir.path}${Platform.pathSeparator}bean_images',
+      ).path;
+      final managedDirectoryPrefix =
+          '$managedDirectoryPath${Platform.pathSeparator}';
+
+      if (!imagePath.startsWith(managedDirectoryPrefix)) return;
+
+      final imageFile = File(imagePath);
+      if (await imageFile.exists()) {
+        await imageFile.delete();
+      }
+    } catch (_) {
+      // Best effort cleanup only.
     }
   }
 

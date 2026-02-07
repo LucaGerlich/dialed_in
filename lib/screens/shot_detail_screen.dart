@@ -508,7 +508,11 @@ class ShotDetailScreen extends StatelessWidget {
                     size: 20,
                   ),
                 )
-              : Icon(icon, color: Theme.of(context).colorScheme.primary, size: 20),
+              : Icon(
+                  icon,
+                  color: Theme.of(context).colorScheme.primary,
+                  size: 20,
+                ),
           const SizedBox(height: 8),
           Text(
             label,
@@ -628,6 +632,7 @@ class ShotDetailScreen extends StatelessWidget {
                 id: bean.id,
                 name: bean.name,
                 notes: bean.notes,
+                imagePath: bean.imagePath,
                 preferredGrindSize: bean.preferredGrindSize,
                 shots: updatedShots,
                 origin: bean.origin,
@@ -635,6 +640,15 @@ class ShotDetailScreen extends StatelessWidget {
                 process: bean.process,
                 flavourTags: bean.flavourTags,
                 roastDate: bean.roastDate,
+                acidity: bean.acidity,
+                body: bean.body,
+                sweetness: bean.sweetness,
+                bitterness: bean.bitterness,
+                aftertaste: bean.aftertaste,
+                customFlavorValues: bean.customFlavorValues,
+                arabicaPercentage: bean.arabicaPercentage,
+                robustaPercentage: bean.robustaPercentage,
+                ranking: bean.ranking,
               );
 
               provider.updateBean(updatedBean);

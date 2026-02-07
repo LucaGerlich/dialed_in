@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -28,6 +30,10 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
       builder: (context, provider, child) {
         final bean = provider.beans.firstWhere((b) => b.id == widget.beanId);
         final shots = bean.shots;
+        final hasBeanImage =
+            bean.imagePath != null &&
+            bean.imagePath!.isNotEmpty &&
+            File(bean.imagePath!).existsSync();
 
         // Calculate Stats
         final totalBrews = shots.length;
@@ -83,13 +89,23 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                 Center(
                   child: Hero(
                     tag: 'bean-icon-${bean.id}',
-                    child: Icon(
-                      Icons.coffee,
-                      size: 80,
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.primary.withValues(alpha: 0.3),
-                    ),
+                    child: hasBeanImage
+                        ? ClipRRect(
+                            borderRadius: BorderRadius.circular(16),
+                            child: Image.file(
+                              File(bean.imagePath!),
+                              width: 220,
+                              height: 140,
+                              fit: BoxFit.cover,
+                            ),
+                          )
+                        : Icon(
+                            Icons.coffee,
+                            size: 80,
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.primary.withValues(alpha: 0.3),
+                          ),
                   ),
                 ),
                 const SizedBox(height: 16),
