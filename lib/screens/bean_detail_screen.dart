@@ -25,87 +25,208 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return Consumer<CoffeeProvider>(
-      builder: (context, provider, child) {
-        final bean = provider.beans.firstWhere((b) => b.id == widget.beanId);
-        final shots = bean.shots;
+    return DefaultTabController(
+      length: 2,
+      child: Consumer<CoffeeProvider>(
+        builder: (context, provider, child) {
+          final bean = provider.beans.firstWhere((b) => b.id == widget.beanId);
+          final shots = bean.shots;
 
-        // Calculate Stats
-        final totalBrews = shots.length;
-        final avgDose = shots.isEmpty
-            ? 0.0
-            : shots.map((s) => s.doseIn).reduce((a, b) => a + b) / totalBrews;
-        final avgYield = shots.isEmpty
-            ? 0.0
-            : shots.map((s) => s.doseOut).reduce((a, b) => a + b) / totalBrews;
+          // Calculate Stats
+          final totalBrews = shots.length;
+          final avgDose = shots.isEmpty
+              ? 0.0
+              : shots.map((s) => s.doseIn).reduce((a, b) => a + b) /
+                  totalBrews;
+          final avgYield = shots.isEmpty
+              ? 0.0
+              : shots.map((s) => s.doseOut).reduce((a, b) => a + b) /
+                  totalBrews;
 
-        return Scaffold(
-          appBar: AppBar(
-            title: Text(
-              bean.name,
-              style: TextStyle(
-                fontFamily: 'RobotoMono',
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            surfaceTintColor: Theme.of(context).scaffoldBackgroundColor,
-            actions: [
-              IconButton(
-                icon: const Icon(Icons.edit),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    FadePageRoute(
-                      builder: (context) => AddBeanScreen(bean: bean),
+          final hasImage =
+              bean.imagePath != null && File(bean.imagePath!).existsSync();
+
+          return Scaffold(
+            body: NestedScrollView(
+              headerSliverBuilder: (context, innerBoxIsScrolled) => [
+                SliverOverlapAbsorber(
+                  handle:
+                      NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                  sliver: SliverAppBar(
+                    expandedHeight: hasImage ? 280 : null,
+                    pinned: true,
+                    forceElevated: innerBoxIsScrolled,
+                    backgroundColor:
+                        Theme.of(context).scaffoldBackgroundColor,
+                    surfaceTintColor:
+                        Theme.of(context).scaffoldBackgroundColor,
+                    foregroundColor: hasImage && !innerBoxIsScrolled
+                        ? Colors.white
+                        : Theme.of(context).colorScheme.onSurface,
+                    title: Text(
+                      bean.name,
+                      style: const TextStyle(
+                        fontFamily: 'RobotoMono',
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  );
-                },
-              ),
-              IconButton(
-                icon: const Icon(Icons.delete),
-                onPressed: () {
-                  _confirmDelete(context, provider, bean);
-                },
-              ),
-            ],
-          ),
-          body: SingleChildScrollView(
-            padding: EdgeInsets.fromLTRB(
-              16,
-              16,
-              16,
-              16 + 56 + 16 + MediaQuery.of(context).padding.bottom,
-            ), // 16 for standard, 56 for FAB height, 16 for margin
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Hero coffee icon or image
-                if (bean.imagePath != null && File(bean.imagePath!).existsSync())
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(16),
-                    child: Image.file(
-                      File(bean.imagePath!),
-                      height: 200,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                    ),
-                  )
-                else
-                  Center(
-                    child: Hero(
-                      tag: 'bean-icon-${bean.id}',
-                      child: Icon(
-                        Icons.coffee,
-                        size: 80,
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.primary.withValues(alpha: 0.3),
+                    actions: [
+                      IconButton(
+                        icon: const Icon(Icons.edit),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            FadePageRoute(
+                              builder: (context) => AddBeanScreen(bean: bean),
+                            ),
+                          );
+                        },
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.delete),
+                        onPressed: () {
+                          _confirmDelete(context, provider, bean);
+                        },
+                      ),
+                    ],
+                    flexibleSpace: hasImage
+                        ? FlexibleSpaceBar(
+                            background: Stack(
+                              fit: StackFit.expand,
+                              children: [
+                                Image.file(
+                                  File(bean.imagePath!),
+                                  fit: BoxFit.cover,
+                                ),
+                                DecoratedBox(
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
+                                      stops: const [0.0, 0.35, 0.65, 1.0],
+                                      colors: [
+                                        Colors.black.withValues(alpha: 0.6),
+                                        Colors.transparent,
+                                        Colors.transparent,
+                                        Colors.black.withValues(alpha: 0.3),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        : null,
+                    bottom: PreferredSize(
+                      preferredSize: const Size.fromHeight(48),
+                      child: Container(
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                        child: TabBar(
+                          indicatorColor:
+                              Theme.of(context).colorScheme.primary,
+                          labelColor: Theme.of(context).colorScheme.primary,
+                          unselectedLabelColor: Theme.of(context)
+                              .colorScheme
+                              .onSurface
+                              .withValues(alpha: 0.6),
+                          labelStyle: const TextStyle(
+                            fontFamily: 'RobotoMono',
+                            fontWeight: FontWeight.bold,
+                            fontSize: 13,
+                          ),
+                          unselectedLabelStyle: const TextStyle(
+                            fontFamily: 'RobotoMono',
+                            fontSize: 13,
+                          ),
+                          tabs: [
+                            Tab(text: l10n.tabDetails),
+                            Tab(text: l10n.tabShots),
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                const SizedBox(height: 16),
-                // Bean Info Bento
+                ),
+              ],
+              body: TabBarView(
+                children: [
+                  Builder(
+                    builder: (context) => _buildDetailsTab(
+                      context,
+                      bean,
+                      provider,
+                      shots,
+                      totalBrews,
+                      avgDose,
+                      avgYield,
+                      l10n,
+                    ),
+                  ),
+                  Builder(
+                    builder: (context) => _buildShotsTab(
+                      context,
+                      bean,
+                      provider,
+                      shots,
+                      l10n,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            floatingActionButton: AnimatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  FadePageRoute(
+                    builder: (context) => AddShotScreen(beanId: widget.beanId),
+                  ),
+                );
+              },
+              child: FloatingActionButton.extended(
+                heroTag: 'bean_detail_fab',
+                onPressed: null,
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                icon: const Icon(Icons.add),
+                label: Text(l10n.addShot),
+              ),
+            ),
+            floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildDetailsTab(
+    BuildContext context,
+    Bean bean,
+    CoffeeProvider provider,
+    List<Shot> shots,
+    int totalBrews,
+    double avgDose,
+    double avgYield,
+    AppLocalizations l10n,
+  ) {
+    return CustomScrollView(
+      key: const PageStorageKey<String>('details'),
+      slivers: [
+        SliverOverlapInjector(
+          handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+        ),
+        SliverPadding(
+          padding: EdgeInsets.fromLTRB(
+            16,
+            16,
+            16,
+            16 + 56 + 16 + MediaQuery.of(context).padding.bottom,
+          ),
+          sliver: SliverToBoxAdapter(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Bean Info
                 _buildBentoContainer(
                   context,
                   child: Column(
@@ -115,9 +236,10 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                         l10n.origin,
                         style: TextStyle(
                           fontFamily: 'RobotoMono',
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.onSurface.withValues(alpha: 0.6),
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onSurface
+                              .withValues(alpha: 0.6),
                           fontSize: 12,
                         ),
                       ),
@@ -159,14 +281,13 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                                   ),
                                 ),
                                 Text(
-                                  DateFormat(
-                                    'MMM d, yyyy',
-                                  ).format(bean.roastDate!),
+                                  DateFormat('MMM d, yyyy')
+                                      .format(bean.roastDate!),
                                   style: TextStyle(
                                     fontFamily: 'RobotoMono',
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.onSurface,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurface,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -190,9 +311,8 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                                   '${DateTime.now().difference(bean.roastDate!).inDays} days',
                                   style: TextStyle(
                                     fontFamily: 'RobotoMono',
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.primary,
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -206,9 +326,10 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                         l10n.notes,
                         style: TextStyle(
                           fontFamily: 'RobotoMono',
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.onSurface.withValues(alpha: 0.6),
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onSurface
+                              .withValues(alpha: 0.6),
                           fontSize: 12,
                         ),
                       ),
@@ -216,9 +337,10 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                         bean.notes,
                         style: TextStyle(
                           fontFamily: 'RobotoMono',
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.onSurface.withValues(alpha: 0.7),
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onSurface
+                              .withValues(alpha: 0.7),
                         ),
                       ),
                       if (bean.flavourTags.isNotEmpty) ...[
@@ -227,9 +349,10 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                           l10n.flavorTags,
                           style: TextStyle(
                             fontFamily: 'RobotoMono',
-                            color: Theme.of(
-                              context,
-                            ).colorScheme.onSurface.withValues(alpha: 0.6),
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onSurface
+                                .withValues(alpha: 0.6),
                             fontSize: 12,
                           ),
                         ),
@@ -251,9 +374,8 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                                 tag,
                                 style: TextStyle(
                                   fontFamily: 'RobotoMono',
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.onPrimary,
+                                  color:
+                                      Theme.of(context).colorScheme.onPrimary,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 11,
                                 ),
@@ -270,9 +392,10 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                           l10n.beanComposition,
                           style: TextStyle(
                             fontFamily: 'RobotoMono',
-                            color: Theme.of(
-                              context,
-                            ).colorScheme.onSurface.withValues(alpha: 0.6),
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onSurface
+                                .withValues(alpha: 0.6),
                             fontSize: 12,
                           ),
                         ),
@@ -286,12 +409,15 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                                   vertical: 6,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.primary.withValues(alpha: 0.2),
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .primary
+                                      .withValues(alpha: 0.2),
                                   borderRadius: BorderRadius.circular(8),
                                   border: Border.all(
-                                    color: Theme.of(context).colorScheme.primary
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .primary
                                         .withValues(alpha: 0.5),
                                   ),
                                 ),
@@ -299,9 +425,8 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                                   '${l10n.arabica} ${bean.arabicaPercentage.toStringAsFixed(0)}%',
                                   style: TextStyle(
                                     fontFamily: 'RobotoMono',
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.primary,
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
                                     fontSize: 10,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -316,12 +441,15 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                                   vertical: 6,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.primary.withValues(alpha: 0.2),
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .primary
+                                      .withValues(alpha: 0.2),
                                   borderRadius: BorderRadius.circular(8),
                                   border: Border.all(
-                                    color: Theme.of(context).colorScheme.primary
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .primary
                                         .withValues(alpha: 0.5),
                                   ),
                                 ),
@@ -329,9 +457,8 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                                   '${l10n.robusta} ${bean.robustaPercentage.toStringAsFixed(0)}%',
                                   style: TextStyle(
                                     fontFamily: 'RobotoMono',
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.primary,
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
                                     fontSize: 10,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -352,7 +479,7 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                     Expanded(
                       child: _buildStatCard(
                         context,
-                        'BREWS',
+                        l10n.totalBrews,
                         totalBrews.toString(),
                       ),
                     ),
@@ -360,7 +487,7 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                     Expanded(
                       child: _buildStatCard(
                         context,
-                        'AVG IN',
+                        l10n.avgDoseIn,
                         '${avgDose.toStringAsFixed(1)}g',
                       ),
                     ),
@@ -368,7 +495,7 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                     Expanded(
                       child: _buildStatCard(
                         context,
-                        'AVG OUT',
+                        l10n.avgDoseOut,
                         '${avgYield.toStringAsFixed(1)}g',
                       ),
                     ),
@@ -376,13 +503,12 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                 ),
                 const SizedBox(height: 16),
 
-                // Flavor Wheel (Radar Chart)
+                // Flavor Wheel
                 _buildBentoContainer(
                   context,
                   height: 300,
                   child: Builder(
                     builder: (context) {
-                      // Default flavor attributes
                       final defaultLabels = [
                         l10n.acidity,
                         l10n.body,
@@ -398,12 +524,7 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                         bean.aftertaste,
                       ];
 
-                      // Get custom attributes currently defined in settings
-                      // Custom attributes not in settings are intentionally excluded
-                      // New custom attributes default to 5.0 if not yet set for this bean
                       final customAttrs = provider.customFlavorAttributes;
-
-                      // Build combined lists
                       final allLabels = [...defaultLabels, ...customAttrs];
                       final allValues = [
                         ...defaultValues,
@@ -418,9 +539,10 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                             l10n.flavorProfile,
                             style: TextStyle(
                               fontFamily: 'RobotoMono',
-                              color: Theme.of(
-                                context,
-                              ).colorScheme.onSurface.withValues(alpha: 0.6),
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurface
+                                  .withValues(alpha: 0.6),
                               fontSize: 12,
                             ),
                           ),
@@ -434,9 +556,8 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                                         .colorScheme
                                         .primary
                                         .withValues(alpha: 0.3),
-                                    borderColor: Theme.of(
-                                      context,
-                                    ).colorScheme.primary,
+                                    borderColor:
+                                        Theme.of(context).colorScheme.primary,
                                     entryRadius: 2,
                                     dataEntries: allValues
                                         .map((v) => RadarEntry(value: v))
@@ -452,7 +573,9 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                                 titlePositionPercentageOffset: 0.2,
                                 titleTextStyle: TextStyle(
                                   fontFamily: 'RobotoMono',
-                                  color: Theme.of(context).colorScheme.onSurface
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onSurface
                                       .withValues(alpha: 0.6),
                                   fontSize: 10,
                                 ),
@@ -469,13 +592,17 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                                 ticksTextStyle: const TextStyle(
                                   color: Colors.transparent,
                                   fontSize: 0.0,
-                                ), // Hide ticks
+                                ),
                                 tickBorderData: BorderSide(
-                                  color: Theme.of(context).colorScheme.onSurface
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onSurface
                                       .withValues(alpha: 0.1),
                                 ),
                                 gridBorderData: BorderSide(
-                                  color: Theme.of(context).colorScheme.onSurface
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onSurface
                                       .withValues(alpha: 0.1),
                                   width: 1,
                                 ),
@@ -491,7 +618,7 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                 ),
                 const SizedBox(height: 16),
 
-                // Chart Bento
+                // Grind Size Chart
                 if (shots.length > 1)
                   _buildBentoContainer(
                     context,
@@ -503,9 +630,10 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                           l10n.grindSizeOverTime,
                           style: TextStyle(
                             fontFamily: 'RobotoMono',
-                            color: Theme.of(
-                              context,
-                            ).colorScheme.onSurface.withValues(alpha: 0.6),
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onSurface
+                                .withValues(alpha: 0.6),
                             fontSize: 12,
                           ),
                         ),
@@ -523,7 +651,9 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                                     vertical: 8,
                                   ),
                                   tooltipBorder: BorderSide(
-                                    color: Theme.of(context).colorScheme.primary
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .primary
                                         .withValues(alpha: 0.3),
                                     width: 1,
                                   ),
@@ -548,9 +678,9 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                                                 .toStringAsFixed(1),
                                             style: TextStyle(
                                               fontFamily: 'RobotoMono',
-                                              color: Theme.of(
-                                                context,
-                                              ).colorScheme.primary,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primary,
                                               fontSize: 18,
                                               fontWeight: FontWeight.bold,
                                             ),
@@ -577,7 +707,9 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                                 show: true,
                                 drawVerticalLine: false,
                                 getDrawingHorizontalLine: (value) => FlLine(
-                                  color: Theme.of(context).colorScheme.onSurface
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onSurface
                                       .withValues(alpha: 0.05),
                                   strokeWidth: 1,
                                 ),
@@ -600,19 +732,19 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                                     getDotPainter:
                                         (spot, percent, barData, index) =>
                                             FlDotCirclePainter(
-                                              radius: 6,
-                                              color: Theme.of(
-                                                context,
-                                              ).colorScheme.primary,
-                                              strokeWidth: 2,
-                                              strokeColor: Theme.of(
-                                                context,
-                                              ).colorScheme.surface,
-                                            ),
+                                      radius: 6,
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
+                                      strokeWidth: 2,
+                                      strokeColor:
+                                          Theme.of(context).colorScheme.surface,
+                                    ),
                                   ),
                                   belowBarData: BarAreaData(
                                     show: true,
-                                    color: Theme.of(context).colorScheme.primary
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .primary
                                         .withValues(alpha: 0.1),
                                   ),
                                 ),
@@ -623,21 +755,82 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                       ],
                     ),
                   ),
-                const SizedBox(height: 16),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 
-                // Shot List
-                Text(
-                  'HISTORY',
-                  style: TextStyle(
-                    fontFamily: 'RobotoMono',
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.onSurface.withValues(alpha: 0.6),
+  Widget _buildShotsTab(
+    BuildContext context,
+    Bean bean,
+    CoffeeProvider provider,
+    List<Shot> shots,
+    AppLocalizations l10n,
+  ) {
+    return CustomScrollView(
+      key: const PageStorageKey<String>('shots'),
+      slivers: [
+        SliverOverlapInjector(
+          handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+        ),
+        if (shots.isEmpty)
+          SliverFillRemaining(
+            child: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.coffee_outlined,
+                    size: 64,
+                    color: Theme.of(context)
+                        .colorScheme
+                        .onSurface
+                        .withValues(alpha: 0.2),
                   ),
-                ),
-                const SizedBox(height: 8),
-                ...shots.map((shot) {
+                  const SizedBox(height: 16),
+                  Text(
+                    l10n.noShotsYet,
+                    style: TextStyle(
+                      fontFamily: 'RobotoMono',
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onSurface
+                          .withValues(alpha: 0.5),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    l10n.noShotsDescription,
+                    style: TextStyle(
+                      fontFamily: 'RobotoMono',
+                      fontSize: 13,
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onSurface
+                          .withValues(alpha: 0.4),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          )
+        else
+          SliverPadding(
+            padding: EdgeInsets.fromLTRB(
+              16,
+              16,
+              16,
+              16 + 56 + 16 + MediaQuery.of(context).padding.bottom,
+            ),
+            sliver: SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (context, index) {
+                  final shot = shots[index];
                   final machine = provider.machines.firstWhere(
                     (m) => m.id == shot.machineId,
                     orElse: () => CoffeeMachine(name: 'Unknown', id: ''),
@@ -664,9 +857,10 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                         color: Theme.of(context).colorScheme.surface,
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.onSurface.withValues(alpha: 0.05),
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onSurface
+                              .withValues(alpha: 0.05),
                         ),
                       ),
                       child: Column(
@@ -676,10 +870,9 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                DateFormat(
-                                  'MMM d, HH:mm',
-                                ).format(shot.timestamp),
-                                style: TextStyle(
+                                DateFormat('MMM d, HH:mm')
+                                    .format(shot.timestamp),
+                                style: const TextStyle(
                                   fontFamily: 'RobotoMono',
                                   color: Colors.grey,
                                   fontSize: 12,
@@ -689,7 +882,8 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                                 shot.grindSize.toStringAsFixed(2),
                                 style: TextStyle(
                                   fontFamily: 'RobotoMono',
-                                  color: Theme.of(context).colorScheme.primary,
+                                  color:
+                                      Theme.of(context).colorScheme.primary,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16,
                                 ),
@@ -703,17 +897,17 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                               Text(
                                 '${shot.doseIn}g -> ${shot.doseOut}g',
                                 style: TextStyle(
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.onSurface,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onSurface,
                                 ),
                               ),
                               Text(
                                 '${shot.duration}s',
                                 style: TextStyle(
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.onSurface,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onSurface,
                                 ),
                               ),
                             ],
@@ -734,31 +928,12 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                       ),
                     ),
                   );
-                }),
-              ],
+                },
+                childCount: shots.length,
+              ),
             ),
           ),
-          floatingActionButton: AnimatedButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                FadePageRoute(
-                  builder: (context) => AddShotScreen(beanId: widget.beanId),
-                ),
-              );
-            },
-            child: FloatingActionButton.extended(
-              heroTag: 'bean_detail_fab',
-              onPressed: null,
-              backgroundColor: Theme.of(context).colorScheme.primary,
-              foregroundColor: Theme.of(context).colorScheme.onPrimary,
-              icon: const Icon(Icons.add),
-              label: Text(l10n.addShot),
-            ),
-          ),
-          floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-        );
-      },
+      ],
     );
   }
 
@@ -804,9 +979,10 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
-          color: Theme.of(
-            context,
-          ).colorScheme.onSurface.withValues(alpha: 0.05),
+          color: Theme.of(context)
+              .colorScheme
+              .onSurface
+              .withValues(alpha: 0.05),
         ),
       ),
       child: child,
@@ -816,47 +992,30 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
   Widget _buildStatCard(
     BuildContext context,
     String label,
-    String value, {
-    IconData? icon,
-    String? heroTag,
-  }) {
+    String value,
+  ) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: Theme.of(
-            context,
-          ).colorScheme.onSurface.withValues(alpha: 0.05),
+          color: Theme.of(context)
+              .colorScheme
+              .onSurface
+              .withValues(alpha: 0.05),
         ),
       ),
       child: Column(
         children: [
-          if (icon != null) ...[
-            heroTag != null
-                ? Hero(
-                    tag: heroTag,
-                    child: Icon(
-                      icon,
-                      color: Theme.of(context).colorScheme.primary,
-                      size: 20,
-                    ),
-                  )
-                : Icon(
-                    icon,
-                    color: Theme.of(context).colorScheme.primary,
-                    size: 20,
-                  ),
-            const SizedBox(height: 4),
-          ],
           Text(
             label,
             style: TextStyle(
               fontFamily: 'RobotoMono',
-              color: Theme.of(
-                context,
-              ).colorScheme.onSurface.withValues(alpha: 0.6),
+              color: Theme.of(context)
+                  .colorScheme
+                  .onSurface
+                  .withValues(alpha: 0.6),
               fontSize: 10,
             ),
           ),
@@ -882,7 +1041,8 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
         color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.5),
+          color:
+              Theme.of(context).colorScheme.primary.withValues(alpha: 0.5),
         ),
       ),
       child: Text(

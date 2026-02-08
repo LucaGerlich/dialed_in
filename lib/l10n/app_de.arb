@@ -168,5 +168,9 @@
   "discardChangesMessage": "Sie haben nicht gespeicherte Änderungen. Möchten Sie wirklich zurückgehen?",
   "discard": "Verwerfen",
   "beanImage": "FOTO",
-  "tapToAddPhoto": "Tippen, um ein Foto hinzuzufügen"
+  "tapToAddPhoto": "Tippen, um ein Foto hinzuzufügen",
+  "tabDetails": "Details",
+  "tabShots": "Shots",
+  "noShotsYet": "Noch keine Shots",
+  "noShotsDescription": "Tippe +, um deinen ersten Shot zu loggen"
 }

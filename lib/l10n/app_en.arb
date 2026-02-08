@@ -859,5 +859,25 @@
   "tapToAddPhoto": "Tap to add a photo",
   "@tapToAddPhoto": {
     "description": "Placeholder text for image picker"
+  },
+
+  "tabDetails": "Details",
+  "@tabDetails": {
+    "description": "Tab label for bean details"
+  },
+
+  "tabShots": "Shots",
+  "@tabShots": {
+    "description": "Tab label for shot history"
+  },
+
+  "noShotsYet": "No shots yet",
+  "@noShotsYet": {
+    "description": "Empty state title when bean has no shots"
+  },
+
+  "noShotsDescription": "Tap + to log your first shot",
+  "@noShotsDescription": {
+    "description": "Empty state description when bean has no shots"
   }
 }

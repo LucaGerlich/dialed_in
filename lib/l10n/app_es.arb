@@ -126,5 +126,9 @@
   "discardChangesMessage": "Tiene cambios sin guardar. ¿Está seguro de que desea volver?",
   "discard": "Descartar",
   "beanImage": "FOTO",
-  "tapToAddPhoto": "Toca para agregar una foto"
+  "tapToAddPhoto": "Toca para agregar una foto",
+  "tabDetails": "Detalles",
+  "tabShots": "Shots",
+  "noShotsYet": "Sin shots aún",
+  "noShotsDescription": "Toca + para registrar tu primer shot"
 }

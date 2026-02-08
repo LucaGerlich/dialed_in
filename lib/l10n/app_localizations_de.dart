@@ -533,7 +533,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get discardChangesTitle => 'Änderungen verwerfen?';
 
   @override
-  String get discardChangesMessage => 'Sie haben nicht gespeicherte Änderungen. Möchten Sie wirklich zurückgehen?';
+  String get discardChangesMessage =>
+      'Sie haben nicht gespeicherte Änderungen. Möchten Sie wirklich zurückgehen?';
 
   @override
   String get discard => 'Verwerfen';
@@ -543,4 +544,16 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get tapToAddPhoto => 'Tippen, um ein Foto hinzuzufügen';
+
+  @override
+  String get tabDetails => 'Details';
+
+  @override
+  String get tabShots => 'Shots';
+
+  @override
+  String get noShotsYet => 'Noch keine Shots';
+
+  @override
+  String get noShotsDescription => 'Tippe +, um deinen ersten Shot zu loggen';
 }

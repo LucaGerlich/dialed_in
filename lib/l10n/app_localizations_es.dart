@@ -527,7 +527,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get discardChangesTitle => '¿Descartar cambios?';
 
   @override
-  String get discardChangesMessage => 'Tiene cambios sin guardar. ¿Está seguro de que desea volver?';
+  String get discardChangesMessage =>
+      'Tiene cambios sin guardar. ¿Está seguro de que desea volver?';
 
   @override
   String get discard => 'Descartar';
@@ -537,4 +538,16 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get tapToAddPhoto => 'Toca para agregar una foto';
+
+  @override
+  String get tabDetails => 'Detalles';
+
+  @override
+  String get tabShots => 'Shots';
+
+  @override
+  String get noShotsYet => 'Sin shots aún';
+
+  @override
+  String get noShotsDescription => 'Toca + para registrar tu primer shot';
 }

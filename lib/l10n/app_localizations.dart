@@ -1107,6 +1107,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Tap to add a photo'**
   String get tapToAddPhoto;
+
+  /// Tab label for bean details
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get tabDetails;
+
+  /// Tab label for shot history
+  ///
+  /// In en, this message translates to:
+  /// **'Shots'**
+  String get tabShots;
+
+  /// Empty state title when bean has no shots
+  ///
+  /// In en, this message translates to:
+  /// **'No shots yet'**
+  String get noShotsYet;
+
+  /// Empty state description when bean has no shots
+  ///
+  /// In en, this message translates to:
+  /// **'Tap + to log your first shot'**
+  String get noShotsDescription;
 }
 
 class _AppLocalizationsDelegate

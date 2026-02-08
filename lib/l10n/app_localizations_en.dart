@@ -528,7 +528,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get discardChangesTitle => 'Discard Changes?';
 
   @override
-  String get discardChangesMessage => 'You have unsaved changes. Are you sure you want to go back?';
+  String get discardChangesMessage =>
+      'You have unsaved changes. Are you sure you want to go back?';
 
   @override
   String get discard => 'Discard';
@@ -538,4 +539,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tapToAddPhoto => 'Tap to add a photo';
+
+  @override
+  String get tabDetails => 'Details';
+
+  @override
+  String get tabShots => 'Shots';
+
+  @override
+  String get noShotsYet => 'No shots yet';
+
+  @override
+  String get noShotsDescription => 'Tap + to log your first shot';
 }
