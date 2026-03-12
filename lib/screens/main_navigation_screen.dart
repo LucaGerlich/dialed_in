@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:adaptive_platform_ui/adaptive_platform_ui.dart';
 import '../l10n/app_localizations.dart';
 import 'bean_list_screen.dart';
 import 'maintenance_screen.dart';
-import 'gear_settings_screen.dart';
 
 class MainNavigationScreen extends StatefulWidget {
   const MainNavigationScreen({super.key});
@@ -17,62 +17,39 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   final List<Widget> _screens = const [
     BeanListScreen(),
     MaintenanceScreen(),
-    GearSettingsScreen(),
   ];
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return Scaffold(
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _screens,
-      ),
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          border: Border(
-            top: BorderSide(
-              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
-              width: 1,
-            ),
+    return AdaptiveScaffold(
+      useHeroBackButton: false,
+      bottomNavigationBar: AdaptiveBottomNavigationBar(
+        selectedIndex: _currentIndex,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
+        items: [
+          AdaptiveNavigationDestination(
+            icon: 'cup.and.saucer',
+            selectedIcon: 'cup.and.saucer.fill',
+            label: l10n.beanVault,
           ),
-        ),
-        child: NavigationBar(
-          selectedIndex: _currentIndex,
-          onDestinationSelected: (index) {
-            setState(() {
-              _currentIndex = index;
-            });
-          },
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          indicatorColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
-          destinations: [
-            NavigationDestination(
-              icon: const Icon(Icons.coffee_outlined),
-              selectedIcon: Icon(
-                Icons.coffee,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-              label: l10n.beanVault,
-            ),
-            NavigationDestination(
-              icon: const Icon(Icons.build_outlined),
-              selectedIcon: Icon(
-                Icons.build,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-              label: 'Maintenance',
-            ),
-            NavigationDestination(
-              icon: const Icon(Icons.settings_outlined),
-              selectedIcon: Icon(
-                Icons.settings,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-              label: 'Settings',
-            ),
-          ],
+          AdaptiveNavigationDestination(
+            icon: 'wrench',
+            selectedIcon: 'wrench.fill',
+            label: 'Maintenance',
+          ),
+        ],
+      ),
+      body: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 200),
+        child: KeyedSubtree(
+          key: ValueKey(_currentIndex),
+          child: _screens[_currentIndex],
         ),
       ),
     );

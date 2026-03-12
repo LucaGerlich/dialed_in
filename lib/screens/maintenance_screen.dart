@@ -12,9 +12,6 @@ class MaintenanceScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Maintenance'),
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        surfaceTintColor: Theme.of(context).scaffoldBackgroundColor,
-        automaticallyImplyLeading: false,
       ),
       body: Consumer<CoffeeProvider>(
         builder: (context, provider, child) {
@@ -63,12 +60,17 @@ class MaintenanceScreen extends StatelessWidget {
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        heroTag: 'maintenance_fab',
-        onPressed: () {
-          _showAddTaskDialog(context);
-        },
-        child: const Icon(Icons.add),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 80),
+        child: FloatingActionButton(
+          heroTag: 'maintenance_fab',
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          foregroundColor: Theme.of(context).colorScheme.onPrimary,
+          onPressed: () {
+            _showAddTaskDialog(context);
+          },
+          child: const Icon(Icons.add),
+        ),
       ),
     );
   }

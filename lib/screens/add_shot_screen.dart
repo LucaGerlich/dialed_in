@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:adaptive_platform_ui/adaptive_platform_ui.dart';
 import 'package:provider/provider.dart';
 import '../l10n/app_localizations.dart';
 import '../models/models.dart';
@@ -290,13 +291,13 @@ class _AddShotScreenState extends State<AddShotScreen> {
     final l10n = AppLocalizations.of(context)!;
     final provider = Provider.of<CoffeeProvider>(context);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.shot != null ? l10n.editShot : l10n.addShot),
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        surfaceTintColor: Theme.of(context).scaffoldBackgroundColor,
+    return AdaptiveScaffold(
+      appBar: AdaptiveAppBar(
+        title: widget.shot != null ? l10n.editShot : l10n.addShot,
       ),
-      body: Stack(
+      body: Material(
+        type: MaterialType.transparency,
+        child: Stack(
         children: [
           // Expanded Dial Area (Background)
           Positioned.fill(
@@ -833,28 +834,11 @@ class _AddShotScreenState extends State<AddShotScreen> {
                         // Save Button
                         SizedBox(
                           width: double.infinity,
-                          child: ElevatedButton(
+                          child: AdaptiveButton(
                             onPressed: _saveShot,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Theme.of(
-                                context,
-                              ).colorScheme.primary,
-                              foregroundColor: Theme.of(
-                                context,
-                              ).colorScheme.onPrimary,
-                              padding: const EdgeInsets.symmetric(vertical: 20),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                            ),
-                            child: Text(
-                              widget.shot != null ? 'UPDATE SHOT' : 'SAVE SHOT',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 1.2,
-                              ),
-                            ),
+                            label: widget.shot != null ? 'UPDATE SHOT' : 'SAVE SHOT',
+                            style: AdaptiveButtonStyle.filled,
+                            size: AdaptiveButtonSize.large,
                           ),
                         ),
                       ],
@@ -865,6 +849,7 @@ class _AddShotScreenState extends State<AddShotScreen> {
             },
           ),
         ],
+      ),
       ),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:adaptive_platform_ui/adaptive_platform_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:file_picker/file_picker.dart';
@@ -15,17 +16,18 @@ class GearSettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.gearSettings),
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        surfaceTintColor: Theme.of(context).scaffoldBackgroundColor,
-        automaticallyImplyLeading: false,
+    return AdaptiveScaffold(
+      appBar: AdaptiveAppBar(
+        title: l10n.gearSettings,
       ),
-      body: Consumer<CoffeeProvider>(
+      body: Material(
+        type: MaterialType.transparency,
+        child: GestureDetector(
+          onTap: () => FocusScope.of(context).unfocus(),
+          child: Consumer<CoffeeProvider>(
         builder: (context, provider, child) {
           return ListView(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.fromLTRB(16, MediaQuery.of(context).viewPadding.top + 56, 16, 16),
             children: [
               _buildSectionSubHeader(context, "Theme"),
               _buildThemeDropdown(context, provider),
@@ -84,6 +86,8 @@ class GearSettingsScreen extends StatelessWidget {
             ],
           );
         },
+      ),
+      ),
       ),
     );
   }
@@ -558,36 +562,47 @@ class GearSettingsScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          SwitchListTile(
-            title: Text(
-              provider.useClicksMode
-                  ? 'Clicks/Notches Mode'
-                  : 'Numbered Settings Mode',
-              style: const TextStyle(fontFamily: 'RobotoMono', fontSize: 14),
-            ),
-            subtitle: Text(
-              provider.useClicksMode
-                  ? 'Track grind by clicks from a reference point (for grinders without numbers)'
-                  : 'Track grind by numbered settings on your grinder',
-              style: TextStyle(
-                fontFamily: 'RobotoMono',
-                fontSize: 11,
-                color: Theme.of(
-                  context,
-                ).colorScheme.onSurface.withValues(alpha: 0.5),
+          Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      provider.useClicksMode
+                          ? 'Clicks/Notches Mode'
+                          : 'Numbered Settings Mode',
+                      style: const TextStyle(fontFamily: 'RobotoMono', fontSize: 14),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      provider.useClicksMode
+                          ? 'Track grind by clicks from a reference point (for grinders without numbers)'
+                          : 'Track grind by numbered settings on your grinder',
+                      style: TextStyle(
+                        fontFamily: 'RobotoMono',
+                        fontSize: 11,
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.onSurface.withValues(alpha: 0.5),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            value: provider.useClicksMode,
-            onChanged: (bool value) {
-              provider.updateGrindSettings(
-                provider.grindMin,
-                provider.grindMax,
-                provider.grindStep,
-                useClicksMode: value,
-                grindLabel: value ? 'Clicks' : 'Grind Size',
-              );
-            },
-            contentPadding: EdgeInsets.zero,
+              AdaptiveSwitch(
+                value: provider.useClicksMode,
+                onChanged: (bool value) {
+                  provider.updateGrindSettings(
+                    provider.grindMin,
+                    provider.grindMax,
+                    provider.grindStep,
+                    useClicksMode: value,
+                    grindLabel: value ? 'Clicks' : 'Grind Size',
+                  );
+                },
+              ),
+            ],
           ),
           if (provider.useClicksMode) ...[
             const SizedBox(height: 8),

@@ -4,12 +4,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../l10n/app_localizations.dart';
 import '../providers/coffee_provider.dart';
 import '../utils/page_transitions.dart';
-import '../widgets/animated_button.dart';
 import '../widgets/bean_card.dart';
 import '../widgets/bean_card_compact.dart';
 import '../widgets/dripping_coffee_icon.dart';
 import 'add_bean_screen.dart';
 import 'bean_detail_screen.dart';
+import 'gear_settings_screen.dart';
 
 class BeanListScreen extends StatefulWidget {
   const BeanListScreen({super.key});
@@ -79,12 +79,10 @@ class _BeanListScreenState extends State<BeanListScreen>
         actions: [
           IconButton(
             icon: Icon(_isCompactView ? Icons.view_list : Icons.grid_view),
-            tooltip: l10n.viewMode,
             onPressed: _toggleViewMode,
           ),
           PopupMenuButton<String>(
             icon: const Icon(Icons.sort),
-            tooltip: l10n.sortBy,
             onSelected: (value) {
               setState(() {
                 _sortBy = value;
@@ -110,6 +108,15 @@ class _BeanListScreenState extends State<BeanListScreen>
                 ),
               );
             }).toList(),
+          ),
+          IconButton(
+            icon: const Icon(Icons.settings_outlined),
+            onPressed: () {
+              Navigator.push(
+                context,
+                SlidePageRoute(builder: (context) => const GearSettingsScreen()),
+              );
+            },
           ),
         ],
       ),
@@ -288,18 +295,20 @@ class _BeanListScreenState extends State<BeanListScreen>
           );
         },
       ),
-      floatingActionButton: AnimatedButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            FadePageRoute(builder: (context) => const AddBeanScreen()),
-          );
-        },
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 80),
         child: FloatingActionButton.extended(
           heroTag: 'bean_list_fab',
-          onPressed: null,
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          foregroundColor: Theme.of(context).colorScheme.onPrimary,
+          onPressed: () {
+            Navigator.push(
+              context,
+              FadePageRoute(builder: (context) => const AddBeanScreen()),
+            );
+          },
           icon: const Icon(Icons.add),
-          label: Text(l10n.addBean),
+          label: const Text('Add Bean'),
         ),
       ),
     );

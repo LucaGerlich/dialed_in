@@ -1,5 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:adaptive_platform_ui/adaptive_platform_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:dialed_in/providers/coffee_provider.dart';
 import 'screens/main_navigation_screen.dart';
@@ -22,30 +24,29 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<CoffeeProvider>(
       builder: (context, provider, child) {
-        return MaterialApp(
+        return AdaptiveApp(
           title: 'Dialed In',
-          debugShowCheckedModeBanner: false,
-          
+
           // Localization delegates
-          localizationsDelegates: const [
+          localizationsDelegates: [
             AppLocalizations.delegate,
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,
             GlobalCupertinoLocalizations.delegate,
           ],
-          
+
           // Supported locales
           supportedLocales: const [
             Locale('en'), // English
             Locale('es'), // Spanish
             Locale('de'), // German
           ],
-          
+
           // Use locale from provider, or system default if null
           locale: provider.locale,
-          
+
           themeMode: provider.themeMode,
-          theme: ThemeData(
+          materialLightTheme: ThemeData(
             useMaterial3: true,
             scaffoldBackgroundColor: const Color(0xFFEFF1F1), // Light Grey
             colorScheme: ColorScheme.fromSeed(
@@ -75,7 +76,7 @@ class MyApp extends StatelessWidget {
               foregroundColor: Colors.white,
             ),
           ),
-          darkTheme: ThemeData(
+          materialDarkTheme: ThemeData(
             useMaterial3: true,
             scaffoldBackgroundColor: const Color(0xFF000000), // Black
             colorScheme: ColorScheme.fromSeed(
@@ -104,6 +105,14 @@ class MyApp extends StatelessWidget {
               backgroundColor: Color(0xFFFF9F0A),
               foregroundColor: Colors.black,
             ),
+          ),
+          cupertinoLightTheme: const CupertinoThemeData(
+            brightness: Brightness.light,
+            primaryColor: Color(0xFF253ABD),
+          ),
+          cupertinoDarkTheme: const CupertinoThemeData(
+            brightness: Brightness.dark,
+            primaryColor: Color(0xFFFF9F0A),
           ),
           home: const AppHome(),
         );

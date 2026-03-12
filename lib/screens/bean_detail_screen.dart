@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -63,6 +64,14 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                     foregroundColor: hasImage && !innerBoxIsScrolled
                         ? Colors.white
                         : Theme.of(context).colorScheme.onSurface,
+                    leading: IconButton(
+                      icon: Icon(
+                        Platform.isIOS
+                            ? CupertinoIcons.back
+                            : Icons.arrow_back,
+                      ),
+                      onPressed: () => Navigator.pop(context),
+                    ),
                     title: Text(
                       bean.name,
                       style: const TextStyle(

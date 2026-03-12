@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:adaptive_platform_ui/adaptive_platform_ui.dart';
 import 'package:intl/intl.dart';
+import '../utils/page_transitions.dart';
 import 'package:provider/provider.dart';
 import '../l10n/app_localizations.dart';
 import '../models/models.dart';
@@ -28,20 +30,12 @@ class ShotDetailScreen extends StatelessWidget {
           orElse: () => Grinder(name: 'Unknown', id: ''),
         );
 
-        return Scaffold(
-          appBar: AppBar(
-            title: Text(
-              DateFormat('MMM d, HH:mm').format(shot.timestamp),
-              style: TextStyle(
-                fontFamily: 'RobotoMono',
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            surfaceTintColor: Theme.of(context).scaffoldBackgroundColor,
+        return AdaptiveScaffold(
+          appBar: AdaptiveAppBar(
+            title: DateFormat('MMM d, HH:mm').format(shot.timestamp),
             actions: [
-              IconButton(
-                icon: const Icon(Icons.ios_share),
+              AdaptiveAppBarAction(
+                icon: Icons.ios_share,
                 onPressed: () {
                   showDialog(
                     context: context,
@@ -58,12 +52,12 @@ class ShotDetailScreen extends StatelessWidget {
                   );
                 },
               ),
-              IconButton(
-                icon: const Icon(Icons.edit),
+              AdaptiveAppBarAction(
+                icon: Icons.edit,
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
+                    SlidePageRoute(
                       builder: (context) => AddShotScreen(
                         beanId: bean.id,
                         shot: shot,
@@ -72,14 +66,16 @@ class ShotDetailScreen extends StatelessWidget {
                   );
                 },
               ),
-              IconButton(
-                icon: const Icon(Icons.delete),
+              AdaptiveAppBarAction(
+                icon: Icons.delete,
                 onPressed: () => _confirmDelete(context, provider),
               ),
             ],
           ),
-          body: SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
+          body: Material(
+            type: MaterialType.transparency,
+            child: SingleChildScrollView(
+            padding: EdgeInsets.fromLTRB(16, MediaQuery.of(context).viewPadding.top + 56, 16, 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -480,6 +476,7 @@ class ShotDetailScreen extends StatelessWidget {
                 ],
               ],
             ),
+          ),
           ),
         );
       },

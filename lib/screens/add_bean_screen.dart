@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:adaptive_platform_ui/adaptive_platform_ui.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
@@ -260,28 +261,20 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
           Navigator.pop(context);
         }
       },
-      child: Scaffold(
-      appBar: AppBar(
-        title: Text(widget.bean != null ? l10n.editBean : l10n.addBean),
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        surfaceTintColor: Theme.of(context).scaffoldBackgroundColor,
+      child: AdaptiveScaffold(
+      appBar: AdaptiveAppBar(
+        title: widget.bean != null ? l10n.editBean : l10n.addBean,
         actions: [
-          TextButton(
-            onPressed: _nameController.text.isNotEmpty ? _saveBean : null,
-            child: Text(
-              widget.bean != null ? l10n.updateBeanButton : l10n.addBeanButton,
-              style: TextStyle(
-                color: _nameController.text.isNotEmpty
-                    ? Theme.of(context).colorScheme.primary
-                    : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+          AdaptiveAppBarAction(
+            icon: Icons.check,
+            onPressed: _nameController.text.isNotEmpty ? _saveBean : () {},
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
+      body: Material(
+        type: MaterialType.transparency,
+        child: SingleChildScrollView(
+          padding: EdgeInsets.fromLTRB(24, MediaQuery.of(context).viewPadding.top + 56, 24, 24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -464,36 +457,21 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
                       Row(
                         children: [
                           Expanded(
-                            child: SliderTheme(
-                              data: SliderTheme.of(context).copyWith(
-                                activeTrackColor: Theme.of(
-                                  context,
-                                ).colorScheme.primary,
-                                inactiveTrackColor: Theme.of(
-                                  context,
-                                ).colorScheme.onSurface.withValues(alpha: 0.1),
-                                thumbColor: Theme.of(
-                                  context,
-                                ).colorScheme.onSurface,
-                                overlayColor: Theme.of(
-                                  context,
-                                ).colorScheme.primary.withValues(alpha: 0.2),
-                              ),
-                              child: Slider(
-                                value: _arabicaPercentage,
-                                min: 0.0,
-                                max: 100.0,
-                                divisions: 20,
-                                label:
-                                    '${_arabicaPercentage.toStringAsFixed(0)}%',
-                                onChanged: (val) {
-                                  setState(() {
-                                    _arabicaPercentage = val;
-                                    _robustaPercentage = 100.0 - val;
-                                    _hasUnsavedChanges = true;
-                                  });
-                                },
-                              ),
+                            child: AdaptiveSlider(
+                              value: _arabicaPercentage,
+                              min: 0.0,
+                              max: 100.0,
+                              divisions: 20,
+                              label:
+                                  '${_arabicaPercentage.toStringAsFixed(0)}%',
+                              onChanged: (val) {
+                                setState(() {
+                                  _arabicaPercentage = val;
+                                  _robustaPercentage = 100.0 - val;
+                                  _hasUnsavedChanges = true;
+                                });
+                              },
+                              activeColor: Theme.of(context).colorScheme.primary,
                             ),
                           ),
                           const SizedBox(width: 8),
@@ -536,36 +514,21 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
                       Row(
                         children: [
                           Expanded(
-                            child: SliderTheme(
-                              data: SliderTheme.of(context).copyWith(
-                                activeTrackColor: Theme.of(
-                                  context,
-                                ).colorScheme.primary,
-                                inactiveTrackColor: Theme.of(
-                                  context,
-                                ).colorScheme.onSurface.withValues(alpha: 0.1),
-                                thumbColor: Theme.of(
-                                  context,
-                                ).colorScheme.onSurface,
-                                overlayColor: Theme.of(
-                                  context,
-                                ).colorScheme.primary.withValues(alpha: 0.2),
-                              ),
-                              child: Slider(
-                                value: _robustaPercentage,
-                                min: 0.0,
-                                max: 100.0,
-                                divisions: 20,
-                                label:
-                                    '${_robustaPercentage.toStringAsFixed(0)}%',
-                                onChanged: (val) {
-                                  setState(() {
-                                    _robustaPercentage = val;
-                                    _arabicaPercentage = 100.0 - val;
-                                    _hasUnsavedChanges = true;
-                                  });
-                                },
-                              ),
+                            child: AdaptiveSlider(
+                              value: _robustaPercentage,
+                              min: 0.0,
+                              max: 100.0,
+                              divisions: 20,
+                              label:
+                                  '${_robustaPercentage.toStringAsFixed(0)}%',
+                              onChanged: (val) {
+                                setState(() {
+                                  _robustaPercentage = val;
+                                  _arabicaPercentage = 100.0 - val;
+                                  _hasUnsavedChanges = true;
+                                });
+                              },
+                              activeColor: Theme.of(context).colorScheme.primary,
                             ),
                           ),
                           const SizedBox(width: 8),
@@ -688,30 +651,18 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
 
             SizedBox(
               width: double.infinity,
-              child: ElevatedButton(
+              child: AdaptiveButton(
                 onPressed: _saveBean,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                  foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                  padding: const EdgeInsets.symmetric(vertical: 20),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                ),
-                child: Text(
-                  widget.bean != null
-                      ? l10n.updateBeanButton
-                      : l10n.addBeanButton,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1.2,
-                  ),
-                ),
+                label: widget.bean != null
+                    ? l10n.updateBeanButton
+                    : l10n.addBeanButton,
+                style: AdaptiveButtonStyle.filled,
+                size: AdaptiveButtonSize.large,
               ),
             ),
           ],
         ),
+      ),
       ),
       ),
     );
@@ -780,25 +731,14 @@ class _AddBeanScreenState extends State<AddBeanScreen> {
             ),
           ],
         ),
-        SliderTheme(
-          data: SliderTheme.of(context).copyWith(
-            activeTrackColor: Theme.of(context).colorScheme.primary,
-            inactiveTrackColor: Theme.of(
-              context,
-            ).colorScheme.onSurface.withValues(alpha: 0.1),
-            thumbColor: Theme.of(context).colorScheme.onSurface,
-            overlayColor: Theme.of(
-              context,
-            ).colorScheme.primary.withValues(alpha: 0.2),
-          ),
-          child: Slider(
-            value: value,
-            min: 0.0,
-            max: 10.0,
-            divisions: 100,
-            label: value.toStringAsFixed(1),
-            onChanged: onChanged,
-          ),
+        AdaptiveSlider(
+          value: value,
+          min: 0.0,
+          max: 10.0,
+          divisions: 100,
+          label: value.toStringAsFixed(1),
+          onChanged: onChanged,
+          activeColor: Theme.of(context).colorScheme.primary,
         ),
       ],
     );
