@@ -1,6 +1,6 @@
 import 'dart:io';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:adaptive_platform_ui/adaptive_platform_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
@@ -8,7 +8,6 @@ import '../l10n/app_localizations.dart';
 import '../models/models.dart';
 import '../providers/coffee_provider.dart';
 import '../utils/page_transitions.dart';
-import '../widgets/animated_button.dart';
 import 'add_shot_screen.dart';
 import 'add_bean_screen.dart';
 import 'shot_detail_screen.dart';
@@ -47,143 +46,36 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
           final hasImage =
               bean.imagePath != null && File(bean.imagePath!).existsSync();
 
-          return Scaffold(
-            body: NestedScrollView(
-              headerSliverBuilder: (context, innerBoxIsScrolled) => [
-                SliverOverlapAbsorber(
-                  handle:
-                      NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-                  sliver: SliverAppBar(
-                    expandedHeight: hasImage ? 280 : null,
-                    pinned: true,
-                    forceElevated: innerBoxIsScrolled,
-                    backgroundColor:
-                        Theme.of(context).scaffoldBackgroundColor,
-                    surfaceTintColor:
-                        Theme.of(context).scaffoldBackgroundColor,
-                    foregroundColor: hasImage && !innerBoxIsScrolled
-                        ? Colors.white
-                        : Theme.of(context).colorScheme.onSurface,
-                    leading: IconButton(
-                      icon: Icon(
-                        Platform.isIOS
-                            ? CupertinoIcons.back
-                            : Icons.arrow_back,
+          final topPadding = MediaQuery.of(context).viewPadding.top + 56;
+
+          return AdaptiveScaffold(
+            appBar: AdaptiveAppBar(
+              title: bean.name,
+              actions: [
+                AdaptiveAppBarAction(
+                  icon: Icons.edit,
+                  iosSymbol: 'pencil',
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      FadePageRoute(
+                        builder: (context) => AddBeanScreen(bean: bean),
                       ),
-                      onPressed: () => Navigator.pop(context),
-                    ),
-                    title: Text(
-                      bean.name,
-                      style: const TextStyle(
-                        fontFamily: 'RobotoMono',
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    actions: [
-                      IconButton(
-                        icon: const Icon(Icons.edit),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            FadePageRoute(
-                              builder: (context) => AddBeanScreen(bean: bean),
-                            ),
-                          );
-                        },
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.delete),
-                        onPressed: () {
-                          _confirmDelete(context, provider, bean);
-                        },
-                      ),
-                    ],
-                    flexibleSpace: hasImage
-                        ? FlexibleSpaceBar(
-                            background: Stack(
-                              fit: StackFit.expand,
-                              children: [
-                                Image.file(
-                                  File(bean.imagePath!),
-                                  fit: BoxFit.cover,
-                                ),
-                                DecoratedBox(
-                                  decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      begin: Alignment.topCenter,
-                                      end: Alignment.bottomCenter,
-                                      stops: const [0.0, 0.35, 0.65, 1.0],
-                                      colors: [
-                                        Colors.black.withValues(alpha: 0.6),
-                                        Colors.transparent,
-                                        Colors.transparent,
-                                        Colors.black.withValues(alpha: 0.3),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          )
-                        : null,
-                    bottom: PreferredSize(
-                      preferredSize: const Size.fromHeight(48),
-                      child: Container(
-                        color: Theme.of(context).scaffoldBackgroundColor,
-                        child: TabBar(
-                          indicatorColor:
-                              Theme.of(context).colorScheme.primary,
-                          labelColor: Theme.of(context).colorScheme.primary,
-                          unselectedLabelColor: Theme.of(context)
-                              .colorScheme
-                              .onSurface
-                              .withValues(alpha: 0.6),
-                          labelStyle: const TextStyle(
-                            fontFamily: 'RobotoMono',
-                            fontWeight: FontWeight.bold,
-                            fontSize: 13,
-                          ),
-                          unselectedLabelStyle: const TextStyle(
-                            fontFamily: 'RobotoMono',
-                            fontSize: 13,
-                          ),
-                          tabs: [
-                            Tab(text: l10n.tabDetails),
-                            Tab(text: l10n.tabShots),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
+                    );
+                  },
+                ),
+                AdaptiveAppBarAction(
+                  icon: Icons.delete,
+                  iosSymbol: 'trash',
+                  onPressed: () {
+                    _confirmDelete(context, provider, bean);
+                  },
                 ),
               ],
-              body: TabBarView(
-                children: [
-                  Builder(
-                    builder: (context) => _buildDetailsTab(
-                      context,
-                      bean,
-                      provider,
-                      shots,
-                      totalBrews,
-                      avgDose,
-                      avgYield,
-                      l10n,
-                    ),
-                  ),
-                  Builder(
-                    builder: (context) => _buildShotsTab(
-                      context,
-                      bean,
-                      provider,
-                      shots,
-                      l10n,
-                    ),
-                  ),
-                ],
-              ),
             ),
-            floatingActionButton: AnimatedButton(
+            floatingActionButton: AdaptiveButton.child(
+              style: AdaptiveButtonStyle.glass,
+              size: AdaptiveButtonSize.large,
               onPressed: () {
                 Navigator.push(
                   context,
@@ -192,16 +84,108 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
                   ),
                 );
               },
-              child: FloatingActionButton.extended(
-                heroTag: 'bean_detail_fab',
-                onPressed: null,
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                icon: const Icon(Icons.add),
-                label: Text(l10n.addShot),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.add, size: 20),
+                  const SizedBox(width: 8),
+                  Text(l10n.addShot, style: const TextStyle(fontFamily: 'RobotoMono', fontWeight: FontWeight.w600)),
+                ],
               ),
             ),
-            floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+            body: Material(
+              type: MaterialType.transparency,
+              child: Column(
+                children: [
+                  // Image header (extends behind glass toolbar)
+                  if (hasImage)
+                    SizedBox(
+                      height: topPadding + 220,
+                      width: double.infinity,
+                      child: Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          Image.file(
+                            File(bean.imagePath!),
+                            fit: BoxFit.cover,
+                          ),
+                          // Bottom gradient for smooth transition
+                          Positioned(
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            height: 60,
+                            child: DecoratedBox(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    Colors.transparent,
+                                    Theme.of(context).scaffoldBackgroundColor,
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  if (!hasImage)
+                    SizedBox(height: topPadding),
+                  // Tab bar
+                  Container(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    child: TabBar(
+                      indicatorColor:
+                          Theme.of(context).colorScheme.primary,
+                      labelColor: Theme.of(context).colorScheme.primary,
+                      unselectedLabelColor: Theme.of(context)
+                          .colorScheme
+                          .onSurface
+                          .withValues(alpha: 0.6),
+                      labelStyle: const TextStyle(
+                        fontFamily: 'RobotoMono',
+                        fontWeight: FontWeight.bold,
+                        fontSize: 13,
+                      ),
+                      unselectedLabelStyle: const TextStyle(
+                        fontFamily: 'RobotoMono',
+                        fontSize: 13,
+                      ),
+                      tabs: [
+                        Tab(text: l10n.tabDetails),
+                        Tab(text: l10n.tabShots),
+                      ],
+                    ),
+                  ),
+                  // Tab content
+                  Expanded(
+                    child: TabBarView(
+                      children: [
+                        _buildDetailsTab(
+                          context,
+                          bean,
+                          provider,
+                          shots,
+                          totalBrews,
+                          avgDose,
+                          avgYield,
+                          l10n,
+                        ),
+                        _buildShotsTab(
+                          context,
+                          bean,
+                          provider,
+                          shots,
+                          l10n,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
           );
         },
       ),
@@ -221,9 +205,6 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
     return CustomScrollView(
       key: const PageStorageKey<String>('details'),
       slivers: [
-        SliverOverlapInjector(
-          handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-        ),
         SliverPadding(
           padding: EdgeInsets.fromLTRB(
             16,
@@ -782,9 +763,6 @@ class _BeanDetailScreenState extends State<BeanDetailScreen> {
     return CustomScrollView(
       key: const PageStorageKey<String>('shots'),
       slivers: [
-        SliverOverlapInjector(
-          handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-        ),
         if (shots.isEmpty)
           SliverFillRemaining(
             child: Center(

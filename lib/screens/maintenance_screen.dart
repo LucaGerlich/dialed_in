@@ -7,78 +7,63 @@ import 'package:intl/intl.dart';
 class MaintenanceScreen extends StatelessWidget {
   const MaintenanceScreen({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Maintenance'),
-      ),
-      body: Consumer<CoffeeProvider>(
-        builder: (context, provider, child) {
-          final tasks = provider.maintenanceTasks;
-
-          if (tasks.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.build_outlined,
-                    size: 64,
-                    color: Theme.of(context).colorScheme.secondary,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'No maintenance tasks',
-                    style: TextStyle(
-                      fontFamily: 'RobotoMono',
-                      fontSize: 18,
-                      color: Theme.of(context).colorScheme.secondary,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Add a task to get started',
-                    style: TextStyle(
-                      fontFamily: 'RobotoMono',
-                      fontSize: 14,
-                      color: Theme.of(context).colorScheme.secondary,
-                    ),
-                  ),
-                ],
-              ),
-            );
-          }
-
-          return ListView.builder(
-            padding: const EdgeInsets.all(16),
-            itemCount: tasks.length,
-            itemBuilder: (context, index) {
-              final task = tasks[index];
-              return _MaintenanceTaskCard(task: task);
-            },
-          );
-        },
-      ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: 80),
-        child: FloatingActionButton(
-          heroTag: 'maintenance_fab',
-          backgroundColor: Theme.of(context).colorScheme.primary,
-          foregroundColor: Theme.of(context).colorScheme.onPrimary,
-          onPressed: () {
-            _showAddTaskDialog(context);
-          },
-          child: const Icon(Icons.add),
-        ),
-      ),
-    );
-  }
-
-  void _showAddTaskDialog(BuildContext context) {
+  static void showAddTaskDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (context) => const _AddMaintenanceTaskDialog(),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<CoffeeProvider>(
+      builder: (context, provider, child) {
+        final tasks = provider.maintenanceTasks;
+
+        if (tasks.isEmpty) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.build_outlined,
+                  size: 64,
+                  color: Theme.of(context).colorScheme.secondary,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'No maintenance tasks',
+                  style: TextStyle(
+                    fontFamily: 'RobotoMono',
+                    fontSize: 18,
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Add a task to get started',
+                  style: TextStyle(
+                    fontFamily: 'RobotoMono',
+                    fontSize: 14,
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+
+        final topPadding = MediaQuery.of(context).viewPadding.top + 56;
+
+        return ListView.builder(
+          padding: EdgeInsets.fromLTRB(16, topPadding + 16, 16, 16),
+          itemCount: tasks.length,
+          itemBuilder: (context, index) {
+            final task = tasks[index];
+            return _MaintenanceTaskCard(task: task);
+          },
+        );
+      },
     );
   }
 }
